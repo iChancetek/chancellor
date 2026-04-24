@@ -76,7 +76,7 @@ export default function AIChat() {
             </div>
             <div>
               <h3 style={{ fontSize: '18px', fontWeight: 700 }}>Chancellor AI</h3>
-              <p style={{ fontSize: '12px', opacity: 0.8 }}>Powered by GPT-5.4</p>
+              <p style={{ fontSize: '12px', opacity: 0.8 }}>Powered by GPT-5.2</p>
             </div>
             <button onClick={toggleAIChat} style={{ marginLeft: 'auto', color: 'white' }}><X size={20} /></button>
           </div>
