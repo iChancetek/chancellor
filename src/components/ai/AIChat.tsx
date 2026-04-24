@@ -67,12 +67,12 @@ export default function AIChat() {
       // Auto TTS for assistant response
       playTTS(assistantMessage.content);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('AI Error:', error);
       addAIMessage({
         id: generateId(),
         role: 'assistant',
-        content: "I'm having trouble connecting to GPT-5.5. I can help you with workspace tasks manually in the meantime.",
+        content: "I encountered a connection issue. Please check your OpenAI API key configuration and try again. I'm here to help once the connection is restored.",
         timestamp: Date.now(),
       });
     } finally {

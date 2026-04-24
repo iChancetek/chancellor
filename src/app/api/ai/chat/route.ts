@@ -13,13 +13,16 @@ You are responsible for:
 
 Multimodal Capabilities:
 - You have Computer Vision: You can analyze uploaded images, screenshots of boards, and documents.
-- You have NLP & High-Level Reasoning: We are currently running state-of-the-art GPT-5.5.
+- You have NLP & High-Level Reasoning powered by state-of-the-art GPT models.
 - You have Audio awareness: Transcribed voice inputs are provided to you as text.
 
 Rules:
 - Be concise and actionable in your responses.
 - Format responses with clear structure when appropriate (markdown tables, lists).
 - Speak confidently as the platform's AI brain.`;
+
+// Model fallback chain — tries the best available model for this API key
+const MODEL_CHAIN = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'];
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -32,39 +35,38 @@ export async function POST(req: NextRequest) {
   try {
     const json = await req.json();
     messages = json.messages || [];
-
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-5.4', // Upgraded to user requested elite model
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        ...messages, 
-      ],
-      max_completion_tokens: 1500,
-      temperature: 0.7,
-    });
-
-    const message = completion.choices[0]?.message?.content || 'No response generated.';
-    return NextResponse.json({ message });
-  } catch (error: any) {
-    console.error('Chancellor AI Multimodal Error:', error);
-    
-    // Fallback to GPT-5.4-mini if GPT-5.4 is not yet provisioned for this specific API key
-    if (error.status === 404 || error.code === 'model_not_found') {
-      try {
-        const fallback = await openai.chat.completions.create({
-          model: 'gpt-5.4-mini',
-          messages: [
-            { role: 'system', content: SYSTEM_PROMPT },
-            ...messages,
-          ],
-          max_completion_tokens: 1500,
-        });
-        return NextResponse.json({ message: fallback.choices[0]?.message?.content });
-      } catch (fallbackError) {
-        return NextResponse.json({ error: 'AI processing failed' }, { status: 500 });
-      }
-    }
-
-    return NextResponse.json({ error: 'AI processing failed', details: error.message }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 });
   }
+
+  const apiMessages = [
+    { role: 'system' as const, content: SYSTEM_PROMPT },
+    ...messages,
+  ];
+
+  // Try each model in the chain until one works
+  for (const model of MODEL_CHAIN) {
+    try {
+      const completion = await openai.chat.completions.create({
+        model,
+        messages: apiMessages,
+        max_completion_tokens: 1500,
+        temperature: 0.7,
+      });
+
+      const message = completion.choices[0]?.message?.content || 'No response generated.';
+      return NextResponse.json({ message, model });
+    } catch (error: any) {
+      // If the model doesn't exist, try the next one
+      if (error.status === 404 || error.code === 'model_not_found') {
+        continue;
+      }
+      // For any other error (rate limit, auth, etc.), report it
+      console.error(`Chancellor AI Error (${model}):`, error.message);
+      return NextResponse.json({ error: 'AI processing failed', details: error.message }, { status: 500 });
+    }
+  }
+
+  // All models failed
+  return NextResponse.json({ error: 'No compatible AI model found for this API key' }, { status: 500 });
 }
