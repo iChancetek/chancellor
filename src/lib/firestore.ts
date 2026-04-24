@@ -76,7 +76,7 @@ export function subscribeToBoards(workspaceId: string, callback: (boards: Board[
     },
     (error) => {
       console.error('Firestore Subscribe Boards Error:', error);
-      callback([]);
+      // DO NOT clear local state on error
     }
   );
 }
@@ -100,14 +100,17 @@ export async function createItem(item: Item): Promise<void> {
 
 export function subscribeToItems(boardId: string, callback: (items: Item[]) => void): Unsubscribe {
   if (!db) return () => {};
-  const q = query(collection(db, 'items'), where('boardId', '==', boardId), orderBy('position'));
+  const q = query(collection(db, 'items'), where('boardId', '==', boardId));
   return onSnapshot(q, 
     (snapshot) => {
-      callback(snapshot.docs.map((d) => d.data() as Item));
+      // Sort client-side to avoid composite index requirements
+      const items = snapshot.docs.map((d) => d.data() as Item);
+      items.sort((a, b) => (a.position || 0) - (b.position || 0));
+      callback(items);
     },
     (error) => {
       console.error('Firestore Subscribe Items Error:', error);
-      callback([]);
+      // DO NOT clear local state on error
     }
   );
 }
