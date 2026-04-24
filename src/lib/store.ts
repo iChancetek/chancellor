@@ -66,6 +66,7 @@ interface BoardState {
   setActiveBoard: (board: Board | null) => void;
   setActiveView: (view: ViewType) => void;
   setItems: (items: Item[]) => void;
+  syncBoardItems: (boardId: string, items: Item[]) => void;
   addItem: (item: Item) => void;
   updateItem: (id: string, updates: Partial<Item>) => void;
   removeItem: (id: string) => void;
@@ -88,6 +89,10 @@ export const useBoardStore = create<BoardState>()(
       setActiveBoard: (board) => set({ activeBoard: board, activeView: board?.activeView || 'table' }),
       setActiveView: (view) => set({ activeView: view }),
       setItems: (items) => set({ items }),
+      syncBoardItems: (boardId, newItems) => set((state) => ({
+        // Keep items from other boards, replace items for this board
+        items: [...state.items.filter(i => i.boardId !== boardId), ...newItems]
+      })),
       addItem: (item) => set((state) => ({ items: [...state.items, item] })),
       updateItem: (id, updates) =>
         set((state) => ({

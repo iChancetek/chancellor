@@ -14,8 +14,15 @@ export default function CRMPage() {
   const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
     const board = createDefaultBoard(activeWorkspace.id, name, 'crm');
+    
+    // Optimistic UI update
     addBoard(board);
     router.push(`/dashboard/board/${board.id}`);
+    
+    // Background Cloud Sync
+    import('@/lib/firestore').then(({ createBoard }) => {
+      createBoard(board).catch(err => console.error('Failed to sync board creation:', err));
+    }).catch(() => {});
   };
 
   const templates = [

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, use } from 'react';
 import { useBoardStore, useUIStore } from '@/lib/store';
+import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from '@/lib/firestore';
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import {
@@ -14,7 +15,7 @@ import BoardAIInsights from '@/components/ai/insights/BoardAIInsights';
 export default function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
   const { boardId } = use(params);
   const { user } = useAuth();
-  const { boards, items, setItems, addItem, updateItem, removeItem, activeView, setActiveView, setActiveBoard, activeBoard } = useBoardStore();
+  const { boards, items, setItems, syncBoardItems, addItem, updateItem, removeItem, activeView, setActiveView, setActiveBoard, activeBoard } = useBoardStore();
   const { itemDetailOpen, selectedItemId, openItemDetail, closeItemDetail } = useUIStore();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -31,6 +32,15 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     }
   }, [boardId, boards, setActiveBoard, setActiveView]);
 
+  // Background Cloud Sync (Reads)
+  useEffect(() => {
+    if (!boardId) return;
+    const unsub = subscribeToItems(boardId, (serverItems) => {
+      syncBoardItems(boardId, serverItems);
+    });
+    return () => unsub();
+  }, [boardId, syncBoardItems]);
+
   const handleAddItem = useCallback((groupId: string) => {
     if (!newItemName.trim() || !activeBoard || !user) return;
     const item: Item = {
@@ -45,23 +55,35 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
       createdBy: user.uid,
       subscribers: [user.uid],
     };
+    // Optimistic UI: update local state instantly
     addItem(item);
     setNewItemName('');
     setAddingItemGroup(null);
     flashSave();
+    
+    // Background Cloud Sync
+    createItem(item).catch(err => console.error('Failed to sync item creation:', err));
   }, [newItemName, activeBoard, user, items, addItem]);
 
   const handleUpdateValue = (itemId: string, colId: string, val: any) => {
     const item = items.find(i => i.id === itemId);
     if (item) {
+      // Optimistic local update
       updateItem(itemId, { values: { ...item.values, [colId]: val } });
       flashSave();
+      
+      // Background Cloud Sync
+      firestoreUpdateItem(itemId, { values: { ...item.values, [colId]: val } }).catch(err => console.error('Failed to sync value update:', err));
     }
   };
 
   const handleUpdateName = (itemId: string, name: string) => {
+    // Optimistic local update
     updateItem(itemId, { name });
     flashSave();
+    
+    // Background Cloud Sync
+    firestoreUpdateItem(itemId, { name }).catch(err => console.error('Failed to sync name update:', err));
   };
 
   const flashSave = () => {
@@ -180,7 +202,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
           board={activeBoard}
           onClose={closeItemDetail}
           onUpdateValue={handleUpdateValue}
-          onUpdateName={(id, name) => { updateItem(id, { name }); flashSave(); }}
+          onUpdateName={(id, name) => { handleUpdateName(id, name); }}
         />
       )}
     </div>
