@@ -8,8 +8,9 @@ export default function PublicNavbar() {
 
   return (
     <nav className="lp-navbar">
-      <Link href="/" className="landing-logo" style={{ color: '#000', fontSize: '28px', display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-        <span style={{ color: '#6161FF' }}>⚡</span> Chancellor
+      <Link href="/" className="landing-logo" style={{ color: '#000', fontSize: '28px', display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
+        <img src="/icon.svg" alt="Chancellor Logo" style={{ width: '32px', height: '32px' }} />
+        Chancellor
       </Link>
       <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
         <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Products</Link>

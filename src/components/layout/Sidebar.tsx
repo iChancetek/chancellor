@@ -54,7 +54,7 @@ export default function Sidebar() {
     <aside className="exact-monday-sidebar">
       {/* Top Logo & App Grid */}
       <div style={{ height: '64px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', padding: '0 16px', gap: '12px' }}>
-        <div style={{ width: '28px', height: '28px', background: '#6161FF', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '14px' }}>⚡</div>
+        <img src="/icon.svg" alt="Chancellor Logo" style={{ width: '28px', height: '28px', borderRadius: '4px' }} />
         <span style={{ fontWeight: 600, fontSize: '18px' }}>Chancellor</span>
       </div>
 
