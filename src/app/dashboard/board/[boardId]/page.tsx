@@ -65,6 +65,32 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     createItem(item).catch(err => console.error('Failed to sync item creation:', err));
   }, [newItemName, activeBoard, user, items, addItem]);
 
+  const handleCalendarAdd = useCallback((date: Date) => {
+    if (!activeBoard || !user) return;
+    const name = window.prompt("Enter new task name for " + date.toLocaleDateString() + ":");
+    if (!name?.trim()) return;
+
+    const groupId = activeBoard.groups[0]?.id;
+    if (!groupId) return;
+
+    const item: Item = {
+      id: generateId(),
+      boardId: activeBoard.id,
+      groupId,
+      name: name.trim(),
+      values: { date: date.getTime() },
+      position: items.filter(i => i.groupId === groupId).length,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+      createdBy: user.uid,
+      subscribers: [user.uid],
+    };
+
+    addItem(item);
+    flashSave();
+    createItem(item).catch(err => console.error('Failed to sync item creation:', err));
+  }, [activeBoard, user, items, addItem]);
+
   const handleUpdateValue = (itemId: string, colId: string, val: any) => {
     const item = items.find(i => i.id === itemId);
     if (item) {
@@ -135,7 +161,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
 
         {/* Toolbar */}
         <div style={{ display: 'flex', gap: '12px', paddingBottom: '16px' }}>
-          <button onClick={() => {}} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+          <button onClick={() => { if(activeBoard?.groups[0]) setAddingItemGroup(activeBoard.groups[0].id); }} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
             <Plus size={14} /> New Item
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', border: '1px solid #d0d4e4', borderRadius: '4px', fontSize: '13px', color: '#676879' }}>
@@ -180,7 +206,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
             openItemDetail={openItemDetail}
           />
         ) : activeView === 'calendar' ? (
-          <CalendarView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} />
+          <CalendarView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} onAddEvent={handleCalendarAdd} />
         ) : activeView === 'timeline' ? (
           <TimelineView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} />
         ) : activeView === 'chart' ? (
@@ -455,7 +481,7 @@ function ExactCellRenderer({ column, value, onSave }: { column: Column, value: a
   }
 }
 
-function CalendarView({ board, items, openItemDetail }: { board: Board, items: Item[], openItemDetail: (id: string) => void }) {
+function CalendarView({ board, items, openItemDetail, onAddEvent }: { board: Board, items: Item[], openItemDetail: (id: string) => void, onAddEvent: (date: Date) => void }) {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const today = new Date();
   
@@ -488,12 +514,15 @@ function CalendarView({ board, items, openItemDetail }: { board: Board, items: I
           });
 
           return (
-            <div key={i} style={{ 
+            <div key={i} onClick={(e) => {
+              if (e.target === e.currentTarget) onAddEvent(date);
+            }} style={{ 
               borderRight: i % 7 !== 6 ? '1px solid #e1e4e8' : 'none', 
               borderBottom: i < 28 ? '1px solid #e1e4e8' : 'none',
               padding: '8px',
               background: isCurrentMonth ? '#fff' : '#fafafa',
-              opacity: isCurrentMonth ? 1 : 0.5
+              opacity: isCurrentMonth ? 1 : 0.5,
+              cursor: 'pointer'
             }}>
               <div style={{ 
                 fontSize: '12px', fontWeight: isToday ? 700 : 500, 
