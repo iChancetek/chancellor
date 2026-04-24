@@ -41,13 +41,14 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     return () => unsub();
   }, [boardId, syncBoardItems]);
 
-  const handleAddItem = useCallback((groupId: string) => {
-    if (!newItemName.trim() || !activeBoard || !user) return;
+  const handleAddItem = useCallback((groupId: string, overrideName?: string) => {
+    const finalName = overrideName || newItemName;
+    if (!finalName.trim() || !activeBoard || !user) return;
     const item: Item = {
       id: generateId(),
       boardId: activeBoard.id,
       groupId,
-      name: newItemName.trim(),
+      name: finalName.trim(),
       values: {},
       position: items.filter(i => i.groupId === groupId).length,
       createdAt: Date.now(),
@@ -57,7 +58,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     };
     // Optimistic UI: update local state instantly
     addItem(item);
-    setNewItemName('');
+    if (!overrideName) setNewItemName('');
     setAddingItemGroup(null);
     flashSave();
     
@@ -161,7 +162,15 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
 
         {/* Toolbar */}
         <div style={{ display: 'flex', gap: '12px', paddingBottom: '16px' }}>
-          <button onClick={() => { if(activeBoard?.groups[0]) setAddingItemGroup(activeBoard.groups[0].id); }} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+          <button onClick={() => { 
+            if (!activeBoard?.groups[0]) return;
+            if (activeView === 'table') {
+              setAddingItemGroup(activeBoard.groups[0].id);
+            } else {
+              const name = window.prompt("Enter new task name:");
+              if (name && name.trim()) handleAddItem(activeBoard.groups[0].id, name.trim());
+            }
+          }} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
             <Plus size={14} /> New Item
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', border: '1px solid #d0d4e4', borderRadius: '4px', fontSize: '13px', color: '#676879' }}>
