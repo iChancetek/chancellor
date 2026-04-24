@@ -3,19 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
-import { createBoard } from '@/lib/firestore';
+
 import { Megaphone, Plus, Calendar, Image, BarChart3, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function MarketingPage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
-  const { boards } = useBoardStore();
+  const { boards, addBoard } = useBoardStore();
   const marketingBoards = boards.filter(b => b.type === 'marketing');
 
-  const handleCreateBoard = async (name: string) => {
+  const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
     const board = createDefaultBoard(activeWorkspace.id, name, 'marketing');
-    await createBoard(board);
+    addBoard(board);
     router.push(`/dashboard/board/${board.id}`);
   };
 

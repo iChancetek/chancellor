@@ -3,19 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
-import { createBoard } from '@/lib/firestore';
+
 import { Headphones, Plus, Ticket, Clock, AlertTriangle, ArrowRight, Shield } from 'lucide-react';
 
 export default function SupportPage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
-  const { boards } = useBoardStore();
+  const { boards, addBoard } = useBoardStore();
   const supportBoards = boards.filter(b => b.type === 'support');
 
-  const handleCreateBoard = async (name: string) => {
+  const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
     const board = createDefaultBoard(activeWorkspace.id, name, 'support');
-    await createBoard(board);
+    addBoard(board);
     router.push(`/dashboard/board/${board.id}`);
   };
 

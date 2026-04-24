@@ -3,19 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
-import { createBoard } from '@/lib/firestore';
+
 import { Code2, Plus, Bug, GitBranch, Rocket, ArrowRight, Gauge } from 'lucide-react';
 
 export default function DevPage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
-  const { boards } = useBoardStore();
+  const { boards, addBoard } = useBoardStore();
   const devBoards = boards.filter(b => b.type === 'dev');
 
-  const handleCreateBoard = async (name: string) => {
+  const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
     const board = createDefaultBoard(activeWorkspace.id, name, 'dev');
-    await createBoard(board);
+    addBoard(board);
     router.push(`/dashboard/board/${board.id}`);
   };
 

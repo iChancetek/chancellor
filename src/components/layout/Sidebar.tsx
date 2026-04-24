@@ -4,50 +4,44 @@ import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
-import { subscribeToWorkspaces, createWorkspace, subscribeToBoards, createBoard } from '@/lib/firestore';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones,
-  Megaphone, Plus, Zap, Settings, Inbox, Calendar, Search, Grid
+  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown
 } from 'lucide-react';
 
 export default function Sidebar() {
   const { user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const { workspaces, activeWorkspace, setWorkspaces, setActiveWorkspace } = useWorkspaceStore();
-  const { boards, setBoards } = useBoardStore();
+  const { workspaces, activeWorkspace, setWorkspaces, setActiveWorkspace, addWorkspace } = useWorkspaceStore();
+  const { boards, addBoard } = useBoardStore();
 
+  // Initialize workspace on first login (local-first)
   useEffect(() => {
     if (!user) return;
-    const unsub = subscribeToWorkspaces(user.uid, (ws) => {
-      setWorkspaces(ws);
-      if (ws.length > 0 && !activeWorkspace) setActiveWorkspace(ws[0]);
-    });
-    return () => unsub();
-  }, [user, setWorkspaces, setActiveWorkspace]);
-
-  useEffect(() => {
-    if (!user || workspaces === undefined) return;
-    if (workspaces.length === 0) {
+    if (workspaces.length === 0 && !activeWorkspace) {
       const ws = createDefaultWorkspace(user.uid, user.email || '', user.displayName || 'User');
-      // Always set the workspace locally first so buttons work immediately
+      addWorkspace(ws);
       setActiveWorkspace(ws);
-      createWorkspace(ws).then(() => {
-        const board = createDefaultBoard(ws.id, 'Main Board', 'work');
-        createBoard(board).catch((err) => console.error('Failed to create default board:', err));
-      }).catch((err) => {
-        console.error('Failed to create workspace in Firestore:', err);
-        // Workspace is already set locally, so the app still works
-      });
+      // Create a default board too
+      const board = createDefaultBoard(ws.id, 'Main Board', 'work');
+      addBoard(board);
+    } else if (!activeWorkspace && workspaces.length > 0) {
+      setActiveWorkspace(workspaces[0]);
     }
-  }, [user, workspaces, setActiveWorkspace]);
+  }, [user, workspaces, activeWorkspace, setActiveWorkspace, addWorkspace, addBoard]);
 
+  // Background Firestore sync attempt (non-blocking)
   useEffect(() => {
     if (!activeWorkspace) return;
-    const unsub = subscribeToBoards(activeWorkspace.id, (b) => setBoards(b));
-    return () => unsub();
-  }, [activeWorkspace, setBoards]);
+    // Try to sync to Firestore in the background — don't block UI
+    import('@/lib/firestore').then(({ createWorkspace }) => {
+      createWorkspace(activeWorkspace).catch(() => {
+        // Firestore unavailable — data is safe in localStorage
+      });
+    }).catch(() => {});
+  }, [activeWorkspace?.id]);
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home, path: '/dashboard' },
@@ -63,19 +57,19 @@ export default function Sidebar() {
     { id: 'marketing', label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },
   ];
 
-  const handleCreateBoard = async () => {
+  const handleCreateBoard = () => {
     if (!activeWorkspace) {
       alert('Initializing workspace... please try again in a moment.');
       return;
     }
-    try {
-      const board = createDefaultBoard(activeWorkspace.id, 'New Board', 'work');
-      await createBoard(board);
-      router.push(`/dashboard/board/${board.id}`);
-    } catch (err) {
-      console.error('Board creation failed:', err);
-      alert('Failed to create board. Please check your connection.');
-    }
+    const board = createDefaultBoard(activeWorkspace.id, 'New Board', 'work');
+    addBoard(board);
+    router.push(`/dashboard/board/${board.id}`);
+
+    // Background Firestore sync
+    import('@/lib/firestore').then(({ createBoard }) => {
+      createBoard(board).catch(() => {});
+    }).catch(() => {});
   };
 
   return (
@@ -130,13 +124,17 @@ export default function Sidebar() {
           Workspaces
         </div>
         <div style={{ margin: '4px 12px', padding: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-          <div style={{ width: '24px', height: '24px', background: '#0073ea', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>M</div>
-          <span style={{ fontSize: '13px', fontWeight: 600 }}>{activeWorkspace?.name || 'Main Workspace'}</span>
+          <div style={{ width: '24px', height: '24px', background: '#0073ea', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>
+            {activeWorkspace?.name?.charAt(0) || 'M'}
+          </div>
+          <span style={{ fontSize: '13px', fontWeight: 600, flex: 1 }}>{activeWorkspace?.name || 'Main Workspace'}</span>
+          <ChevronDown size={14} style={{ color: 'rgba(255,255,255,0.4)' }} />
         </div>
 
         {/* Boards Section */}
-        <div style={{ padding: '24px 16px 8px', fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          Boards
+        <div style={{ padding: '24px 16px 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <span style={{ fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Boards</span>
+          <button onClick={handleCreateBoard} style={{ color: 'rgba(255,255,255,0.5)', background: 'none', border: 'none', cursor: 'pointer' }}><Plus size={14} /></button>
         </div>
         {boards.map((board) => (
           <div 

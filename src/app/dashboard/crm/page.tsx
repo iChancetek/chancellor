@@ -3,19 +3,18 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
-import { createBoard } from '@/lib/firestore';
 import { Users, Plus, TrendingUp, DollarSign, UserCheck, ArrowRight, Target, Mail } from 'lucide-react';
 
 export default function CRMPage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
-  const { boards } = useBoardStore();
+  const { boards, addBoard } = useBoardStore();
   const crmBoards = boards.filter(b => b.type === 'crm');
 
-  const handleCreateBoard = async (name: string) => {
+  const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
     const board = createDefaultBoard(activeWorkspace.id, name, 'crm');
-    await createBoard(board);
+    addBoard(board);
     router.push(`/dashboard/board/${board.id}`);
   };
 

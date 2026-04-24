@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useBoardStore, useWorkspaceStore, useUIStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
-import { createBoard } from '@/lib/firestore';
 import {
   LayoutGrid, Users, Code2, Headphones, Megaphone, Plus,
   TrendingUp, Clock, Sparkles, Zap, ArrowRight
@@ -13,7 +12,7 @@ import {
 export default function DashboardHome() {
   const { user } = useAuth();
   const router = useRouter();
-  const { boards } = useBoardStore();
+  const { boards, addBoard } = useBoardStore();
   const { activeWorkspace } = useWorkspaceStore();
   const { toggleAIChat } = useUIStore();
 
@@ -24,19 +23,14 @@ export default function DashboardHome() {
     return 'Good evening';
   };
 
-  const handleCreateBoard = async (type: 'work' | 'crm' | 'dev' | 'support' | 'marketing', name: string) => {
+  const handleCreateBoard = (type: 'work' | 'crm' | 'dev' | 'support' | 'marketing', name: string) => {
     if (!activeWorkspace) {
       alert('Your workspace is still initializing. Please wait a few seconds and try again.');
       return;
     }
-    try {
-      const board = createDefaultBoard(activeWorkspace.id, name, type);
-      await createBoard(board);
-      router.push(`/dashboard/board/${board.id}`);
-    } catch (err) {
-      console.error('Board creation failed:', err);
-      alert('Failed to create board. Please check your connection to Firestore Enterprise.');
-    }
+    const board = createDefaultBoard(activeWorkspace.id, name, type);
+    addBoard(board);
+    router.push(`/dashboard/board/${board.id}`);
   };
 
   const moduleCards = [

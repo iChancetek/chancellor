@@ -3,19 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
-import { createBoard } from '@/lib/firestore';
+
 import { LayoutGrid, Plus, FolderKanban, ListChecks, CalendarDays, ArrowRight, Sparkles } from 'lucide-react';
 
 export default function WorkplacePage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
-  const { boards } = useBoardStore();
+  const { boards, addBoard } = useBoardStore();
   const workBoards = boards.filter(b => b.type === 'work');
 
-  const handleCreateBoard = async (name: string) => {
+  const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
     const board = createDefaultBoard(activeWorkspace.id, name, 'work');
-    await createBoard(board);
+    addBoard(board);
     router.push(`/dashboard/board/${board.id}`);
   };
 
