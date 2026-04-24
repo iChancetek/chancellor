@@ -63,6 +63,21 @@ export default function Sidebar() {
     { id: 'marketing', label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },
   ];
 
+  const handleCreateBoard = async () => {
+    if (!activeWorkspace) {
+      alert('Initializing workspace... please try again in a moment.');
+      return;
+    }
+    try {
+      const board = createDefaultBoard(activeWorkspace.id, 'New Board', 'work');
+      await createBoard(board);
+      router.push(`/dashboard/board/${board.id}`);
+    } catch (err) {
+      console.error('Board creation failed:', err);
+      alert('Failed to create board. Please check your connection.');
+    }
+  };
+
   return (
     <aside className="exact-monday-sidebar">
       {/* Top Logo & App Grid */}
@@ -141,7 +156,7 @@ export default function Sidebar() {
         ))}
 
         <div 
-          onClick={() => createBoard(createDefaultBoard(activeWorkspace?.id || '', 'New Board', 'work'))}
+          onClick={handleCreateBoard}
           style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 16px', fontSize: '14px', color: '#6161FF', cursor: 'pointer', fontWeight: 600 }}
         >
           <Plus size={18} />

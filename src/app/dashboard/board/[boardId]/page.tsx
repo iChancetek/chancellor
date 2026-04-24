@@ -70,20 +70,24 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
       <div style={{ padding: '24px 24px 0', borderBottom: '1px solid #e1e4e8' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div style={{ display: 'flex', gap: '40px' }}>
-            {['Main Table', 'Kanban', 'Calendar', 'Gantt', 'Chart'].map((view) => (
-              <div 
-                key={view}
-                onClick={() => setActiveView(view.toLowerCase() as ViewType)}
-                style={{ 
-                  fontSize: '14px', padding: '8px 0', cursor: 'pointer',
-                  color: activeView === view.toLowerCase() ? '#6161FF' : '#676879',
-                  fontWeight: activeView === view.toLowerCase() ? 600 : 400,
-                  borderBottom: activeView === view.toLowerCase() ? '2px solid #6161FF' : 'none'
-                }}
-              >
-                {view}
-              </div>
-            ))}
+            {['Main Table', 'Kanban', 'Calendar', 'Gantt', 'Chart'].map((view) => {
+              const viewKey = view === 'Main Table' ? 'table' : view === 'Gantt' ? 'timeline' : view.toLowerCase();
+              const isActive = activeView === viewKey;
+              return (
+                <div 
+                  key={view}
+                  onClick={() => setActiveView(viewKey as ViewType)}
+                  style={{ 
+                    fontSize: '14px', padding: '8px 0', cursor: 'pointer',
+                    color: isActive ? '#6161FF' : '#676879',
+                    fontWeight: isActive ? 600 : 400,
+                    borderBottom: isActive ? '2px solid #6161FF' : 'none'
+                  }}
+                >
+                  {view}
+                </div>
+              );
+            })}
           </div>
           <div style={{ display: 'flex', gap: '16px', color: '#676879' }}>
             <Settings2 size={18} />
@@ -111,86 +115,102 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
         <BoardAIInsights board={activeBoard} items={items} />
         
-        {activeBoard.groups.map(group => {
-          const groupItems = items.filter(i => i.groupId === group.id && i.name.toLowerCase().includes(searchQuery.toLowerCase()));
-          const isCollapsed = collapsedGroups.has(group.id);
+        {activeView === 'table' ? (
+          activeBoard.groups.map(group => {
+            const groupItems = items.filter(i => i.groupId === group.id && i.name.toLowerCase().includes(searchQuery.toLowerCase()));
+            const isCollapsed = collapsedGroups.has(group.id);
 
-          return (
-            <div key={group.id} style={{ marginBottom: '32px' }}>
-              <div 
-                style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', cursor: 'pointer' }}
-                onClick={() => {
-                  const n = new Set(collapsedGroups);
-                  if (n.has(group.id)) n.delete(group.id); else n.add(group.id);
-                  setCollapsedGroups(n);
-                }}
-              >
-                <ChevronDown size={20} color={group.color} style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'none' }} />
-                <h3 style={{ fontSize: '18px', fontWeight: 700, color: group.color }}>{group.title}</h3>
-                <span style={{ fontSize: '13px', color: '#9699a6', fontWeight: 400 }}>{groupItems.length} Items</span>
-              </div>
+            return (
+              <div key={group.id} style={{ marginBottom: '32px' }}>
+                <div 
+                  style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', cursor: 'pointer' }}
+                  onClick={() => {
+                    const n = new Set(collapsedGroups);
+                    if (n.has(group.id)) n.delete(group.id); else n.add(group.id);
+                    setCollapsedGroups(n);
+                  }}
+                >
+                  <ChevronDown size={20} color={group.color} style={{ transform: isCollapsed ? 'rotate(-90deg)' : 'none' }} />
+                  <h3 style={{ fontSize: '18px', fontWeight: 700, color: group.color }}>{group.title}</h3>
+                  <span style={{ fontSize: '13px', color: '#9699a6', fontWeight: 400 }}>{groupItems.length} Items</span>
+                </div>
 
-              {!isCollapsed && (
-                <table className="board-table-exact">
-                  <thead>
-                    <tr style={{ background: '#f5f6f8' }}>
-                      <th style={{ width: '40px', borderLeft: `6px solid ${group.color}`, borderBottom: '1px solid #e1e4e8' }}></th>
-                      <th style={{ minWidth: '400px', textAlign: 'left', padding: '10px 16px', fontSize: '13px', color: '#676879', fontWeight: 500, border: '1px solid #e1e4e8' }}>Item</th>
-                      {activeBoard.columns.map(col => (
-                        <th key={col.id} style={{ width: col.width, textAlign: 'center', fontSize: '13px', color: '#676879', fontWeight: 500, border: '1px solid #e1e4e8' }}>{col.title}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {groupItems.map(item => (
-                      <tr key={item.id} style={{ background: '#fff' }}>
-                        <td style={{ borderLeft: `6px solid ${group.color}`, borderBottom: '1px solid #e1e4e8', padding: '0 8px' }}>
-                          <input type="checkbox" style={{ cursor: 'pointer' }} />
-                        </td>
-                        <td style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '36px' }}>
-                            <input 
-                              style={{ border: 'none', background: 'transparent', fontSize: '14px', width: '100%', outline: 'none' }} 
-                              defaultValue={item.name}
-                              onBlur={(e) => updateItem(item.id, { name: e.target.value })}
-                            />
-                            <button onClick={() => openItemDetail(item.id)} style={{ padding: '4px', color: '#676879' }}><ExternalLink size={14} /></button>
-                          </div>
-                        </td>
+                {!isCollapsed && (
+                  <table className="board-table-exact">
+                    <thead>
+                      <tr style={{ background: '#f5f6f8' }}>
+                        <th style={{ width: '40px', borderLeft: `6px solid ${group.color}`, borderBottom: '1px solid #e1e4e8' }}></th>
+                        <th style={{ minWidth: '400px', textAlign: 'left', padding: '10px 16px', fontSize: '13px', color: '#676879', fontWeight: 500, border: '1px solid #e1e4e8' }}>Item</th>
                         {activeBoard.columns.map(col => (
-                          <td key={col.id} style={{ border: '1px solid #e1e4e8', padding: '0', height: '36px' }}>
-                            <ExactCellRenderer 
-                              column={col} 
-                              value={item.values[col.id]} 
-                              onSave={(val) => handleUpdateValue(item.id, col.id, val)} 
-                            />
-                          </td>
+                          <th key={col.id} style={{ width: col.width, textAlign: 'center', fontSize: '13px', color: '#676879', fontWeight: 500, border: '1px solid #e1e4e8' }}>{col.title}</th>
                         ))}
                       </tr>
-                    ))}
-                    {/* Add Item Row */}
-                    <tr>
-                      <td style={{ borderLeft: `6px solid ${group.color}` }}></td>
-                      <td colSpan={activeBoard.columns.length + 1} style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', height: '36px' }}>
-                          <Plus size={16} color="#0073ea" />
-                          <input 
-                            style={{ border: 'none', background: 'transparent', padding: '0 12px', width: '100%', fontSize: '14px', outline: 'none' }} 
-                            placeholder="+ Add Item" 
-                            value={addingItemGroup === group.id ? newItemName : ''}
-                            onFocus={() => setAddingItemGroup(group.id)}
-                            onChange={(e) => setNewItemName(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleAddItem(group.id)}
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              )}
+                    </thead>
+                    <tbody>
+                      {groupItems.map(item => (
+                        <tr key={item.id} style={{ background: '#fff' }}>
+                          <td style={{ borderLeft: `6px solid ${group.color}`, borderBottom: '1px solid #e1e4e8', padding: '0 8px' }}>
+                            <input type="checkbox" style={{ cursor: 'pointer' }} />
+                          </td>
+                          <td style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '36px' }}>
+                              <input 
+                                style={{ border: 'none', background: 'transparent', fontSize: '14px', width: '100%', outline: 'none' }} 
+                                defaultValue={item.name}
+                                onBlur={(e) => updateItem(item.id, { name: e.target.value })}
+                              />
+                              <button onClick={() => openItemDetail(item.id)} style={{ padding: '4px', color: '#676879' }}><ExternalLink size={14} /></button>
+                            </div>
+                          </td>
+                          {activeBoard.columns.map(col => (
+                            <td key={col.id} style={{ border: '1px solid #e1e4e8', padding: '0', height: '36px' }}>
+                              <ExactCellRenderer 
+                                column={col} 
+                                value={item.values[col.id]} 
+                                onSave={(val) => handleUpdateValue(item.id, col.id, val)} 
+                              />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                      {/* Add Item Row */}
+                      <tr>
+                        <td style={{ borderLeft: `6px solid ${group.color}` }}></td>
+                        <td colSpan={activeBoard.columns.length + 1} style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', height: '36px' }}>
+                            <Plus size={16} color="#0073ea" />
+                            <input 
+                              style={{ border: 'none', background: 'transparent', padding: '0 12px', width: '100%', fontSize: '14px', outline: 'none' }} 
+                              placeholder="+ Add Item" 
+                              value={addingItemGroup === group.id ? newItemName : ''}
+                              onFocus={() => setAddingItemGroup(group.id)}
+                              onChange={(e) => setNewItemName(e.target.value)}
+                              onKeyDown={(e) => e.key === 'Enter' && handleAddItem(group.id)}
+                            />
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '400px', color: '#676879', background: '#f5f6f8', borderRadius: '12px', border: '2px dashed #d0d4e4' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>
+              {activeView === 'kanban' ? '📋' : activeView === 'calendar' ? '📅' : activeView === 'timeline' ? '📊' : '📈'}
             </div>
-          );
-        })}
+            <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#323338' }}>{activeView.charAt(0).toUpperCase() + activeView.slice(1)} View</h3>
+            <p style={{ marginTop: '8px' }}>This view is being optimized for the Chancellor Enterprise engine.</p>
+            <button 
+              onClick={() => setActiveView('table')}
+              style={{ marginTop: '24px', color: '#6161FF', fontWeight: 600, fontSize: '14px' }}
+            >
+              Return to Main Table
+            </button>
+          </div>
+        )}
       </div>
 
       {itemDetailOpen && selectedItemId && (

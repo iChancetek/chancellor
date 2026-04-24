@@ -25,10 +25,18 @@ export default function DashboardHome() {
   };
 
   const handleCreateBoard = async (type: 'work' | 'crm' | 'dev' | 'support' | 'marketing', name: string) => {
-    if (!activeWorkspace) return;
-    const board = createDefaultBoard(activeWorkspace.id, name, type);
-    await createBoard(board);
-    router.push(`/dashboard/board/${board.id}`);
+    if (!activeWorkspace) {
+      alert('Your workspace is still initializing. Please wait a few seconds and try again.');
+      return;
+    }
+    try {
+      const board = createDefaultBoard(activeWorkspace.id, name, type);
+      await createBoard(board);
+      router.push(`/dashboard/board/${board.id}`);
+    } catch (err) {
+      console.error('Board creation failed:', err);
+      alert('Failed to create board. Please check your connection to Firestore Enterprise.');
+    }
   };
 
   const moduleCards = [

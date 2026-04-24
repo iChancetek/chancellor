@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useUIStore, useBoardStore } from '@/lib/store';
-import { Search, Bell, Sparkles, HelpCircle, UserPlus, Grid, Filter, SortAsc, MoreHorizontal } from 'lucide-react';
+import { Search, Bell, Sparkles, HelpCircle, UserPlus, Grid, Filter, SortAsc, MoreHorizontal, CloudCheck, Cloud } from 'lucide-react';
 import { getInitials } from '@/lib/utils';
 
 export default function TopBar() {
@@ -29,7 +29,15 @@ export default function TopBar() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontSize: '24px' }}>{activeBoard?.icon || '📋'}</span>
-          <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#323338' }}>{activeBoard?.name || 'Home'}</h2>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <h2 style={{ fontSize: '18px', fontWeight: 700, color: '#323338' }}>{activeBoard?.name || 'Home'}</h2>
+              <div title="All changes saved" style={{ color: '#00c875', display: 'flex', alignItems: 'center' }}>
+                <CloudCheck size={16} />
+              </div>
+            </div>
+            {activeBoard && <div style={{ fontSize: '11px', color: '#676879' }}>Enterprise Sync Active</div>}
+          </div>
         </div>
         
         <div style={{ padding: '4px 12px', border: '1px solid #d0d4e4', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '8px', color: '#676879' }}>
