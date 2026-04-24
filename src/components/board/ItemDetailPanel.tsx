@@ -9,6 +9,7 @@ import { formatDate, formatRelativeTime, getInitials, generateId } from '@/lib/u
 import type { Board, Item, Column, Attachment } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
 import { useBoardStore } from '@/lib/store';
+import { uploadFile } from '@/lib/firestore';
 
 interface ItemDetailPanelProps {
   item: Item;
@@ -66,30 +67,40 @@ export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, o
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !user) return;
 
     setIsUploading(true);
-    // Simulate upload for now (Firebase Storage integration would go here)
-    setTimeout(() => {
+    try {
       const typeMap: Record<string, 'photo' | 'video' | 'audio' | 'slide'> = {
-        'image/jpeg': 'photo', 'image/png': 'photo', 'video/mp4': 'video', 'audio/mpeg': 'audio', 'application/pdf': 'slide'
+        'image/jpeg': 'photo', 'image/png': 'photo', 'image/webp': 'photo',
+        'video/mp4': 'video', 'video/quicktime': 'video',
+        'audio/mpeg': 'audio', 'audio/wav': 'audio',
+        'application/pdf': 'slide'
       };
+      
+      const fileType = typeMap[file.type] || 'photo';
+      const path = `boards/${board.id}/items/${item.id}/${generateId()}_${file.name}`;
+      
+      const downloadUrl = await uploadFile(path, file);
       
       const newAttachment: Attachment = {
         id: generateId(),
         name: file.name,
-        type: typeMap[file.type] || 'photo',
-        url: URL.createObjectURL(file), // Local URL placeholder
+        type: fileType,
+        url: downloadUrl,
         size: file.size,
         createdAt: Date.now()
       };
 
       const updatedAttachments = [...(item.attachments || []), newAttachment];
       updateItem(item.id, { attachments: updatedAttachments });
+    } catch (err) {
+      console.error('Real file upload failed:', err);
+    } finally {
       setIsUploading(false);
-    }, 1000);
+    }
   };
 
   return (

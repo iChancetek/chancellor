@@ -17,7 +17,12 @@ import {
   serverTimestamp,
   type Unsubscribe,
 } from 'firebase/firestore';
-import { db } from './firebase';
+import { 
+  ref, 
+  uploadBytes, 
+  getDownloadURL 
+} from 'firebase/storage';
+import { db, storage } from './firebase';
 import type { Workspace, Board, Item, Group, Activity } from './types';
 
 // ── Workspaces ────────────────────────────────────────────
@@ -153,4 +158,12 @@ export function subscribeToActivities(itemId: string, callback: (activities: Act
       callback([]);
     }
   );
+}
+// ── Storage ───────────────────────────────────────────────
+
+export async function uploadFile(path: string, file: File): Promise<string> {
+  if (!storage) throw new Error('Storage not initialized');
+  const storageRef = ref(storage, path);
+  await uploadBytes(storageRef, file);
+  return getDownloadURL(storageRef);
 }
