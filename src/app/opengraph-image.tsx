@@ -22,19 +22,14 @@ export default function Image() {
           fontFamily: 'sans-serif',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', margin: '0 0 40px 0', paddingRight: '30px' }}>
-          {/* Custom Roadmap/Pipeline SVG */}
-          <svg width="250" height="250" viewBox="0 0 512 512" fill="none">
-            {/* Top Bar */}
-            <rect x="90" y="140" width="210" height="64" rx="32" fill="#8C9EFF" style={{ filter: 'drop-shadow(10px 8px 15px rgba(34,27,106,0.15))' }}/>
+        <div style={{ display: 'flex', alignItems: 'center', margin: '0 0 40px 0' }}>
+          <svg width="200" height="200" viewBox="0 0 512 512" fill="none">
+            {/* Syncing with icon.svg Roadmap/Pipeline design */}
+            <rect x="90" y="140" width="210" height="64" rx="32" fill="#8C9EFF" />
             <circle cx="122" cy="172" r="14" fill="#FFFFFF"/>
-            
-            {/* Middle Bar */}
-            <rect x="150" y="224" width="260" height="64" rx="32" fill="#5560FF" style={{ filter: 'drop-shadow(10px 8px 15px rgba(34,27,106,0.2))' }}/>
+            <rect x="150" y="224" width="260" height="64" rx="32" fill="#5560FF" />
             <circle cx="182" cy="256" r="14" fill="#FFFFFF"/>
-            
-            {/* Bottom Bar */}
-            <rect x="230" y="308" width="190" height="64" rx="32" fill="#3A25A3" style={{ filter: 'drop-shadow(10px 8px 15px rgba(34,27,106,0.25))' }}/>
+            <rect x="230" y="308" width="190" height="64" rx="32" fill="#3A25A3" />
             <circle cx="262" cy="340" r="14" fill="#FFFFFF"/>
           </svg>
           

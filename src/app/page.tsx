@@ -77,9 +77,9 @@ export default function LandingPage() {
         </div>
 
         <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <button className="btn-monday-primary">
+          <Link href="#auth-section" className="btn-monday-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
             Get Started <ArrowRight size={20} />
-          </button>
+          </Link>
           <Link href={`/product/${selectedProduct}`} className="btn-monday-secondary" style={{ padding: '14px 24px', fontSize: '16px', fontWeight: 600, color: '#333', border: '1px solid #d0d4e4', borderRadius: '9999px', background: '#fff' }}>
             Learn more about {products.find(p => p.id === selectedProduct)?.label}
           </Link>
@@ -88,7 +88,7 @@ export default function LandingPage() {
       </section>
 
       {/* Auth Section - Replicating the clean Monday sign-up feel */}
-      <section style={{ backgroundColor: '#f5f6f8', padding: '100px 5%' }}>
+      <section id="auth-section" style={{ backgroundColor: '#f5f6f8', padding: '100px 5%' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '80px', alignItems: 'center' }}>
           <div style={{ flex: 1 }}>
             <h2 className="heading-section" style={{ marginBottom: '24px' }}>

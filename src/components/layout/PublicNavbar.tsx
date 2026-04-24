@@ -23,8 +23,8 @@ export default function PublicNavbar() {
           </Link>
         ) : (
           <>
-            <Link href="/" style={{ fontWeight: 500, color: '#0073ea', marginLeft: '20px', textDecoration: 'none' }}>Log in</Link>
-            <Link href="/" className="btn-monday-primary" style={{ padding: '10px 24px', fontSize: '15px', textDecoration: 'none' }}>
+            <Link href="/#auth-section" style={{ fontWeight: 500, color: '#0073ea', marginLeft: '20px', textDecoration: 'none' }}>Log in</Link>
+            <Link href="/#auth-section" className="btn-monday-primary" style={{ padding: '10px 24px', fontSize: '15px', textDecoration: 'none' }}>
               Get Started
             </Link>
           </>
