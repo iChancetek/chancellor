@@ -1,0 +1,287 @@
+/* ═══════════════════════════════════════════════════════════
+ *  CHANCELLOR — Exact Monday.com Design System
+ *  Vibrant, spacious, and professional.
+ * ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  /* Core Monday Colors */
+  --monday-blue-primary: #6161FF; /* The vibrant signature purple-blue */
+  --monday-blue-hover: #4b4bdf;
+  --monday-blue-light: #e5e5ff;
+  
+  /* Status Colors */
+  --status-done: #00c875;
+  --status-working: #fdab3d;
+  --status-stuck: #df2f4a;
+  --status-empty: #c4c4c4;
+  --status-info: #0086c0;
+  
+  /* Secondary Palette */
+  --color-crm: #ffcb00;       /* Yellow */
+  --color-dev: #ff3d57;       /* Red */
+  --color-marketing: #a25ddc; /* Purple */
+  --color-support: #579bfc;   /* Light Blue */
+  --color-work: #0073ea;      /* Darker Blue */
+
+  /* Surface & Text */
+  --bg-page: #f5f6f8;
+  --bg-card: #ffffff;
+  --bg-sidebar: #292d3e;
+  --bg-sidebar-hover: rgba(255, 255, 255, 0.1);
+  
+  --text-main: #333333;
+  --text-secondary: #676879;
+  --text-muted: #9699a6;
+  --text-white: #ffffff;
+
+  /* Borders & Shadows */
+  --border-light: #d0d4e4;
+  --border-focus: #6161FF;
+  
+  --shadow-monday: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Typography */
+  --font-main: 'Figtree', sans-serif;
+  
+  /* Radii */
+  --radius-pill: 9999px;
+  --radius-card: 16px;
+  --radius-button: 8px;
+  --radius-small: 4px;
+
+  /* Layout Constants */
+  --sidebar-width: 240px;
+  --header-height: 64px;
+}
+
+/* ── Reset & Baseline ──────────────────────────────────── */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; }
+input { font-family: inherit; outline: none; }
+
+/* ── Typography Utilities ─────────────────────────────── */
+.heading-hero { font-size: 72px; font-weight: 800; line-height: 1.1; letter-spacing: -2px; }
+.heading-section { font-size: 48px; font-weight: 700; line-height: 1.2; }
+.text-subtitle { font-size: 24px; font-weight: 400; color: var(--text-secondary); }
+
+/* ── Premium Buttons ──────────────────────────────────── */
+.btn-monday-primary {
+  background-color: var(--monday-blue-primary);
+  color: white;
+  padding: 14px 32px;
+  border-radius: var(--radius-pill);
+  font-size: 18px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-monday-primary:hover {
+  background-color: var(--monday-blue-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(97, 97, 255, 0.3);
+}
+
+/* ── Landing Page Components ───────────────────────────── */
+.lp-navbar {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10%;
+  background: #fff;
+  border-bottom: 1px solid #eee;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.lp-hero {
+  padding: 100px 5% 60px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+  max-width: 1000px;
+  margin: 60px auto;
+  width: 100%;
+}
+
+.product-selector-card {
+  padding: 24px 16px;
+  background: #fff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.product-selector-card:hover {
+  border-color: var(--monday-blue-primary);
+  box-shadow: var(--shadow-monday);
+  transform: translateY(-4px);
+}
+
+.product-selector-card.active {
+  border-color: var(--monday-blue-primary);
+  background: var(--monday-blue-light);
+}
+
+.product-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* ── Dashboard Exact Styles ───────────────────────────── */
+.monday-dashboard-shell {
+  display: flex;
+  height: 100vh;
+  background-color: #fff;
+}
+
+.exact-monday-sidebar {
+  width: 240px;
+  background-color: #292d3e;
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+}
+
+.exact-monday-topbar {
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid #e1e4e8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* ── Board Table (Exact) ──────────────────────────────── */
+.board-table-exact {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.group-indicator-bar {
+  width: 6px;
+  height: 100%;
+}
+
+.monday-cell {
+  height: var(--cell-height, 36px);
+  border: 1px solid #e1e4e8;
+  padding: 0 8px;
+  font-size: 14px;
+}
+
+.status-label-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* ── Auth Components ──────────────────────────────────── */
+.monday-auth-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-card);
+  padding: 40px;
+  box-shadow: var(--shadow-large);
+}
+
+.monday-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.monday-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.monday-input {
+  width: 100%;
+  height: 48px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-button);
+  padding: 0 16px;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.monday-input:focus {
+  border-color: var(--monday-blue-primary);
+  box-shadow: 0 0 0 3px var(--monday-blue-light);
+  outline: none;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.btn-google {
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.btn-google:hover {
+  background-color: #f8f9fa !important;
+}
