@@ -179,21 +179,13 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
             onUpdateValue={handleUpdateValue}
             openItemDetail={openItemDetail}
           />
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '400px', color: '#676879', background: '#f5f6f8', borderRadius: '12px', border: '2px dashed #d0d4e4' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>
-              {activeView === 'calendar' ? '📅' : activeView === 'timeline' ? '📊' : '📈'}
-            </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 600, color: '#323338' }}>{activeView.charAt(0).toUpperCase() + activeView.slice(1)} View</h3>
-            <p style={{ marginTop: '8px' }}>Coming soon — Chancellor Enterprise engine.</p>
-            <button 
-              onClick={() => setActiveView('table')}
-              style={{ marginTop: '24px', color: '#6161FF', fontWeight: 600, fontSize: '14px', background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              Return to Main Table
-            </button>
-          </div>
-        )}
+        ) : activeView === 'calendar' ? (
+          <CalendarView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} />
+        ) : activeView === 'timeline' ? (
+          <TimelineView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} />
+        ) : activeView === 'chart' ? (
+          <ChartView board={activeBoard} items={boardItems} />
+        ) : null}
       </div>
 
       {itemDetailOpen && selectedItemId && (
@@ -461,4 +453,179 @@ function ExactCellRenderer({ column, value, onSave }: { column: Column, value: a
         </div>
       );
   }
+}
+
+function CalendarView({ board, items, openItemDetail }: { board: Board, items: Item[], openItemDetail: (id: string) => void }) {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const today = new Date();
+  
+  // Basic 35-cell grid (5 weeks)
+  const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+  const startDay = startDate.getDay();
+  const gridDays = Array.from({ length: 35 }, (_, i) => {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() - startDay + i);
+    return d;
+  });
+
+  return (
+    <div style={{ background: '#fff', border: '1px solid #d0d4e4', borderRadius: '8px', overflow: 'hidden' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #d0d4e4', background: '#f5f6f8' }}>
+        {days.map(d => (
+          <div key={d} style={{ padding: '12px', textAlign: 'center', fontSize: '13px', fontWeight: 600, color: '#676879' }}>{d}</div>
+        ))}
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gridAutoRows: 'minmax(120px, auto)' }}>
+        {gridDays.map((date, i) => {
+          const isToday = date.toDateString() === today.toDateString();
+          const isCurrentMonth = date.getMonth() === today.getMonth();
+          
+          // Find items for this date
+          const dayItems = items.filter(item => {
+            if (!item.values?.date) return false;
+            const itemDate = new Date(Number(item.values.date));
+            return itemDate.toDateString() === date.toDateString();
+          });
+
+          return (
+            <div key={i} style={{ 
+              borderRight: i % 7 !== 6 ? '1px solid #e1e4e8' : 'none', 
+              borderBottom: i < 28 ? '1px solid #e1e4e8' : 'none',
+              padding: '8px',
+              background: isCurrentMonth ? '#fff' : '#fafafa',
+              opacity: isCurrentMonth ? 1 : 0.5
+            }}>
+              <div style={{ 
+                fontSize: '12px', fontWeight: isToday ? 700 : 500, 
+                color: isToday ? '#fff' : '#323338', 
+                background: isToday ? '#6161FF' : 'transparent',
+                width: '24px', height: '24px', borderRadius: '50%', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: '8px'
+              }}>
+                {date.getDate()}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {dayItems.map(item => (
+                  <div 
+                    key={item.id}
+                    onClick={() => openItemDetail(item.id)}
+                    style={{ 
+                      fontSize: '11px', padding: '4px 8px', background: '#e4f2ff', 
+                      color: '#0073ea', borderRadius: '4px', cursor: 'pointer',
+                      whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                    }}
+                  >
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TimelineView({ board, items, openItemDetail }: { board: Board, items: Item[], openItemDetail: (id: string) => void }) {
+  // Simple Gantt/Timeline grouped by status
+  const statusCol = board.columns.find(c => c.id === 'status');
+  const labels = statusCol?.settings?.labels || [];
+  
+  return (
+    <div style={{ background: '#fff', border: '1px solid #d0d4e4', borderRadius: '8px', padding: '24px' }}>
+      <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '24px' }}>Project Timeline</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {labels.map((label: any) => {
+          const groupItems = items.filter(i => i.values?.status === label.id);
+          if (groupItems.length === 0) return null;
+          
+          return (
+            <div key={label.id}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: label.color }}></div>
+                <div style={{ fontSize: '14px', fontWeight: 600, color: '#323338' }}>{label.text}</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', paddingLeft: '20px', borderLeft: `2px solid ${label.color}40` }}>
+                {groupItems.map(item => (
+                  <div key={item.id} onClick={() => openItemDetail(item.id)} style={{
+                    background: '#f5f6f8', padding: '12px', borderRadius: '6px', cursor: 'pointer',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    borderLeft: `4px solid ${label.color}`
+                  }}>
+                    <div style={{ fontSize: '14px', fontWeight: 500 }}>{item.name}</div>
+                    {item.values?.date ? (
+                      <div style={{ fontSize: '12px', color: '#676879' }}>{formatDate(Number(item.values.date))}</div>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ChartView({ board, items }: { board: Board, items: Item[] }) {
+  // Simple Bar Chart for Status Distribution
+  const statusCol = board.columns.find(c => c.id === 'status');
+  const labels = statusCol?.settings?.labels || [];
+  
+  const counts = labels.map((label: any) => ({
+    ...label,
+    count: items.filter(i => i.values?.status === label.id).length
+  }));
+  
+  const maxCount = Math.max(...counts.map((c: any) => c.count), 1); // Avoid div by zero
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div style={{ background: '#fff', border: '1px solid #d0d4e4', borderRadius: '8px', padding: '24px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '24px' }}>Status Distribution</h3>
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '16px', height: '200px', paddingBottom: '20px', borderBottom: '1px solid #e1e4e8' }}>
+          {counts.map((c: any) => {
+            const heightPct = (c.count / maxCount) * 100;
+            return (
+              <div key={c.id} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: '#676879' }}>{c.count}</div>
+                <div style={{ 
+                  width: '100%', maxWidth: '60px', height: `${heightPct}%`, 
+                  background: c.color, borderRadius: '4px 4px 0 0',
+                  transition: 'height 0.3s ease'
+                }}></div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ display: 'flex', gap: '16px', marginTop: '16px', justifyContent: 'space-around' }}>
+          {counts.map((c: any) => (
+            <div key={c.id} style={{ fontSize: '12px', color: '#323338', textAlign: 'center' }}>{String(c.text)}</div>
+          ))}
+        </div>
+      </div>
+      
+      <div style={{ background: '#fff', border: '1px solid #d0d4e4', borderRadius: '8px', padding: '24px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '24px' }}>Board Overview</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f5f6f8', borderRadius: '8px' }}>
+            <span style={{ color: '#676879', fontWeight: 500 }}>Total Items</span>
+            <span style={{ fontWeight: 700, fontSize: '18px' }}>{items.length}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#f5f6f8', borderRadius: '8px' }}>
+            <span style={{ color: '#676879', fontWeight: 500 }}>Total Groups</span>
+            <span style={{ fontWeight: 700, fontSize: '18px' }}>{board.groups.length}</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#e4f2ff', borderRadius: '8px' }}>
+            <span style={{ color: '#0073ea', fontWeight: 500 }}>Completion Rate</span>
+            <span style={{ fontWeight: 700, fontSize: '18px', color: '#0073ea' }}>
+              {items.length > 0 ? Math.round((items.filter(i => i.values?.status === 'done').length / items.length) * 100) : 0}%
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }
