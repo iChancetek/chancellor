@@ -19,8 +19,8 @@ function DashboardShell({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="loading-logo">⚡</div>
+      <div className="loading-screen" style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
+        <img src="/icon.svg" alt="Chancellor" style={{ width: '48px', height: '48px', marginBottom: '16px' }} />
         <div className="loading-spinner"></div>
         <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>Loading workspace...</p>
       </div>

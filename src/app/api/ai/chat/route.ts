@@ -27,8 +27,11 @@ export async function POST(req: NextRequest) {
 
   const openai = new OpenAI({ apiKey });
 
+  let messages: any[] = [];
+
   try {
-    const { messages } = await req.json();
+    const json = await req.json();
+    messages = json.messages || [];
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-5.4', // Upgraded to user requested elite model

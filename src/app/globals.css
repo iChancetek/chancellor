@@ -231,6 +231,11 @@ input { font-family: inherit; outline: none; }
   animation: fadeInUp 0.6s ease-out forwards;
 }
 
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* ── Auth Components ──────────────────────────────────── */
 .monday-auth-card {
   background: var(--bg-card);

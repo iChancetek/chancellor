@@ -43,7 +43,26 @@ export default function LandingPage() {
     setSubmitting(false);
   };
 
-  if (!loading && user) return null;
+  if (loading) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+        <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px', filter: 'drop-shadow(0 4px 12px rgba(97,97,255,0.2))' }} />
+        <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+        <p style={{ color: '#323338', fontSize: '16px', marginTop: '24px', fontWeight: 600 }}>Securing connection...</p>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+        <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px', filter: 'drop-shadow(0 4px 12px rgba(97,97,255,0.2))' }} />
+        <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+        <p style={{ color: '#323338', fontSize: '16px', marginTop: '24px', fontWeight: 600 }}>Initializing your workspace...</p>
+        <p style={{ color: '#676879', fontSize: '13px', marginTop: '8px' }}>This may take a moment on your first visit.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="landing-container">
@@ -138,16 +157,16 @@ export default function LandingPage() {
               {!isLogin && (
                 <div className="monday-input-group">
                   <label className="monday-label">Name</label>
-                  <input className="monday-input" value={name} onChange={(e)=>setName(e.target.value)} placeholder="Enter your full name" required/>
+                  <input className="monday-input" id="name" name="name" value={name} onChange={(e)=>setName(e.target.value)} placeholder="Enter your full name" required/>
                 </div>
               )}
               <div className="monday-input-group">
                 <label className="monday-label">Email</label>
-                <input className="monday-input" type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="example@company.com" required/>
+                <input className="monday-input" type="email" id="email" name="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="example@company.com" required/>
               </div>
               <div className="monday-input-group">
                 <label className="monday-label">Password</label>
-                <input className="monday-input" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Minimal 8 characters" required/>
+                <input className="monday-input" type="password" id="password" name="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Minimal 8 characters" required/>
               </div>
 
               {error && <p style={{ color: '#df2f4a', fontSize: '12px', margin: '8px 0' }}>{error}</p>}
