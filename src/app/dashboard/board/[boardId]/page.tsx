@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { Board, Item, Column, ViewType } from '@/lib/types';
 import ItemDetailPanel from '@/components/board/ItemDetailPanel';
+import BoardAIInsights from '@/components/ai/insights/BoardAIInsights';
 
 export default function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
   const { boardId } = use(params);
@@ -108,6 +109,8 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
 
       {/* Main Board Area */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+        <BoardAIInsights board={activeBoard} items={items} />
+        
         {activeBoard.groups.map(group => {
           const groupItems = items.filter(i => i.groupId === group.id && i.name.toLowerCase().includes(searchQuery.toLowerCase()));
           const isCollapsed = collapsedGroups.has(group.id);

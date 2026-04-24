@@ -118,11 +118,17 @@ export default function Sidebar() {
 
       {/* Bottom Utility Icons */}
       <div style={{ padding: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}>
+        <div 
+          onClick={() => router.push('/dashboard/admin')}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}
+        >
           <Settings size={18} />
           <span style={{ fontSize: '13px' }}>Administration</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}>
+        <div 
+          onClick={() => router.push('/dashboard/automations')}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}
+        >
           <Zap size={18} />
           <span style={{ fontSize: '13px' }}>Automations</span>
         </div>
