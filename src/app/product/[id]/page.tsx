@@ -1,153 +1,192 @@
+'use client';
+
+import { use } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CheckCircle2, LayoutGrid, Users, Code2, Megaphone, Headphones, Bot } from 'lucide-react';
-import { notFound } from 'next/navigation';
+import { 
+  ArrowLeft, CheckCircle2, Zap, Sparkles, Mic, Volume2, 
+  HardDrive, LayoutGrid, Users, Code2, Megaphone, Headphones, Bot
+} from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
 
-const productData: Record<string, any> = {
+const PRODUCT_DATA: Record<string, any> = {
   work: {
-    title: "Work Management",
-    color: "#0073ea",
+    title: 'Work Management',
+    subtitle: 'Manage everything your team works on in one place.',
+    color: '#0073ea',
     icon: LayoutGrid,
-    subtitle: "The AI cloud-based platform designed to plan, track, and scale any project.",
     features: [
-      { title: "Customizable Boards & Gantt", desc: "Replace static spreadsheets with dynamic boards. Toggle between Kanban, Gantt charts, and Timelines to suit any project methodology." },
-      { title: "AI Workflow Automations", desc: "Reduce manual overhead with smart status triggers, automated task assignments, and real-time dependency updates." },
-      { title: "Dashboards & Portfolio Reporting", desc: "Monitor budgets, team capacity, and overall project health across multiple boards with PMO-level dashboard visualization." },
-      { title: "Contextual Collaboration", desc: "Centralize your files and communication with in-context @mentions, threaded comments, and integrated file sharing." },
-      { title: "Enterprise Integrations", desc: "Seamlessly connect with Google Drive, Microsoft Teams, and Salesforce to unify your workspace data." },
-      { title: "Initiation to Completion", desc: "From high-level product launches to marketing campaigns, manage the entire lifecycle with pre-built professional templates." }
-    ],
-    heroImg: "https://images.unsplash.com/photo-1542626991-cbc4e32524cc?auto=format&fit=crop&w=1200&q=80"
+      'Visual project tracking with Gantt & Timeline',
+      'Automated status updates and reminders',
+      'Custom workflows for any team size',
+      'Resource management and workload balancing'
+    ]
   },
   crm: {
-    title: "Chancellor CRM",
-    color: "#ffcb00",
+    title: 'Sales CRM',
+    subtitle: 'Track and manage your entire sales pipeline.',
+    color: '#ffcb00',
     icon: Users,
-    subtitle: "The all-in-one sales CRM to manage every stage of your customer journey.",
     features: [
-      { title: "AI Lead Agent & Round-Robin", desc: "Automatically capture, score, and route leads to the right reps using intelligent round-robin assignment." },
-      { title: "360-degree Communication Sync", desc: "Sync natively with Gmail and Outlook. Track email opens, log calls, and view a complete engagement timeline automatically." },
-      { title: "AI Sales Agent & Notetaker", desc: "Let AI analyze your customer communications to suggest next steps and summarize meetings into actionable items." },
-      { title: "Visual Pipeline & Sales Gauge", desc: "Track deals through customizable visual stages and monitor performance against targets with the Sales Gauge widget." },
-      { title: "Sales Forecasting & Analytics", desc: "Real-time dashboards providing actual vs. projected revenue, team performance metrics, and deep-dive reports." },
-      { title: "Quotes & Invoices to Workflows", desc: "Generate professional quotes and invoices directly from a deal and trigger automated follow-ups until payment." }
-    ],
-    heroImg: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80"
+      'Contact & Account management',
+      'Lead scoring and pipeline visualization',
+      'Email tracking and sequence automation',
+      'Sales forecasting and analytics'
+    ]
   },
   dev: {
-    title: "Dev & R&D",
-    color: "#ff3d57",
+    title: 'Dev & R&D',
+    subtitle: 'Build faster with agile project management.',
+    color: '#ff3d57',
     icon: Code2,
-    subtitle: "Connect R&D and product workflows for faster shipping.",
     features: [
-      { title: "Sprint Planning", desc: "Manage agile sprints, story points, and backlog items effortlessly." },
-      { title: "Git Integration", desc: "Native connections to GitHub and GitLab map commits directly to tasks." },
-      { title: "Bug Tracking", desc: "Easily ingest and triage bugs from external forms or API sources." }
-    ],
-    heroImg: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1200&q=80"
+      'Sprint planning and backlog grooming',
+      'Bug tracking and release management',
+      'Git integration (GitHub, GitLab)',
+      'Agile reporting (Burndown, Velocity)'
+    ]
   },
   marketing: {
-    title: "Marketing",
-    color: "#a25ddc",
+    title: 'Marketing',
+    subtitle: 'Plan and execute high-impact campaigns.',
+    color: '#a25ddc',
     icon: Megaphone,
-    subtitle: "Manage high-impact marketing campaigns from start to finish.",
     features: [
-      { title: "Campaign Planning", desc: "Coordinate diverse channels and track marketing spend ROI natively." },
-      { title: "Asset Management", desc: "Review, annotate, and approve creative assets with your team." },
-      { title: "Content Calendar", desc: "Visualize publication schedules and social media drops." }
-    ],
-    heroImg: "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=1200&q=80"
+      'Content calendar and social planning',
+      'Campaign performance tracking',
+      'Creative request management',
+      'Brand asset library'
+    ]
   },
   support: {
-    title: "Support Desk",
-    color: "#579bfc",
+    title: 'Support',
+    subtitle: 'Deliver world-class customer service.',
+    color: '#579bfc',
     icon: Headphones,
-    subtitle: "Streamline customer queries into a unified ticketing system.",
     features: [
-      { title: "SLA Tracking", desc: "Ensure no ticket is left behind with automated SLA countdown timers." },
-      { title: "Omnichannel Inbox", desc: "Consolidate email, live chat, and form submissions instantly." },
-      { title: "Canned Responses", desc: "Respond faster using AI-suggested macros and support templates." }
-    ],
-    heroImg: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?auto=format&fit=crop&w=1200&q=80"
+      'Ticket management and SLA tracking',
+      'Knowledge base and self-service',
+      'AI-powered ticket triage',
+      'Customer satisfaction reporting'
+    ]
   },
   ai: {
-    title: "Chancellor AI",
-    color: "#6161FF",
+    title: 'Chancellor AI',
+    subtitle: 'The neural engine powering your Work OS.',
+    color: '#6161FF',
     icon: Bot,
-    subtitle: "An intelligent autonomous agent built into every layer of your workspace.",
     features: [
-      { title: "Automated Context", desc: "Chat natively with your boards and ask complex analytical questions." },
-      { title: "Generative Drafting", desc: "Let the AI write project briefs, support responses, and sprint tickets." },
-      { title: "Data Structuring", desc: "Extract unstructured text from emails and turn them into CRM items automatically." }
-    ],
-    heroImg: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80"
+      'Predictive task duration and risk analysis',
+      'Automated data extraction and entry',
+      'Natural language board querying',
+      'Autonomous workflow optimization'
+    ]
   }
 };
 
-export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const product = productData[id];
-
-  if (!product) {
-    notFound();
-  }
-
-  const Icon = product.icon;
+export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
+  const product = PRODUCT_DATA[id] || PRODUCT_DATA.work;
 
   return (
-    <div className="landing-container" style={{ minHeight: '100vh', background: '#fff' }}>
-      {/* Navigation */}
+    <div style={{ background: '#fff', minHeight: '100vh' }}>
       <PublicNavbar />
-
-      {/* Product Hero */}
-      <section style={{ padding: '100px 5% 60px', textAlign: 'center', background: '#f5f6f8' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: product.color, color: '#fff', padding: '12px 24px', borderRadius: '999px', marginBottom: '32px' }}>
-          <Icon size={24} />
-          <span style={{ fontSize: '18px', fontWeight: 700, letterSpacing: '1px', textTransform: 'uppercase' }}>{product.title}</span>
-        </div>
-        <h1 className="heading-hero" style={{ fontSize: '64px', marginBottom: '24px' }}>
-          {product.subtitle}
-        </h1>
-        <p className="text-subtitle" style={{ maxWidth: '800px', margin: '0 auto', marginBottom: '48px' }}>
-          Built deeply into the Chancellor Work OS, utilizing intelligent data tables and real-time collaboration. Transform how your team executes.
-        </p>
-        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-          <Link href="/" className="btn-monday-primary" style={{ padding: '16px 36px', fontSize: '18px', background: product.color }}>
-            Get Started For Free <ArrowRight size={20} />
-          </Link>
+      
+      {/* Hero Section */}
+      <section style={{ padding: '120px 5% 80px', textAlign: 'center', background: `linear-gradient(180deg, ${product.color}05 0%, #ffffff 100%)` }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ 
+            display: 'inline-flex', alignItems: 'center', gap: '8px', 
+            background: `${product.color}15`, color: product.color, 
+            padding: '8px 20px', borderRadius: '999px', fontSize: '14px', fontWeight: 700, marginBottom: '32px' 
+          }}>
+            <product.icon size={18} /> {product.title}
+          </div>
+          <h1 style={{ fontSize: '64px', fontWeight: 800, color: '#323338', lineHeight: '1.1', marginBottom: '24px' }}>
+            {product.subtitle}
+          </h1>
+          <p style={{ fontSize: '20px', color: '#676879', marginBottom: '40px', lineHeight: '1.6' }}>
+            Experience the next generation of productivity with Chancellor&apos;s Multimodal Work OS. 
+            Automate the mundane and focus on what truly matters.
+          </p>
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+            <Link href="/" className="btn-monday-primary">Start Building Now</Link>
+            <Link href="/" style={{ padding: '14px 28px', fontSize: '16px', fontWeight: 600, color: '#323338', border: '1px solid #d0d4e4', borderRadius: '999px', textDecoration: 'none' }}>Watch Demo</Link>
+          </div>
         </div>
       </section>
 
-      {/* Feature Showcase */}
-      <section style={{ padding: '100px 5%', maxWidth: '1200px', margin: '0 auto' }}>
-        <h2 className="heading-section" style={{ textAlign: 'center', marginBottom: '60px' }}>
-          Why choose <span style={{ color: product.color }}>{product.title}</span>?
-        </h2>
-        
-        <div style={{ borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.1)', marginBottom: '80px' }}>
-          <img src={product.heroImg} alt={product.title} style={{ width: '100%', display: 'block', maxHeight: '500px', objectFit: 'cover' }} />
+      {/* Multimodal Showcase */}
+      <section style={{ padding: '100px 10%', background: '#f5f6f8' }}>
+        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#323338' }}>The Multimodal Advantage</h2>
+          <p style={{ color: '#676879', fontSize: '18px', marginTop: '12px' }}>Go beyond text with our integrated audio, video, and AI engines.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '48px' }}>
-          {product.features.map((feat: any, idx: number) => (
-            <div key={idx} style={{ display: 'flex', gap: '20px', padding: '32px', borderRadius: '16px', background: '#f8f9fa', border: '1px solid #eee' }}>
-              <CheckCircle2 color={product.color} size={28} style={{ flexShrink: 0 }} />
-              <div>
-                <h3 style={{ fontSize: '22px', fontWeight: 800, marginBottom: '12px' }}>{feat.title}</h3>
-                <p style={{ color: '#676879', fontSize: '16px', lineHeight: 1.6 }}>{feat.desc}</p>
-              </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
+          <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: '#6161FF', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
+              <Mic size={24} />
             </div>
-          ))}
+            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Diction Mics</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6' }}>Dictate updates, tasks, and comments directly into the platform with state-of-the-art Whisper AI transcription.</p>
+          </div>
+
+          <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: '#00c875', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
+              <Volume2 size={24} />
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Listen to Board</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6' }}>Catch up on progress eyes-free. Chancellor generates AI audio summaries of your entire board in seconds.</p>
+          </div>
+
+          <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: '#ffcb00', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
+              <HardDrive size={24} />
+            </div>
+            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Multimedia Center</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6' }}>Centralize all your photos, videos, and slide decks in one task-specific repository with cloud-syncing.</p>
+          </div>
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section style={{ padding: '100px 5%', textAlign: 'center', background: '#292d3e', color: '#fff' }}>
-        <h2 className="heading-section" style={{ color: '#fff' }}>Ready to elevate your workflow?</h2>
-        <p className="text-subtitle" style={{ marginTop: '20px', color: '#d0d4e4', marginBottom: '40px' }}>Join teams completely transforming their productivity.</p>
-        <Link href="/" className="btn-monday-primary" style={{ display: 'inline-flex', padding: '16px 36px', fontSize: '18px', background: product.color }}>
-          Start building now
-        </Link>
+      {/* Product Features List */}
+      <section style={{ padding: '100px 10%' }}>
+        <div style={{ display: 'flex', gap: '80px', alignItems: 'center' }}>
+          <div style={{ flex: 1 }}>
+            <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#323338', marginBottom: '32px' }}>
+              Powering {product.title} <br /> for modern teams
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {product.features.map((feature: string) => (
+                <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '18px', color: '#323338' }}>
+                  <CheckCircle2 size={24} color={product.color} />
+                  {feature}
+                </div>
+              ))}
+            </div>
+            <Link href="/" className="btn-monday-primary" style={{ marginTop: '48px', display: 'inline-flex' }}>Try {product.title} Free</Link>
+          </div>
+          <div style={{ flex: 1, position: 'relative' }}>
+            <div style={{ width: '100%', height: '400px', background: `${product.color}10`, borderRadius: '32px', border: `1px dashed ${product.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+               <product.icon size={120} color={product.color} style={{ opacity: 0.2 }} />
+               <div style={{ position: 'absolute', top: '40px', left: '40px', background: '#fff', padding: '20px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                 <Sparkles size={20} color="#6161FF" />
+                 <span style={{ fontWeight: 600 }}>AI Optimized Workflow</span>
+               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section style={{ padding: '100px 10%', background: '#1c1f3b', color: '#fff', textAlign: 'center' }}>
+        <h2 style={{ fontSize: '48px', fontWeight: 800, marginBottom: '24px' }}>Ready to transform your work?</h2>
+        <p style={{ fontSize: '20px', opacity: 0.8, marginBottom: '40px' }}>Join thousands of teams scaling with Chancellor Work OS.</p>
+        <Link href="/" style={{ 
+          background: '#6161FF', color: '#fff', padding: '16px 48px', 
+          borderRadius: '999px', fontSize: '18px', fontWeight: 700, 
+          textDecoration: 'none', display: 'inline-block' 
+        }}>Get Started for Free</Link>
       </section>
     </div>
   );
