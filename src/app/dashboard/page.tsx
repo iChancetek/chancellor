@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { useBoardStore, useWorkspaceStore } from '@/lib/store';
+import { useBoardStore, useWorkspaceStore, useUIStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
 import { createBoard } from '@/lib/firestore';
 import {
@@ -15,6 +15,7 @@ export default function DashboardHome() {
   const router = useRouter();
   const { boards } = useBoardStore();
   const { activeWorkspace } = useWorkspaceStore();
+  const { toggleAIChat } = useUIStore();
 
   const greeting = () => {
     const hour = new Date().getHours();
@@ -35,45 +36,45 @@ export default function DashboardHome() {
       icon: '🧱', title: 'Work Management', desc: 'Boards, tasks, and project tracking',
       color: 'rgba(87, 155, 252, 0.15)', border: 'rgba(87, 155, 252, 0.3)',
       stats: [{ value: boards.filter(b => b.type === 'work').length, label: 'Boards' }],
-      action: () => handleCreateBoard('work', 'New Project'),
+      action: () => router.push('/dashboard/workplace'),
     },
     {
       icon: '🧩', title: 'CRM', desc: 'Leads, contacts, and deal management',
       color: 'rgba(0, 200, 117, 0.15)', border: 'rgba(0, 200, 117, 0.3)',
       stats: [{ value: boards.filter(b => b.type === 'crm').length, label: 'Pipelines' }],
-      action: () => handleCreateBoard('crm', 'Sales Pipeline'),
+      action: () => router.push('/dashboard/crm'),
     },
     {
       icon: '🛠️', title: 'Dev', desc: 'Sprints, bugs, and releases',
       color: 'rgba(253, 171, 61, 0.15)', border: 'rgba(253, 171, 61, 0.3)',
       stats: [{ value: boards.filter(b => b.type === 'dev').length, label: 'Sprints' }],
-      action: () => handleCreateBoard('dev', 'Sprint Board'),
+      action: () => router.push('/dashboard/dev'),
     },
     {
       icon: '🎧', title: 'Support', desc: 'Tickets, SLAs, and escalations',
       color: 'rgba(226, 68, 92, 0.15)', border: 'rgba(226, 68, 92, 0.3)',
       stats: [{ value: boards.filter(b => b.type === 'support').length, label: 'Queues' }],
-      action: () => handleCreateBoard('support', 'Support Queue'),
+      action: () => router.push('/dashboard/support'),
     },
     {
       icon: '📣', title: 'Marketing', desc: 'Campaigns, content, and analytics',
       color: 'rgba(162, 93, 220, 0.15)', border: 'rgba(162, 93, 220, 0.3)',
       stats: [{ value: boards.filter(b => b.type === 'marketing').length, label: 'Campaigns' }],
-      action: () => handleCreateBoard('marketing', 'Campaign Tracker'),
+      action: () => router.push('/dashboard/marketing'),
     },
     {
       icon: '🧠', title: 'Chancellor AI', desc: 'Intelligent automation and insights',
       color: 'rgba(108, 92, 231, 0.15)', border: 'rgba(108, 92, 231, 0.3)',
       stats: [{ value: '∞', label: 'Powered' }],
-      action: () => {},
+      action: () => toggleAIChat(),
     },
   ];
 
   const quickActions = [
     { icon: <Plus size={18} />, label: 'New Board', color: 'rgba(87, 155, 252, 0.15)', action: () => handleCreateBoard('work', 'New Board') },
-    { icon: <Sparkles size={18} />, label: 'Ask Chancellor AI', color: 'rgba(108, 92, 231, 0.15)', action: () => {} },
-    { icon: <Zap size={18} />, label: 'Create Automation', color: 'rgba(253, 171, 61, 0.15)', action: () => {} },
-    { icon: <TrendingUp size={18} />, label: 'View Insights', color: 'rgba(0, 200, 117, 0.15)', action: () => {} },
+    { icon: <Sparkles size={18} />, label: 'Ask Chancellor AI', color: 'rgba(108, 92, 231, 0.15)', action: () => toggleAIChat() },
+    { icon: <Zap size={18} />, label: 'Create Automation', color: 'rgba(253, 171, 61, 0.15)', action: () => router.push('/dashboard/automations') },
+    { icon: <TrendingUp size={18} />, label: 'View Insights', color: 'rgba(0, 200, 117, 0.15)', action: () => router.push('/dashboard/crm') },
   ];
 
   return (

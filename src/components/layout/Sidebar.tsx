@@ -50,6 +50,14 @@ export default function Sidebar() {
     { id: 'calendar', label: 'My Week', icon: Calendar, path: '/dashboard/calendar' },
   ];
 
+  const moduleItems = [
+    { id: 'workplace', label: 'Work Management', icon: LayoutGrid, path: '/dashboard/workplace', color: '#579BFC' },
+    { id: 'crm', label: 'CRM', icon: Users, path: '/dashboard/crm', color: '#00C875' },
+    { id: 'dev', label: 'Dev', icon: Code2, path: '/dashboard/dev', color: '#FDAB3D' },
+    { id: 'support', label: 'Support', icon: Headphones, path: '/dashboard/support', color: '#E2445C' },
+    { id: 'marketing', label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },
+  ];
+
   return (
     <aside className="exact-monday-sidebar">
       {/* Top Logo & App Grid */}
@@ -73,6 +81,26 @@ export default function Sidebar() {
             }}
           >
             <item.icon size={18} style={{ color: item.id === 'home' ? '#6161FF' : 'inherit' }} />
+            {item.label}
+          </div>
+        ))}
+
+        {/* Product Modules */}
+        <div style={{ padding: '24px 16px 8px', fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          Products
+        </div>
+        {moduleItems.map((item) => (
+          <div 
+            key={item.id} 
+            onClick={() => router.push(item.path)}
+            style={{ 
+              display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 16px', 
+              fontSize: '14px', color: pathname.startsWith(item.path) ? '#fff' : 'rgba(255,255,255,0.7)',
+              background: pathname.startsWith(item.path) ? 'rgba(255,255,255,0.1)' : 'transparent',
+              cursor: 'pointer'
+            }}
+          >
+            <item.icon size={18} style={{ color: item.color }} />
             {item.label}
           </div>
         ))}

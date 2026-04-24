@@ -7,9 +7,13 @@
 
 :root {
   /* Core Monday Colors */
-  --monday-blue-primary: #6161FF; /* The vibrant signature purple-blue */
+  --monday-blue-primary: #6161FF;
   --monday-blue-hover: #4b4bdf;
   --monday-blue-light: #e5e5ff;
+  
+  /* Accent aliases used by components */
+  --accent-primary: #6161FF;
+  --accent-hover: #4b4bdf;
   
   /* Status Colors */
   --status-done: #00c875;
@@ -18,26 +22,36 @@
   --status-empty: #c4c4c4;
   --status-info: #0086c0;
   
+  /* Semantic Colors */
+  --color-success: #00c875;
+  --color-warning: #fdab3d;
+  --color-danger: #df2f4a;
+  --color-info: #0086c0;
+  --color-purple: #a25ddc;
+  
   /* Secondary Palette */
-  --color-crm: #ffcb00;       /* Yellow */
-  --color-dev: #ff3d57;       /* Red */
-  --color-marketing: #a25ddc; /* Purple */
-  --color-support: #579bfc;   /* Light Blue */
-  --color-work: #0073ea;      /* Darker Blue */
+  --color-crm: #ffcb00;
+  --color-dev: #ff3d57;
+  --color-marketing: #a25ddc;
+  --color-support: #579bfc;
+  --color-work: #0073ea;
 
   /* Surface & Text */
   --bg-page: #f5f6f8;
   --bg-card: #ffffff;
   --bg-sidebar: #292d3e;
   --bg-sidebar-hover: rgba(255, 255, 255, 0.1);
+  --bg-depth-3: #f0f1f3;
   
   --text-main: #333333;
   --text-secondary: #676879;
+  --text-tertiary: #9699a6;
   --text-muted: #9699a6;
   --text-white: #ffffff;
 
   /* Borders & Shadows */
   --border-light: #d0d4e4;
+  --border-default: #e1e4e8;
   --border-focus: #6161FF;
   
   --shadow-monday: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -45,6 +59,18 @@
 
   /* Typography */
   --font-main: 'Figtree', sans-serif;
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  
+  /* Spacing */
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
   
   /* Radii */
   --radius-pill: 9999px;
@@ -164,6 +190,28 @@ input { font-family: inherit; outline: none; }
   align-items: center;
   justify-content: center;
   color: white;
+}
+
+/* ── Dashboard Layout Shell ──────────────────────────── */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.main-scroll {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-page);
 }
 
 /* ── Dashboard Exact Styles ───────────────────────────── */
