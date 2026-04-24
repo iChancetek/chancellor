@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const { messages } = await req.json();
 
     const completion = await openai.chat.completions.create({
-      model: 'gpt-5.5', // Upgraded to user requested elite model
+      model: 'gpt-5.4', // Upgraded to user requested elite model
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages, 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Chancellor AI Multimodal Error:', error);
     
-    // Fallback to GPT-5.4-mini if GPT-5.5 is not yet provisioned for this specific API key
+    // Fallback to GPT-5.4-mini if GPT-5.4 is not yet provisioned for this specific API key
     if (error.status === 404 || error.code === 'model_not_found') {
       try {
         const fallback = await openai.chat.completions.create({

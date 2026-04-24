@@ -65,7 +65,7 @@ export default function BoardAIInsights({ board, items }: BoardAIInsightsProps) 
           </div>
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: 800, color: '#323338' }}>Chancellor AI Insights</h3>
-            <p style={{ fontSize: '12px', color: '#676879' }}>GPT-5.5 Real-time Board Analysis</p>
+            <p style={{ fontSize: '12px', color: '#676879' }}>GPT-5.4 Real-time Board Analysis</p>
           </div>
         </div>
         <button 

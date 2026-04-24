@@ -160,7 +160,7 @@ export default function AIChat() {
               <h3 style={{ fontSize: '18px', fontWeight: 800 }}>Chancellor AI</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00c875' }}></span>
-                <p style={{ fontSize: '11px', fontWeight: 600, opacity: 0.9, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Multimodal GPT-5.5 Active</p>
+                <p style={{ fontSize: '11px', fontWeight: 600, opacity: 0.9, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Multimodal GPT-5.4 Active</p>
               </div>
             </div>
             <button onClick={toggleAIChat} style={{ color: 'white', opacity: 0.7, padding: '4px' }}><X size={20} /></button>
@@ -199,7 +199,7 @@ export default function AIChat() {
             {isLoading && (
               <div style={{ alignSelf: 'flex-start', display: 'flex', gap: '8px', alignItems: 'center', color: '#676879' }}>
                 <Loader2 className="animate-spin" size={16} /> 
-                <span style={{ fontSize: '12px', fontWeight: 500 }}>GPT-5.5 reasoning...</span>
+                <span style={{ fontSize: '12px', fontWeight: 500 }}>GPT-5.4 reasoning...</span>
               </div>
             )}
             <div ref={messagesEndRef} />
@@ -229,7 +229,7 @@ export default function AIChat() {
               <div style={{ width: '1px', height: '24px', background: '#d0d4e4' }} />
               <input 
                 style={{ flex: 1, background: 'transparent', border: 'none', padding: '8px 0', fontSize: '14px', outline: 'none' }}
-                placeholder={isRecording ? "Listening..." : "Message Chancellor AI (GPT-5.5)"}
+                placeholder={isRecording ? "Listening..." : "Message Chancellor AI (GPT-5.4)"}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
@@ -243,7 +243,7 @@ export default function AIChat() {
               </button>
             </div>
             <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center' }}>
-              <p style={{ fontSize: '10px', color: '#9699a6' }}>Chancellor Multimodal Engine v5.5 ✦ Experimental Multimodal Architecture</p>
+              <p style={{ fontSize: '10px', color: '#9699a6' }}>Chancellor Multimodal Engine v5.4 ✦ Experimental Multimodal Architecture</p>
             </div>
           </div>
         </div>
