@@ -21,8 +21,7 @@ Rules:
 - Format responses with clear structure when appropriate (markdown tables, lists).
 - Speak confidently as the platform's AI brain.`;
 
-// Model fallback chain — tries the best available model for this API key
-const MODEL_CHAIN = ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'];
+const MODEL_CHAIN = ['gpt-5.5-turbo', 'gpt-5.4-turbo', 'gpt-4.5-preview', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'];
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -47,23 +46,46 @@ export async function POST(req: NextRequest) {
   // Try each model in the chain until one works
   for (const model of MODEL_CHAIN) {
     try {
-      const completion = await openai.chat.completions.create({
+      const isNewModel = model.includes('gpt-5') || model.includes('gpt-4.5') || model.includes('o1') || model.includes('o3') || model.includes('gpt-4o');
+      const payload: any = {
         model,
         messages: apiMessages,
-        max_completion_tokens: 1500,
         temperature: 0.7,
-      });
+      };
+
+      // Use max_completion_tokens for newer models, max_tokens for older ones
+      if (isNewModel) {
+        payload.max_completion_tokens = 1500;
+      } else {
+        payload.max_tokens = 1500;
+      }
+
+      const completion = await openai.chat.completions.create(payload);
 
       const message = completion.choices[0]?.message?.content || 'No response generated.';
       return NextResponse.json({ message, model });
     } catch (error: any) {
-      // If the model doesn't exist, try the next one
-      if (error.status === 404 || error.code === 'model_not_found') {
+      const errorMessage = error.message?.toLowerCase() || '';
+      const isModelError = 
+        error.status === 404 || 
+        error.code === 'model_not_found' ||
+        errorMessage.includes('model_not_found') ||
+        errorMessage.includes('unrecognized model') ||
+        errorMessage.includes('does not exist') ||
+        errorMessage.includes('invalid_model');
+
+      if (isModelError) {
+        console.warn(`Chancellor AI: Model ${model} not available, falling back...`);
         continue;
       }
-      // For any other error (rate limit, auth, etc.), report it
-      console.error(`Chancellor AI Error (${model}):`, error.message);
-      return NextResponse.json({ error: 'AI processing failed', details: error.message }, { status: 500 });
+
+      // For any other error (rate limit, auth, quota, etc.), report it immediately
+      console.error(`Chancellor AI Critical Error (${model}):`, error.message);
+      return NextResponse.json({ 
+        error: 'AI processing failed', 
+        details: error.message,
+        type: error.code || 'unknown'
+      }, { status: error.status || 500 });
     }
   }
 
