@@ -45,8 +45,8 @@ export function getContrastColor(hexColor: string): string {
 
 export function createDefaultBoard(workspaceId: string, name: string, type: 'work' | 'crm' | 'dev' | 'support' | 'marketing' = 'work'): Board {
   const boardId = generateId();
-  const defaultColumns = getDefaultColumnsForType(type);
-  const defaultGroups = getDefaultGroupsForType(type, boardId);
+  const defaultColumns = getDefaultColumnsForType(type, name);
+  const defaultGroups = getDefaultGroupsForType(type, name, boardId);
 
   return {
     id: boardId,
@@ -81,104 +81,144 @@ function getIconForType(type: string): string {
   return icons[type] || '📋';
 }
 
-function getDefaultColumnsForType(type: string): Column[] {
-  const baseColumns: Column[] = [
-    {
-      id: 'status',
-      type: 'status',
-      title: 'Status',
-      width: 140,
-      position: 0,
-      settings: {
-        labels: [
-          { id: 'working', text: 'Working on it', color: '#FDAB3D' },
-          { id: 'done', text: 'Done', color: '#00C875' },
-          { id: 'stuck', text: 'Stuck', color: '#E2445C' },
-          { id: 'pending', text: 'Pending', color: '#A25DDC' },
-          { id: 'review', text: 'In Review', color: '#0086C0' },
-        ],
-      },
-    },
-    {
-      id: 'person',
-      type: 'person',
-      title: 'Owner',
-      width: 120,
-      position: 1,
-      settings: {},
-    },
-    {
-      id: 'date',
-      type: 'date',
-      title: 'Due Date',
-      width: 130,
-      position: 2,
-      settings: {},
-    },
-    {
-      id: 'priority',
-      type: 'priority',
-      title: 'Priority',
-      width: 130,
-      position: 3,
-      settings: {
-        labels: [
-          { id: 'critical', text: 'Critical ⚡', color: '#333333' },
-          { id: 'high', text: 'High', color: '#E2445C' },
-          { id: 'medium', text: 'Medium', color: '#FDAB3D' },
-          { id: 'low', text: 'Low', color: '#579BFC' },
-        ],
-      },
-    },
-  ];
-
-  if (type === 'dev') {
-    baseColumns.push({
-      id: 'storypoints',
-      type: 'number',
-      title: 'Story Points',
-      width: 110,
-      position: 4,
-      settings: { format: 'number' },
-    });
-  }
-
+function getDefaultColumnsForType(type: string, name: string): Column[] {
+  const lowerName = name.toLowerCase();
+  
+  // -- CRM TEMPLATES --
   if (type === 'crm') {
-    baseColumns.push({
-      id: 'dealvalue',
-      type: 'number',
-      title: 'Deal Value',
-      width: 120,
-      position: 4,
-      settings: { format: 'currency', unit: '$' },
-    });
+    if (lowerName.includes('contact')) {
+      return [
+        { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'active',text:'Active',color:'#00C875'},{id:'inactive',text:'Inactive',color:'#e2445c'}] } },
+        { id: 'person', type: 'person', title: 'Account Manager', width: 120, position: 1, settings: {} },
+        { id: 'email', type: 'text', title: 'Email', width: 180, position: 2, settings: {} },
+        { id: 'phone', type: 'text', title: 'Phone', width: 140, position: 3, settings: {} },
+        { id: 'company', type: 'text', title: 'Company', width: 140, position: 4, settings: {} },
+        { id: 'date', type: 'date', title: 'Last Contacted', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('campaign') || lowerName.includes('outreach')) {
+      return [
+        { id: 'status', type: 'status', title: 'Campaign Status', width: 140, position: 0, settings: { labels: [{id:'draft',text:'Draft',color:'#c4c4c4'},{id:'sent',text:'Sent',color:'#579BFC'},{id:'responded',text:'Responded',color:'#00C875'}] } },
+        { id: 'person', type: 'person', title: 'Owner', width: 120, position: 1, settings: {} },
+        { id: 'audience', type: 'number', title: 'Audience Size', width: 130, position: 2, settings: { format: 'number' } },
+        { id: 'date', type: 'date', title: 'Send Date', width: 130, position: 3, settings: {} },
+      ];
+    }
+    // Default Sales Pipeline / Deal Tracker
+    return [
+      { id: 'status', type: 'status', title: 'Stage', width: 140, position: 0, settings: { labels: [{id:'lead',text:'Lead',color:'#579BFC'},{id:'qualified',text:'Qualified',color:'#A25DDC'},{id:'proposal',text:'Proposal',color:'#FDAB3D'},{id:'won',text:'Won',color:'#00C875'},{id:'lost',text:'Lost',color:'#E2445C'}] } },
+      { id: 'person', type: 'person', title: 'Sales Rep', width: 120, position: 1, settings: {} },
+      { id: 'dealvalue', type: 'number', title: 'Deal Value', width: 130, position: 2, settings: { format: 'currency', unit: '$' } },
+      { id: 'contact', type: 'text', title: 'Contact Name', width: 140, position: 3, settings: {} },
+      { id: 'date', type: 'date', title: 'Expected Close', width: 130, position: 4, settings: {} },
+    ];
   }
 
-  baseColumns.push({
-    id: 'text',
-    type: 'text',
-    title: 'Notes',
-    width: 200,
-    position: baseColumns.length,
-    settings: {},
-  });
+  // -- DEV TEMPLATES --
+  if (type === 'dev') {
+    if (lowerName.includes('bug')) {
+      return [
+        { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'new',text:'New',color:'#579BFC'},{id:'investigating',text:'Investigating',color:'#FDAB3D'},{id:'fixed',text:'Fixed',color:'#00C875'},{id:'wontfix',text:'Wont Fix',color:'#333333'}] } },
+        { id: 'person', type: 'person', title: 'Assignee', width: 120, position: 1, settings: {} },
+        { id: 'severity', type: 'priority', title: 'Severity', width: 130, position: 2, settings: { labels: [{id:'critical',text:'Critical ⚡',color:'#333333'},{id:'high',text:'High',color:'#E2445C'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#579BFC'}] } },
+        { id: 'environment', type: 'status', title: 'Environment', width: 130, position: 3, settings: { labels: [{id:'prod',text:'Production',color:'#E2445C'},{id:'staging',text:'Staging',color:'#FDAB3D'},{id:'dev',text:'Development',color:'#00C875'}] } },
+        { id: 'date', type: 'date', title: 'Reported Date', width: 130, position: 4, settings: {} },
+      ];
+    }
+    if (lowerName.includes('release')) {
+      return [
+        { id: 'status', type: 'status', title: 'Release Status', width: 140, position: 0, settings: { labels: [{id:'building',text:'Building',color:'#FDAB3D'},{id:'testing',text:'Testing',color:'#A25DDC'},{id:'deployed',text:'Deployed',color:'#00C875'},{id:'failed',text:'Failed',color:'#E2445C'}] } },
+        { id: 'person', type: 'person', title: 'Release Manager', width: 140, position: 1, settings: {} },
+        { id: 'version', type: 'text', title: 'Version', width: 120, position: 2, settings: {} },
+        { id: 'date', type: 'date', title: 'Deploy Date', width: 130, position: 3, settings: {} },
+        { id: 'url', type: 'text', title: 'Deploy URL', width: 180, position: 4, settings: {} },
+      ];
+    }
+    // Default Sprint / Feature Board
+    return [
+      { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'todo',text:'To Do',color:'#c4c4c4'},{id:'doing',text:'Doing',color:'#FDAB3D'},{id:'review',text:'Code Review',color:'#A25DDC'},{id:'done',text:'Done',color:'#00C875'}] } },
+      { id: 'person', type: 'person', title: 'Developer', width: 120, position: 1, settings: {} },
+      { id: 'storypoints', type: 'number', title: 'Story Points', width: 120, position: 2, settings: { format: 'number' } },
+      { id: 'priority', type: 'priority', title: 'Priority', width: 120, position: 3, settings: { labels: [{id:'high',text:'High',color:'#E2445C'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#579BFC'}] } },
+      { id: 'date', type: 'date', title: 'Sprint End', width: 130, position: 4, settings: {} },
+    ];
+  }
 
-  return baseColumns;
+  // -- SUPPORT TEMPLATES --
+  if (type === 'support') {
+    if (lowerName.includes('escalation')) {
+      return [
+        { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'open',text:'Open',color:'#E2445C'},{id:'investigating',text:'Investigating',color:'#FDAB3D'},{id:'resolved',text:'Resolved',color:'#00C875'}] } },
+        { id: 'person', type: 'person', title: 'Assigned Engineer', width: 150, position: 1, settings: {} },
+        { id: 'level', type: 'status', title: 'Escalation Level', width: 140, position: 2, settings: { labels: [{id:'l1',text:'Tier 1',color:'#579BFC'},{id:'l2',text:'Tier 2',color:'#FDAB3D'},{id:'l3',text:'Tier 3',color:'#E2445C'}] } },
+        { id: 'rootcause', type: 'text', title: 'Root Cause', width: 200, position: 3, settings: {} },
+      ];
+    }
+    // Default Ticket Queue
+    return [
+      { id: 'status', type: 'status', title: 'Ticket Status', width: 140, position: 0, settings: { labels: [{id:'new',text:'New',color:'#579BFC'},{id:'open',text:'Open',color:'#FDAB3D'},{id:'pending',text:'Pending Customer',color:'#A25DDC'},{id:'resolved',text:'Resolved',color:'#00C875'}] } },
+      { id: 'person', type: 'person', title: 'Agent', width: 120, position: 1, settings: {} },
+      { id: 'priority', type: 'priority', title: 'Priority', width: 120, position: 2, settings: { labels: [{id:'urgent',text:'Urgent ⚡',color:'#333333'},{id:'high',text:'High',color:'#E2445C'},{id:'normal',text:'Normal',color:'#579BFC'}] } },
+      { id: 'customer', type: 'text', title: 'Customer', width: 150, position: 3, settings: {} },
+      { id: 'slastatus', type: 'status', title: 'SLA Status', width: 130, position: 4, settings: { labels: [{id:'ok',text:'On Track',color:'#00C875'},{id:'risk',text:'At Risk',color:'#FDAB3D'},{id:'breached',text:'Breached',color:'#E2445C'}] } },
+      { id: 'date', type: 'date', title: 'Created', width: 130, position: 5, settings: {} },
+    ];
+  }
+
+  // -- MARKETING TEMPLATES --
+  if (type === 'marketing') {
+    if (lowerName.includes('content') || lowerName.includes('asset')) {
+      return [
+        { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'ideation',text:'Ideation',color:'#c4c4c4'},{id:'drafting',text:'Drafting',color:'#579BFC'},{id:'review',text:'Review',color:'#FDAB3D'},{id:'published',text:'Published',color:'#00C875'}] } },
+        { id: 'person', type: 'person', title: 'Creator', width: 120, position: 1, settings: {} },
+        { id: 'channel', type: 'status', title: 'Channel', width: 130, position: 2, settings: { labels: [{id:'blog',text:'Blog',color:'#579BFC'},{id:'social',text:'Social',color:'#A25DDC'},{id:'email',text:'Email',color:'#FDAB3D'}] } },
+        { id: 'date', type: 'date', title: 'Publish Date', width: 130, position: 3, settings: {} },
+        { id: 'link', type: 'text', title: 'Asset Link', width: 180, position: 4, settings: {} },
+      ];
+    }
+    // Default Campaign
+    return [
+      { id: 'status', type: 'status', title: 'Campaign Status', width: 140, position: 0, settings: { labels: [{id:'planning',text:'Planning',color:'#c4c4c4'},{id:'active',text:'Active',color:'#00C875'},{id:'paused',text:'Paused',color:'#FDAB3D'},{id:'completed',text:'Completed',color:'#333333'}] } },
+      { id: 'person', type: 'person', title: 'Manager', width: 120, position: 1, settings: {} },
+      { id: 'platform', type: 'status', title: 'Platform', width: 130, position: 2, settings: { labels: [{id:'google',text:'Google Ads',color:'#579BFC'},{id:'meta',text:'Meta',color:'#A25DDC'},{id:'linkedin',text:'LinkedIn',color:'#0086C0'}] } },
+      { id: 'budget', type: 'number', title: 'Budget', width: 120, position: 3, settings: { format: 'currency', unit: '$' } },
+      { id: 'spend', type: 'number', title: 'Spend', width: 120, position: 4, settings: { format: 'currency', unit: '$' } },
+      { id: 'roas', type: 'number', title: 'ROAS', width: 100, position: 5, settings: { format: 'number' } },
+    ];
+  }
+
+  // -- DEFAULT WORK TEMPLATE --
+  return [
+    { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'working',text:'Working on it',color:'#FDAB3D'},{id:'done',text:'Done',color:'#00C875'},{id:'stuck',text:'Stuck',color:'#E2445C'}] } },
+    { id: 'person', type: 'person', title: 'Owner', width: 120, position: 1, settings: {} },
+    { id: 'date', type: 'date', title: 'Due Date', width: 130, position: 2, settings: {} },
+    { id: 'priority', type: 'priority', title: 'Priority', width: 130, position: 3, settings: { labels: [{id:'critical',text:'Critical ⚡',color:'#333333'},{id:'high',text:'High',color:'#E2445C'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#579BFC'}] } },
+    { id: 'text', type: 'text', title: 'Notes', width: 200, position: 4, settings: {} },
+  ];
 }
 
-function getDefaultGroupsForType(type: string, boardId: string): Group[] {
-  const groupSets: Record<string, string[]> = {
-    work: ['To Do', 'In Progress', 'Completed'],
-    crm: ['New Leads', 'Qualified', 'Proposal Sent', 'Closed Won'],
-    dev: ['Backlog', 'Sprint', 'In Development', 'QA', 'Done'],
-    support: ['New Tickets', 'In Progress', 'Waiting on Customer', 'Resolved'],
-    marketing: ['Planning', 'Active Campaigns', 'Completed', 'Archived'],
-  };
+function getDefaultGroupsForType(type: string, name: string, boardId: string): Group[] {
+  const lowerName = name.toLowerCase();
+  let groupTitles = ['To Do', 'In Progress', 'Completed'];
+
+  if (type === 'crm') {
+    if (lowerName.includes('contact')) groupTitles = ['Active Clients', 'Past Clients', 'Cold Leads'];
+    else if (lowerName.includes('campaign')) groupTitles = ['Q1 Campaigns', 'Q2 Campaigns', 'Archived'];
+    else groupTitles = ['New Leads', 'Qualified', 'Proposal Sent', 'Closed Won'];
+  } else if (type === 'dev') {
+    if (lowerName.includes('bug')) groupTitles = ['Critical Bugs', 'High Priority', 'Backlog'];
+    else if (lowerName.includes('release')) groupTitles = ['Upcoming Release', 'In QA', 'Deployed'];
+    else groupTitles = ['Current Sprint', 'Next Sprint', 'Backlog'];
+  } else if (type === 'support') {
+    if (lowerName.includes('escalation')) groupTitles = ['Immediate Attention', 'Under Investigation', 'Resolved'];
+    else groupTitles = ['New Tickets', 'In Progress', 'Waiting on Customer', 'Resolved'];
+  } else if (type === 'marketing') {
+    if (lowerName.includes('content') || lowerName.includes('asset')) groupTitles = ['This Week', 'Next Week', 'Later'];
+    else groupTitles = ['Active Campaigns', 'Planning', 'Completed'];
+  }
 
   const colors = ['#579BFC', '#00C875', '#FDAB3D', '#E2445C', '#A25DDC'];
-  const groups = groupSets[type] || groupSets['work'];
-
-  return groups.map((title, i) => ({
+  return groupTitles.map((title, i) => ({
     id: generateId(),
     boardId,
     title,
