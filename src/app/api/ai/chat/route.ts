@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 const SYSTEM_PROMPT = `You are Chancellor AI — the core intelligence layer of Chancellor, an AI-native work execution platform.
 
 You are responsible for:
@@ -23,6 +19,18 @@ Rules:
 - Use emojis sparingly for visual clarity`;
 
 export async function POST(req: NextRequest) {
+  // Handle potential leading space in key name from Firebase Console
+  const apiKey = process.env.OPENAI_API_KEY || (process.env as any)[' OPENAI_API_KEY'];
+  
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: 'AI configuration error: API key missing' },
+      { status: 500 }
+    );
+  }
+
+  const openai = new OpenAI({ apiKey });
+
   try {
     const { messages } = await req.json();
 
