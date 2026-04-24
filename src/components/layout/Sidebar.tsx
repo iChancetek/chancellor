@@ -47,6 +47,7 @@ export default function Sidebar() {
     { id: 'home', label: 'Home', icon: Home, path: '/dashboard' },
     { id: 'inbox', label: 'Inbox', icon: Inbox, path: '/dashboard/inbox' },
     { id: 'calendar', label: 'My Week', icon: Calendar, path: '/dashboard/calendar' },
+    { id: 'apps', label: 'Apps Marketplace', icon: LayoutGrid, path: '/dashboard/apps' },
   ];
 
   const moduleItems = [
