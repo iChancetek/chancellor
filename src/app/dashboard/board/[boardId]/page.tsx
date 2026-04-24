@@ -6,7 +6,7 @@ import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from 
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import {
-  Plus, ChevronDown, ExternalLink, Search, Settings2, Save
+  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2
 } from 'lucide-react';
 import type { Board, Item, Column, ViewType } from '@/lib/types';
 import ItemDetailPanel from '@/components/board/ItemDetailPanel';
@@ -23,6 +23,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
   const [addingItemGroup, setAddingItemGroup] = useState<string | null>(null);
   const [newItemName, setNewItemName] = useState('');
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving'>('saved');
+  const [isListening, setIsListening] = useState(false);
 
   useEffect(() => {
     const board = boards.find((b) => b.id === boardId);
@@ -113,6 +114,36 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     firestoreUpdateItem(itemId, { name }).catch(err => console.error('Failed to sync name update:', err));
   };
 
+  const handleListenToBoard = async () => {
+    if (!activeBoard || items.length === 0 || isListening) return;
+    setIsListening(true);
+    
+    try {
+      const boardSummary = `Board: ${activeBoard.name}. Description: ${activeBoard.description}. There are ${activeBoard.groups.length} groups and ${items.length} items total. ` +
+        activeBoard.groups.map(g => {
+          const gItems = items.filter(i => i.groupId === g.id);
+          return `Group ${g.title} has ${gItems.length} items: ${gItems.map(i => i.name).join(', ')}. `;
+        }).join(' ');
+
+      const response = await fetch('/api/ai/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: boardSummary }),
+      });
+
+      if (!response.ok) throw new Error('TTS failed');
+      
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.onended = () => setIsListening(false);
+      audio.play();
+    } catch (err) {
+      console.error('Failed to play board audio:', err);
+      setIsListening(false);
+    }
+  };
+
   const flashSave = () => {
     setSaveStatus('saving');
     setTimeout(() => setSaveStatus('saved'), 600);
@@ -172,6 +203,15 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
             }
           }} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
             <Plus size={14} /> New Item
+          </button>
+          
+          <button 
+            onClick={handleListenToBoard}
+            disabled={isListening}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: isListening ? '#f5f6f8' : '#fff', color: isListening ? '#676879' : '#323338', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: '1px solid #d0d4e4', cursor: isListening ? 'default' : 'pointer' }}
+          >
+            {isListening ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />} 
+            {isListening ? 'Listening...' : 'Listen to Board'}
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', border: '1px solid #d0d4e4', borderRadius: '4px', fontSize: '13px', color: '#676879' }}>
             <Search size={14} />

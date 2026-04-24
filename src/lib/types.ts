@@ -136,11 +136,21 @@ export interface Item {
   groupId: string;
   name: string;
   values: Record<string, unknown>;
+  attachments?: Attachment[]; // New field for multimedia center
   position: number;
   createdAt: number;
   updatedAt: number;
   createdBy: string;
   subscribers: string[];
+}
+
+export interface Attachment {
+  id: string;
+  name: string;
+  type: 'photo' | 'video' | 'audio' | 'slide';
+  url: string;
+  size?: number;
+  createdAt: number;
 }
 
 export interface SubItem {

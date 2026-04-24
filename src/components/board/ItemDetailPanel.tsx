@@ -1,10 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { X, MessageSquare, Clock, User, Send, Bell, Home, Share2, MoreHorizontal } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { 
+  X, MessageSquare, Clock, User, Send, Bell, Home, Share2, MoreHorizontal,
+  Mic, Image as ImageIcon, Video, Music, FileText, Play, Upload, Download, Loader2
+} from 'lucide-react';
 import { formatDate, formatRelativeTime, getInitials, generateId } from '@/lib/utils';
-import type { Board, Item, Column } from '@/lib/types';
+import type { Board, Item, Column, Attachment } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
+import { useBoardStore } from '@/lib/store';
 
 interface ItemDetailPanelProps {
   item: Item;
@@ -16,10 +20,77 @@ interface ItemDetailPanelProps {
 
 export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, onUpdateName }: ItemDetailPanelProps) {
   const { user } = useAuth();
+  const { updateItem } = useBoardStore();
   const [localName, setLocalName] = useState(item.name);
   const [activeTab, setActiveTab] = useState('Updates');
+  const [updateText, setUpdateText] = useState('');
+  const [isRecording, setIsRecording] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
   const tabs = ['Updates', 'Activity Log', 'Files'];
+
+  const startDictation = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      const audioChunks: Blob[] = [];
+
+      mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const formData = new FormData();
+        formData.append('audio', audioBlob);
+
+        try {
+          const response = await fetch('/api/ai/stt', { method: 'POST', body: formData });
+          const data = await response.json();
+          if (data.text) setUpdateText(prev => prev + (prev ? ' ' : '') + data.text);
+        } catch (err) {
+          console.error('STT failed:', err);
+        }
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (err) {
+      console.error('Mic access denied:', err);
+    }
+  };
+
+  const stopDictation = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    // Simulate upload for now (Firebase Storage integration would go here)
+    setTimeout(() => {
+      const typeMap: Record<string, 'photo' | 'video' | 'audio' | 'slide'> = {
+        'image/jpeg': 'photo', 'image/png': 'photo', 'video/mp4': 'video', 'audio/mpeg': 'audio', 'application/pdf': 'slide'
+      };
+      
+      const newAttachment: Attachment = {
+        id: generateId(),
+        name: file.name,
+        type: typeMap[file.type] || 'photo',
+        url: URL.createObjectURL(file), // Local URL placeholder
+        size: file.size,
+        createdAt: Date.now()
+      };
+
+      const updatedAttachments = [...(item.attachments || []), newAttachment];
+      updateItem(item.id, { attachments: updatedAttachments });
+      setIsUploading(false);
+    }, 1000);
+  };
 
   return (
     <div className="item-side-panel">
@@ -67,15 +138,26 @@ export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, o
       <div style={{ flex: 1, padding: '0 32px', overflowY: 'auto' }}>
         {activeTab === 'Updates' && (
           <div style={{ marginTop: '20px' }}>
-            <div style={{ border: '1px solid #d0d4e4', borderRadius: '8px', padding: '16px' }}>
+            <div style={{ border: '1px solid #d0d4e4', borderRadius: '8px', padding: '16px', background: isRecording ? '#fff5f5' : '#fff' }}>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#579bfc', color: '#fff', fontSize: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   {getInitials(user?.displayName || 'U')}
                 </div>
-                <textarea 
-                  placeholder="Write an update..." 
-                  style={{ border: 'none', width: '100%', resize: 'none', outline: 'none', fontSize: '16px' }}
-                />
+                <div style={{ flex: 1, position: 'relative' }}>
+                  <textarea 
+                    placeholder="Write an update..." 
+                    value={updateText}
+                    onChange={(e) => setUpdateText(e.target.value)}
+                    style={{ border: 'none', width: '100%', resize: 'none', outline: 'none', fontSize: '16px', minHeight: '80px', background: 'transparent' }}
+                  />
+                  <button 
+                    onClick={isRecording ? stopDictation : startDictation}
+                    style={{ position: 'absolute', right: '0', bottom: '0', background: isRecording ? '#e2445c' : '#f5f6f8', border: 'none', padding: '8px', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  >
+                    <Mic size={18} color={isRecording ? '#fff' : '#676879'} />
+                    {isRecording && <span style={{ position: 'absolute', top: '-10px', right: '-5px', width: '10px', height: '10px', background: '#e2445c', borderRadius: '50%' }} className="animate-pulse" />}
+                  </button>
+                </div>
               </div>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
                 <button className="btn-primary-monday" style={{ padding: '8px 24px', fontSize: '14px' }}>Update</button>
@@ -86,6 +168,41 @@ export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, o
               <MessageSquare size={48} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
               <p style={{ fontSize: '18px', fontWeight: 600, color: '#323338' }}>No updates yet</p>
               <p style={{ fontSize: '14px' }}>Be the first to update your team on what&apos;s happening with this item!</p>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'Files' && (
+          <div style={{ marginTop: '20px' }}>
+            <div style={{ border: '2px dashed #d0d4e4', borderRadius: '12px', padding: '40px', textAlign: 'center', background: '#f8f9fb', position: 'relative' }}>
+              <input type="file" onChange={handleFileUpload} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
+              {isUploading ? (
+                <Loader2 size={32} color="#6161FF" className="animate-spin" style={{ margin: '0 auto' }} />
+              ) : (
+                <>
+                  <Upload size={32} color="#676879" style={{ margin: '0 auto 12px' }} />
+                  <p style={{ fontWeight: 600, color: '#323338' }}>Click or drag to upload multimedia</p>
+                  <p style={{ fontSize: '13px', color: '#676879', marginTop: '4px' }}>Photos, Videos, Audio, or Slide Decks</p>
+                </>
+              )}
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '16px', marginTop: '24px' }}>
+              {item.attachments?.map((file) => (
+                <div key={file.id} style={{ border: '1px solid #e1e4e8', borderRadius: '8px', overflow: 'hidden', background: '#fff' }}>
+                  <div style={{ height: '100px', background: '#f5f6f8', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                    {file.type === 'photo' && <ImageIcon size={32} color="#6161FF" />}
+                    {file.type === 'video' && <Video size={32} color="#e2445c" />}
+                    {file.type === 'audio' && <Music size={32} color="#00c875" />}
+                    {file.type === 'slide' && <FileText size={32} color="#ffcb00" />}
+                    <a href={file.url} target="_blank" style={{ position: 'absolute', top: '8px', right: '8px', color: '#676879' }}><Download size={14} /></a>
+                  </div>
+                  <div style={{ padding: '10px' }}>
+                    <p style={{ fontSize: '12px', fontWeight: 600, color: '#323338', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{file.name}</p>
+                    <p style={{ fontSize: '10px', color: '#676879', textTransform: 'capitalize' }}>{file.type}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
