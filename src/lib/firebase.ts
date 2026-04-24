@@ -21,16 +21,27 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || webAppConfig.measurementId,
 };
 
-// Don't initialize Firebase if the API key is missing (e.g. during static build phase)
+const isServer = typeof window === 'undefined';
 const isFirebaseConfigured = !!firebaseConfig.apiKey;
 
-const app = (getApps().length || !isFirebaseConfigured) 
-  ? (getApps()[0] || null) 
-  : initializeApp(firebaseConfig);
+// On the server, we skip initialization if config is missing to prevent build crashes.
+// On the client, we always try to initialize if there's a config, OR we check if already initialized.
+let app;
+if (getApps().length > 0) {
+  app = getApp();
+} else {
+  if (isServer && !isFirebaseConfigured) {
+    // During build/SSR without config, we just don't initialize
+    app = null;
+  } else {
+    // On client (where we expect keys) or server WITH config, we initialize
+    app = initializeApp(firebaseConfig);
+  }
+}
 
-export const auth = isFirebaseConfigured ? getAuth(app!) : null as any;
-export const db = isFirebaseConfigured ? getFirestore(app!) : null as any;
-export const storage = isFirebaseConfigured ? getStorage(app!) : null as any;
+export const auth = app ? getAuth(app) : ({} as any);
+export const db = app ? getFirestore(app) : ({} as any);
+export const storage = app ? getStorage(app) : ({} as any);
 export const googleProvider = new GoogleAuthProvider();
 
 export default app;

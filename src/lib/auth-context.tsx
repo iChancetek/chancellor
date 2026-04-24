@@ -25,6 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { setUser: setStoreUser, setLoading: setStoreLoading } = useAuthStore();
 
   useEffect(() => {
+    // Safety check: Don't subscribe if Firebase Auth isn't initialized (build phase)
+    if (!auth || !auth.app) {
+      setLoading(false);
+      setStoreLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       setUser(firebaseUser);
       setLoading(false);
