@@ -31,12 +31,17 @@ export default function Sidebar() {
     if (!user || workspaces === undefined) return;
     if (workspaces.length === 0) {
       const ws = createDefaultWorkspace(user.uid, user.email || '', user.displayName || 'User');
+      // Always set the workspace locally first so buttons work immediately
+      setActiveWorkspace(ws);
       createWorkspace(ws).then(() => {
         const board = createDefaultBoard(ws.id, 'Main Board', 'work');
-        createBoard(board);
+        createBoard(board).catch((err) => console.error('Failed to create default board:', err));
+      }).catch((err) => {
+        console.error('Failed to create workspace in Firestore:', err);
+        // Workspace is already set locally, so the app still works
       });
     }
-  }, [user, workspaces]);
+  }, [user, workspaces, setActiveWorkspace]);
 
   useEffect(() => {
     if (!activeWorkspace) return;
