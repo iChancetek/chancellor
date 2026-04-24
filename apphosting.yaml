@@ -1,0 +1,23 @@
+kind: "AppHostingBackend"
+apiVersion: "v1alpha"
+runConfig:
+  minInstances: 0
+  maxInstances: 10
+  concurrency: 80
+  cpu: 1
+  memoryMiB: 512
+env:
+  - variable: NEXT_PUBLIC_FIREBASE_DATABASE_ID
+    value: "chancellor"
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: "ichancellor"
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: "ichancellor.firebaseapp.com"
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: "ichancellor.firebasestorage.app"
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "87526499893"
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:87526499893:web:9acc18d524fe47ce7ab37c"
+  - variable: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+    value: "G-KB3VYLPB5Z"
