@@ -45,16 +45,16 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Chancellor AI Multimodal Error:', error);
     
-    // Fallback to GPT-4o if GPT-5.5 is not yet provisioned for this specific API key
+    // Fallback to GPT-5.4-mini if GPT-5.5 is not yet provisioned for this specific API key
     if (error.status === 404 || error.code === 'model_not_found') {
       try {
         const fallback = await openai.chat.completions.create({
-          model: 'gpt-4o',
+          model: 'gpt-5.4-mini',
           messages: [
             { role: 'system', content: SYSTEM_PROMPT },
             ...messages,
           ],
-          max_tokens: 1500,
+          max_completion_tokens: 1500,
         });
         return NextResponse.json({ message: fallback.choices[0]?.message?.content });
       } catch (fallbackError) {
