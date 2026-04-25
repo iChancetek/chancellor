@@ -14,9 +14,9 @@ export default function PublicNavbar() {
       </Link>
       <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
         <div className="hide-on-mobile" style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-          <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Products</Link>
-          <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Solutions</Link>
-          <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Resources</Link>
+          <Link href="/#products-section" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Products</Link>
+          <Link href="/#solutions-section" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Solutions</Link>
+          <Link href="/#resources-section" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Resources</Link>
         </div>
         
         {user ? (
@@ -25,8 +25,8 @@ export default function PublicNavbar() {
           </Link>
         ) : (
           <>
-            <Link href="/#auth-section" style={{ fontWeight: 500, color: '#0073ea', marginLeft: '20px', textDecoration: 'none' }}>Log in</Link>
-            <Link href="/#auth-section" className="btn-monday-primary" style={{ padding: '10px 24px', fontSize: '15px', textDecoration: 'none' }}>
+            <Link href="/#solutions-section" style={{ fontWeight: 500, color: '#0073ea', marginLeft: '20px', textDecoration: 'none' }}>Log in</Link>
+            <Link href="/#solutions-section" className="btn-monday-primary" style={{ padding: '10px 24px', fontSize: '15px', textDecoration: 'none' }}>
               Get Started
             </Link>
           </>

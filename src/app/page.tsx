@@ -72,7 +72,7 @@ export default function LandingPage() {
       <PublicNavbar />
 
       {/* Hero Section */}
-      <section className="lp-hero">
+      <section id="products-section" className="lp-hero">
         <h1 className="heading-hero animate-fade-in-up">
           A platform built for a <br />
           <span style={{ color: '#6161FF' }}>new way of working</span>
@@ -98,7 +98,7 @@ export default function LandingPage() {
         </div>
 
         <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <Link href="#auth-section" className="btn-monday-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Link href="#solutions-section" className="btn-monday-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
             Get Started <ArrowRight size={20} />
           </Link>
           <Link href={`/product/${selectedProduct}`} className="btn-monday-secondary" style={{ padding: '14px 24px', fontSize: '16px', fontWeight: 600, color: '#333', border: '1px solid #d0d4e4', borderRadius: '9999px', background: '#fff' }}>
@@ -109,7 +109,7 @@ export default function LandingPage() {
       </section>
 
       {/* Auth Section - Replicating the clean Monday sign-up feel */}
-      <section id="auth-section" style={{ backgroundColor: '#f5f6f8', padding: '100px 5%' }}>
+      <section id="solutions-section" style={{ backgroundColor: '#f5f6f8', padding: '100px 5%' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '80px', alignItems: 'center' }}>
           <div style={{ flex: 1 }}>
             <h2 className="heading-section" style={{ marginBottom: '24px' }}>
@@ -193,7 +193,7 @@ export default function LandingPage() {
       </section>
 
       {/* Bottom Showcase - INTERCONNECTED APPS */}
-      <section style={{ padding: '100px 10%', textAlign: 'center' }}>
+      <section id="resources-section" style={{ padding: '100px 10%', textAlign: 'center' }}>
         <h2 className="heading-section" style={{ fontSize: '40px' }}>Interconnected apps <br /> for every team</h2>
         <div style={{ marginTop: '60px', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.1)', background: '#fff' }}>
           <img 
