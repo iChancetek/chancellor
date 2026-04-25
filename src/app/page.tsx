@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { 
   Sparkles, ArrowRight, CheckCircle2, LayoutGrid, 
-  Users, Code2, Headphones, Megaphone, Zap, Bot
+  Users, Code2, Headphones, Megaphone, Zap, Bot, Building2
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
 
@@ -22,6 +22,7 @@ export default function LandingPage() {
 
   const products = [
     { id: 'work', label: 'Work Management', icon: LayoutGrid, color: '#0073ea' },
+    { id: 'erp', label: 'ERP', icon: Building2, color: '#00c875' },
     { id: 'crm', label: 'CRM', icon: Users, color: '#ffcb00' },
     { id: 'dev', label: 'Dev', icon: Code2, color: '#ff3d57' },
     { id: 'marketing', label: 'Marketing', icon: Megaphone, color: '#a25ddc' },
@@ -116,6 +117,7 @@ export default function LandingPage() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {[
                 'Work Management: Automated projects & Gantt charts',
+                'Enterprise ERP: Resource planning & financials',
                 'Sales CRM: AI lead scoring & Gmail/Outlook sync',
                 'Dev & R&D: Sprint planning & Git integration',
                 'Chancellor AI: Autonomous agents & neural workflows'

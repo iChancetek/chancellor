@@ -4,7 +4,7 @@ import { use, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   ArrowLeft, CheckCircle2, Zap, Sparkles, Mic, Volume2, 
-  HardDrive, LayoutGrid, Users, Code2, Megaphone, Headphones, Bot,
+  HardDrive, LayoutGrid, Users, Code2, Megaphone, Headphones, Bot, Building2,
   Play, Pause, Square, Loader2
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
@@ -20,6 +20,18 @@ const PRODUCT_DATA: Record<string, any> = {
       'Automated status updates and reminders',
       'Custom workflows for any team size',
       'Resource management and workload balancing'
+    ]
+  },
+  erp: {
+    title: 'Enterprise ERP',
+    subtitle: 'Unified resource planning and financials.',
+    color: '#00c875',
+    icon: Building2,
+    features: [
+      'Financial planning and expense tracking',
+      'Inventory and supply chain management',
+      'Human capital and payroll integrations',
+      'Real-time automated compliance reporting'
     ]
   },
   crm: {
