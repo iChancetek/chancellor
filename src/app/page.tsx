@@ -45,7 +45,7 @@ export default function LandingPage() {
 
   if (loading) {
     return (
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
         <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px', filter: 'drop-shadow(0 4px 12px rgba(97,97,255,0.2))' }} />
         <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
         <p style={{ color: '#323338', fontSize: '16px', marginTop: '24px', fontWeight: 600 }}>Securing connection...</p>
@@ -55,7 +55,7 @@ export default function LandingPage() {
 
   if (user) {
     return (
-      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
         <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px', filter: 'drop-shadow(0 4px 12px rgba(97,97,255,0.2))' }} />
         <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
         <p style={{ color: '#323338', fontSize: '16px', marginTop: '24px', fontWeight: 600 }}>Initializing your workspace...</p>

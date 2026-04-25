@@ -96,6 +96,7 @@ body {
   color: var(--text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -195,7 +196,7 @@ input { font-family: inherit; outline: none; }
 /* ── Dashboard Layout Shell ──────────────────────────── */
 .dashboard-layout {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   background-color: #fff;
   overflow: hidden;
 }
@@ -217,7 +218,7 @@ input { font-family: inherit; outline: none; }
 /* ── Dashboard Exact Styles ───────────────────────────── */
 .monday-dashboard-shell {
   display: flex;
-  height: 100vh;
+  height: 100dvh;
   background-color: #fff;
 }
 
