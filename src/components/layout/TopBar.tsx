@@ -4,12 +4,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useUIStore, useBoardStore, useWorkspaceStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { Search, Bell, Sparkles, HelpCircle, UserPlus, Grid, Filter, SortAsc, MoreHorizontal, CloudCheck, Cloud, Loader2, Send } from 'lucide-react';
+import { Search, Bell, Sparkles, HelpCircle, UserPlus, Grid, Filter, SortAsc, MoreHorizontal, CloudCheck, Cloud, Loader2, Send, Menu } from 'lucide-react';
 import { getInitials, createDefaultBoard } from '@/lib/utils';
 
 export default function TopBar() {
   const { user, signOut } = useAuth();
-  const { toggleAIChat, addAIMessage } = useUIStore();
+  const { toggleAIChat, addAIMessage, toggleSidebar } = useUIStore();
   const { activeBoard } = useBoardStore();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -28,6 +28,13 @@ export default function TopBar() {
     <header className="exact-monday-topbar">
       {/* Left side: Board Title & Search */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+        <button 
+          className="mobile-menu-btn" 
+          onClick={toggleSidebar} 
+          style={{ display: 'none', background: 'none', border: 'none', color: '#323338', padding: '4px', cursor: 'pointer', marginRight: '-12px' }}
+        >
+          <Menu size={24} />
+        </button>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <span style={{ fontSize: '24px' }}>{activeBoard?.icon || '📋'}</span>
           <div style={{ display: 'flex', flexDirection: 'column' }}>

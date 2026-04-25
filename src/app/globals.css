@@ -571,4 +571,82 @@ input { font-family: inherit; outline: none; }
   100% { transform: scale(1.3); opacity: 0; }
 }
 
+/* ── Mobile & PWA Responsive Layouts ────────────────────── */
+@media (max-width: 768px) {
+  /* Landing Page Fixes */
+  .lp-navbar {
+    padding: 0 5%;
+  }
+  .lp-hero {
+    padding: 60px 5% 40px;
+  }
+  .heading-hero {
+    font-size: 40px;
+    letter-spacing: -1px;
+  }
+  .heading-section {
+    font-size: 32px;
+    text-align: center;
+  }
+  #auth-section > div {
+    flex-direction: column !important;
+    gap: 40px !important;
+  }
+  .monday-auth-card {
+    flex: 1 !important;
+    width: 100% !important;
+    padding: 24px !important;
+  }
 
+  /* Dashboard Layout Fixes */
+  .exact-monday-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    z-index: 10000;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .exact-monday-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9999;
+    backdrop-filter: blur(2px);
+  }
+  .mobile-overlay.mobile-open {
+    display: block;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+  
+  .exact-monday-topbar {
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  /* Hide secondary topbar elements to save space on mobile */
+  .exact-monday-topbar form {
+    display: none !important;
+  }
+  .exact-monday-topbar button:nth-child(2),
+  .exact-monday-topbar button:nth-child(3),
+  .exact-monday-topbar button:nth-child(4) {
+    display: none !important;
+  }
+  
+  /* Mobile table scrolling */
+  .board-table-exact {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
