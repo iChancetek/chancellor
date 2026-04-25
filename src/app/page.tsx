@@ -9,6 +9,7 @@ import {
   Users, Code2, Headphones, Megaphone, Zap, Bot, Building2
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
+import LandingAIChat from '@/components/ai/LandingAIChat';
 
 export default function LandingPage() {
   const { user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, error, clearError } = useAuth();
@@ -202,6 +203,8 @@ export default function LandingPage() {
           />
         </div>
       </section>
+      
+      <LandingAIChat />
     </div>
   );
 }
