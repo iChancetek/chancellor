@@ -102,8 +102,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             {product.subtitle}
           </h1>
           <p style={{ fontSize: '20px', color: '#676879', marginBottom: '40px', lineHeight: '1.6' }}>
-            Experience the next generation of productivity with Chancellor&apos;s Multimodal Work OS. 
-            Automate the mundane and focus on what truly matters.
+            {product.description}
           </p>
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/" className="btn-monday-primary">Start Building Now</Link>
@@ -166,32 +165,30 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
-      {/* Product Features List */}
       <section style={{ padding: '100px 10%' }}>
-        <div style={{ display: 'flex', gap: '80px', alignItems: 'center' }}>
-          <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#323338', marginBottom: '32px' }}>
-              Powering {product.title} <br /> for modern teams
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {product.features.map((feature: string) => (
-                <div key={feature} style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '18px', color: '#323338' }}>
-                  <CheckCircle2 size={24} color={product.color} />
-                  {feature}
-                </div>
-              ))}
+        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <h2 style={{ fontSize: '40px', fontWeight: 800, color: '#323338' }}>
+            Comprehensive features for {product.title}
+          </h2>
+          <p style={{ color: '#676879', fontSize: '18px', marginTop: '12px' }}>Everything you need to scale your workflows and empower your team.</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '40px' }}>
+          {product.features.map((feature: string, index: number) => (
+            <div key={index} style={{ display: 'flex', gap: '20px', background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #eee', transition: 'all 0.3s' }}>
+              <div style={{ flexShrink: 0, width: '48px', height: '48px', borderRadius: '12px', background: `${product.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: product.color }}>
+                <CheckCircle2 size={24} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '8px', color: '#323338' }}>{feature.split(':')[0]}</h3>
+                <p style={{ color: '#676879', lineHeight: '1.6', fontSize: '15px' }}>{feature.includes(':') ? feature.split(':')[1] : 'Full enterprise-grade capability included in the ChancellorOS ecosystem.'}</p>
+              </div>
             </div>
-            <Link href="/" className="btn-monday-primary" style={{ marginTop: '48px', display: 'inline-flex' }}>Try {product.title} Free</Link>
-          </div>
-          <div style={{ flex: 1, position: 'relative' }}>
-            <div style={{ width: '100%', height: '400px', background: `${product.color}10`, borderRadius: '32px', border: `1px dashed ${product.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-               <product.icon size={120} color={product.color} style={{ opacity: 0.2 }} />
-               <div style={{ position: 'absolute', top: '40px', left: '40px', background: '#fff', padding: '20px', borderRadius: '16px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                 <Sparkles size={20} color="#6161FF" />
-                 <span style={{ fontWeight: 600 }}>AI Optimized Workflow</span>
-               </div>
-            </div>
-          </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: '80px', textAlign: 'center' }}>
+          <Link href="/" className="btn-monday-primary" style={{ display: 'inline-flex' }}>Get Started with {product.title}</Link>
         </div>
       </section>
 

@@ -90,13 +90,13 @@
   padding: 0;
 }
 
-body {
+html, body {
   font-family: var(--font-main);
   background-color: var(--bg-card);
   color: var(--text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  overscroll-behavior-y: none;
+  overscroll-behavior: none;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -213,6 +213,7 @@ input { font-family: inherit; outline: none; }
   flex: 1;
   overflow-y: auto;
   background: var(--bg-page);
+  overscroll-behavior: none;
 }
 
 /* ── Dashboard Exact Styles ───────────────────────────── */
@@ -647,5 +648,6 @@ input { font-family: inherit; outline: none; }
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+    overscroll-behavior-x: none;
   }
 }
