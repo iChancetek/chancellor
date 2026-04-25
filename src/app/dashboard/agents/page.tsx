@@ -12,39 +12,44 @@ export default function AgentControlCenter() {
   const { agents, activeAgentId, setActiveAgent, addAgentAction, updateAgent } = useAgentStore();
   const activeAgent = agents.find(a => a.id === activeAgentId) || agents[0];
 
-  const simulateAgentLoop = () => {
-    const agentId = 'sales-agent-1';
-    updateAgent(agentId, { status: 'thinking', currentGoal: 'Optimize Sales Pipeline' });
+  const simulateAgentLoop = async () => {
+    const agentId = activeAgent?.id || 'sales-agent-1';
+    updateAgent(agentId, { status: 'thinking', currentGoal: 'Executing Autonomous Goal' });
     
-    setTimeout(() => {
-      addAgentAction(agentId, {
-        id: generateId(), agentId, type: 'thought', status: 'completed', timestamp: Date.now(),
-        content: 'Analyzing CRM Pipeline for stalled opportunities in the "Qualified" stage.'
+    try {
+      const response = await fetch('/api/ai/agent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          prompt: activeAgent?.description || 'Analyze the workspace and identify improvements.',
+          agentId: agentId
+        })
       });
-    }, 1000);
-
-    setTimeout(() => {
-      addAgentAction(agentId, {
-        id: generateId(), agentId, type: 'tool_call', status: 'completed', timestamp: Date.now(),
-        content: 'Executing semantic search across lead activity logs.',
-        toolName: 'semantic_search', toolArgs: { query: 'stalled leads > 30 days', filter: 'stage:qualified' }
-      });
-    }, 3000);
-
-    setTimeout(() => {
-      addAgentAction(agentId, {
-        id: generateId(), agentId, type: 'observation', status: 'completed', timestamp: Date.now(),
-        content: 'Identified 3 leads (Acme Corp, Globex, Initech) with no touchpoints in 45 days. Probability of close has dropped by 22%.'
-      });
-    }, 5000);
-
-    setTimeout(() => {
-      addAgentAction(agentId, {
-        id: generateId(), agentId, type: 'approval_request', status: 'waiting_approval', timestamp: Date.now(),
-        content: 'I recommend drafting a personalized re-engagement sequence for these leads and notifying the assigned reps. Shall I proceed?'
-      });
+      
+      const data = await response.json();
+      
+      if (data.steps) {
+        data.steps.forEach((step: any, index: number) => {
+          setTimeout(() => {
+            addAgentAction(agentId, {
+              id: generateId(),
+              agentId,
+              type: step.type === 'tool-call' ? 'tool_call' : 'thought',
+              status: 'completed',
+              timestamp: Date.now(),
+              content: step.content || (step.toolCalls ? `Calling tool: ${step.toolCalls[0].name}` : 'Reasoning...'),
+              toolName: step.toolCalls?.[0]?.name,
+              toolArgs: step.toolCalls?.[0]?.args
+            });
+          }, index * 1000);
+        });
+      }
+      
       updateAgent(agentId, { status: 'idle' });
-    }, 7000);
+    } catch (error) {
+      console.error('Failed to run agent:', error);
+      updateAgent(agentId, { status: 'idle' });
+    }
   };
 
   return (
