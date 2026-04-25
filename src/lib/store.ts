@@ -294,6 +294,15 @@ export const useAgentStore = create<AgentState>()(
     (set) => ({
       agents: [
         {
+          id: 'cfo-agent-1',
+          name: 'CFO Intelligence',
+          role: 'cfo',
+          avatar: '🏦',
+          status: 'idle',
+          description: 'High-level financial strategy, risk assessment, and fiscal governance.',
+          actions: []
+        },
+        {
           id: 'sales-agent-1',
           name: 'Sales Intelligence',
           role: 'sales',
@@ -312,12 +321,57 @@ export const useAgentStore = create<AgentState>()(
           actions: []
         },
         {
+          id: 'procurement-agent-1',
+          name: 'Procurement Agent',
+          role: 'procurement',
+          avatar: '🚚',
+          status: 'idle',
+          description: 'Supply chain optimization and automated vendor procurement.',
+          actions: []
+        },
+        {
+          id: 'ops-agent-1',
+          name: 'Operations Agent',
+          role: 'ops',
+          avatar: '⚙️',
+          status: 'idle',
+          description: 'Business process automation and operational efficiency.',
+          actions: []
+        },
+        {
           id: 'pm-agent-1',
           name: 'Project Orchestrator',
           role: 'pm',
           avatar: '📅',
           status: 'idle',
           description: 'Resource management and project timeline optimization.',
+          actions: []
+        },
+        {
+          id: 'dev-agent-1',
+          name: 'Developer Agent',
+          role: 'dev',
+          avatar: '💻',
+          status: 'idle',
+          description: 'Autonomous code review, bug fixing, and CI/CD monitoring.',
+          actions: []
+        },
+        {
+          id: 'support-agent-1',
+          name: 'Support Agent',
+          role: 'support',
+          avatar: '🎧',
+          status: 'idle',
+          description: 'Autonomous ticket resolution and customer success optimization.',
+          actions: []
+        },
+        {
+          id: 'staff-agent-1',
+          name: 'Chief-of-Staff',
+          role: 'staff',
+          avatar: '🎩',
+          status: 'idle',
+          description: 'Executive coordination, KPI tracking, and strategic briefings.',
           actions: []
         }
       ],

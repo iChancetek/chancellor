@@ -254,7 +254,7 @@ export interface AgentAction {
 export interface Agent {
   id: string;
   name: string;
-  role: 'sales' | 'finance' | 'ops' | 'pm' | 'dev' | 'support' | 'executive';
+  role: 'sales' | 'finance' | 'ops' | 'pm' | 'dev' | 'support' | 'executive' | 'cfo' | 'procurement' | 'staff';
   avatar: string;
   status: 'idle' | 'thinking' | 'acting' | 'offline';
   description: string;

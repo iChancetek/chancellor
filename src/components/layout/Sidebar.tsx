@@ -46,6 +46,8 @@ export default function Sidebar() {
   const navItems = [
     { id: 'home', label: 'Home', icon: Home, path: '/dashboard' },
     { id: 'agents', label: 'Agent Control Center', icon: Bot, path: '/dashboard/agents', badge: 'LIVE' },
+    { id: 'swarms', label: 'Agent Swarms', icon: Layers, path: '/dashboard/swarms' },
+    { id: 'intelligence', label: 'Enterprise Intelligence', icon: Brain, path: '/dashboard/intelligence' },
     { id: 'inbox', label: 'Inbox', icon: Inbox, path: '/dashboard/inbox' },
     { id: 'calendar', label: 'My Week', icon: Calendar, path: '/dashboard/calendar' },
     { id: 'apps', label: 'Apps Marketplace', icon: LayoutGrid, path: '/dashboard/apps' },
