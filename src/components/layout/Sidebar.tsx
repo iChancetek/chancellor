@@ -7,7 +7,7 @@ import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones,
-  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon
+  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon, Layers, Brain
 } from 'lucide-react';
 
 export default function Sidebar() {
