@@ -56,19 +56,9 @@ const getKnowledge = tool({
   }
 });
 
-const salesAgent = new Agent({
-  name: 'Sales Intelligence',
-  instructions: `
-    You are the Sales Intelligence Agent for ChancellorOS. 
-    Your goal is to optimize the sales pipeline. 
-    You have access to workspace data and the enterprise knowledge base.
-    Always use 'get_knowledge' if you are unsure about company policy or strategy.
-  `,
-  tools: [getWorkspaceData, updateItemStatus, getKnowledge],
-});
-
 const cfoAgent = new Agent({
   name: 'CFO Intelligence',
+  handoffDescription: 'High-level financial strategy, budget approvals, and risk assessment.',
   instructions: `
     You are the CFO Agent for ChancellorOS.
     You handle high-level financial strategy and risk assessment.
@@ -79,6 +69,7 @@ const cfoAgent = new Agent({
 
 const financeAgent = new Agent({
   name: 'Finance Controller',
+  handoffDescription: 'Ledger reconciliation, cash flow reporting, and financial auditing.',
   instructions: `
     You are the Finance Controller.
     You handle ledger reconciliation and cash flow reporting.
@@ -86,11 +77,20 @@ const financeAgent = new Agent({
   tools: [getWorkspaceData],
 });
 
-// ── Handoffs ─────────────────────────────────────────────
-
-salesAgent.addHandoff(cfoAgent, {
-  condition: 'The user asks about financial risks, budget approvals, or high-level fiscal strategy.'
+const salesAgent = new Agent({
+  name: 'Sales Intelligence',
+  handoffDescription: 'Sales pipeline optimization, deal engagement, and CRM management.',
+  instructions: `
+    You are the Sales Intelligence Agent for ChancellorOS. 
+    Your goal is to optimize the sales pipeline. 
+    You have access to workspace data and the enterprise knowledge base.
+    Always use 'get_knowledge' if you are unsure about company policy or strategy.
+  `,
+  tools: [getWorkspaceData, updateItemStatus, getKnowledge],
+  handoffs: [cfoAgent, financeAgent],
 });
+
+// Handoffs are defined in the agent constructor above.
 
 // ── API Route Handler ────────────────────────────────────
 
