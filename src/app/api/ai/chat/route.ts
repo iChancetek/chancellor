@@ -21,7 +21,7 @@ Rules:
 - Format responses with clear structure when appropriate (markdown tables, lists).
 - Speak confidently as the platform's AI brain.`;
 
-const MODEL_CHAIN = ['gpt-5.5-turbo', 'gpt-5.4-turbo', 'gpt-4.5-preview', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'];
+const MODEL_CHAIN = ['gpt-5.4-turbo', 'gpt-5.5-turbo', 'gpt-4.5-preview', 'gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'];
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
