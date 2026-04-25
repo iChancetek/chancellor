@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Sparkles, Building2, Users, Bot } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, loading, signInWithGoogle, signInWithEmail, error, clearError } = useAuth();
@@ -28,7 +28,7 @@ export default function LoginPage() {
 
   if (loading || user) {
     return (
-      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0f111a' }}>
         <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px' }} />
         <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
       </div>
@@ -36,25 +36,77 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ minHeight: '100dvh', background: '#f5f6f8', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-      <Link href="/" style={{ position: 'absolute', top: '40px', left: '40px', display: 'flex', alignItems: 'center', gap: '8px', color: '#676879', fontWeight: 600, textDecoration: 'none' }}>
-        <ArrowLeft size={20} /> Back to home
-      </Link>
-
-      <div style={{ width: '100%', maxWidth: '440px' }}>
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: '#000', fontSize: '32px', fontWeight: 800, marginBottom: '24px' }}>
-            <img src="/icon.svg" alt="Logo" style={{ width: '40px', height: '40px' }} />
+    <div style={{ minHeight: '100dvh', background: '#fff', display: 'flex', overflow: 'hidden' }}>
+      {/* Left Side: Branding & Welcome */}
+      <div style={{ 
+        flex: 1.2, 
+        background: '#0f111a', 
+        padding: '60px', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Abstract background glow */}
+        <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(97,97,255,0.1) 0%, transparent 70%)', filter: 'blur(80px)' }} />
+        
+        <div style={{ position: 'relative', zIndex: 1, maxWidth: '600px', margin: '0 auto' }}>
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', textDecoration: 'none', color: '#fff', fontSize: '28px', fontWeight: 800, marginBottom: '60px' }}>
+            <img src="/icon.svg" alt="Logo" style={{ width: '36px', height: '36px' }} />
             Chancellor
           </Link>
-          <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338' }}>Log in to your account</h1>
-          <p style={{ color: '#676879', marginTop: '12px' }}>Enter your details to continue to your workspace</p>
-        </div>
+          
+          <h1 style={{ fontSize: '56px', fontWeight: 800, color: '#fff', lineHeight: '1.1', marginBottom: '24px' }}>
+            Welcome to <br /> <span className="gradient-text">Chancellor</span>
+          </h1>
+          <p style={{ fontSize: '24px', color: '#9699a6', marginBottom: '48px', fontWeight: 500 }}>
+            ChancellorOS CRM and EPR Cloud Platform
+          </p>
 
-        <div className="monday-auth-card" style={{ padding: '40px', background: '#fff', borderRadius: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            {[
+              { icon: Building2, title: 'Unified ERP', desc: 'Seamless resource planning and financials.' },
+              { icon: Users, title: 'Intelligent CRM', desc: 'AI-driven sales and lead management.' },
+              { icon: Bot, title: 'Neural OS', desc: 'Autonomous agents powering your workflow.' }
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(97,97,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6161FF' }}>
+                  <item.icon size={22} />
+                </div>
+                <div>
+                  <h4 style={{ color: '#fff', fontSize: '16px', fontWeight: 700 }}>{item.title}</h4>
+                  <p style={{ color: '#9699a6', fontSize: '13px' }}>{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Side: Auth Form */}
+      <div style={{ 
+        flex: 1, 
+        background: '#fff', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        padding: '60px',
+        position: 'relative'
+      }}>
+        <Link href="/" style={{ position: 'absolute', top: '40px', right: '40px', display: 'flex', alignItems: 'center', gap: '8px', color: '#676879', fontWeight: 600, textDecoration: 'none', fontSize: '14px' }}>
+          <ArrowLeft size={18} /> Back to home
+        </Link>
+
+        <div style={{ maxWidth: '400px', width: '100%', margin: '0 auto' }}>
+          <div style={{ marginBottom: '40px' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: 800, color: '#323338' }}>Log in</h2>
+            <p style={{ color: '#676879', marginTop: '8px' }}>Enter your work credentials to continue.</p>
+          </div>
+
           <button
             className="btn-google btn-full monday-input"
-            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', background: '#fff', height: '52px', marginBottom: '24px', borderRadius: '12px', border: '1px solid #d0d4e4', cursor: 'pointer' }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', background: '#fff', height: '52px', marginBottom: '24px', borderRadius: '12px', border: '1px solid #d0d4e4', cursor: 'pointer', fontWeight: 600 }}
             onClick={signInWithGoogle}
           >
             <svg width="20" height="20" viewBox="0 0 24 24">
@@ -75,21 +127,21 @@ export default function LoginPage() {
           <form onSubmit={handleLogin}>
             <div className="monday-input-group">
               <label className="monday-label">Work Email</label>
-              <input className="monday-input" style={{ borderRadius: '12px' }} type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="example@company.com" required/>
+              <input className="monday-input" style={{ borderRadius: '12px' }} type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="name@company.com" required/>
             </div>
-            <div className="monday-input-group" style={{ marginTop: '16px' }}>
+            <div className="monday-input-group" style={{ marginTop: '20px' }}>
               <label className="monday-label">Password</label>
-              <input className="monday-input" style={{ borderRadius: '12px' }} type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Enter your password" required/>
+              <input className="monday-input" style={{ borderRadius: '12px' }} type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" required/>
             </div>
 
-            {error && <p style={{ color: '#df2f4a', fontSize: '12px', margin: '8px 0' }}>{error}</p>}
+            {error && <p style={{ color: '#df2f4a', fontSize: '12px', margin: '12px 0' }}>{error}</p>}
 
-            <button className="btn-monday-primary" style={{ width: '100%', marginTop: '32px', borderRadius: '12px', padding: '14px', fontSize: '16px' }} disabled={submitting}>
+            <button className="btn-monday-primary" style={{ width: '100%', marginTop: '32px', borderRadius: '12px', padding: '16px', fontSize: '16px' }} disabled={submitting}>
               {submitting ? 'Logging in...' : 'Log in'}
             </button>
           </form>
 
-          <p style={{ textAlign: 'center', marginTop: '24px', fontSize: '14px', color: '#676879' }}>
+          <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '14px', color: '#676879' }}>
             Don&apos;t have an account? 
             <Link href="/#auth-section" style={{ color: '#6161FF', fontWeight: 700, marginLeft: '8px', textDecoration: 'none' }}>
               Sign up for free
