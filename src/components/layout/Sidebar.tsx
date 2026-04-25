@@ -7,7 +7,7 @@ import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones,
-  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2
+  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -45,6 +45,7 @@ export default function Sidebar() {
 
   const navItems = [
     { id: 'home', label: 'Home', icon: Home, path: '/dashboard' },
+    { id: 'agents', label: 'Agent Control Center', icon: Bot, path: '/dashboard/agents', badge: 'LIVE' },
     { id: 'inbox', label: 'Inbox', icon: Inbox, path: '/dashboard/inbox' },
     { id: 'calendar', label: 'My Week', icon: Calendar, path: '/dashboard/calendar' },
     { id: 'apps', label: 'Apps Marketplace', icon: LayoutGrid, path: '/dashboard/apps' },
@@ -97,7 +98,12 @@ export default function Sidebar() {
             }}
           >
             <item.icon size={18} style={{ color: item.id === 'home' ? '#6161FF' : 'inherit' }} />
-            {item.label}
+            <span style={{ flex: 1 }}>{item.label}</span>
+            {item.badge && (
+              <span style={{ background: '#6161FF', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '2px 6px', borderRadius: '10px' }}>
+                {item.badge}
+              </span>
+            )}
           </div>
         ))}
 

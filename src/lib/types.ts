@@ -238,6 +238,30 @@ export interface AIContext {
   moduleContext?: BoardType;
 }
 
+// ── Agentic Runtime ───────────────────────────────────────
+
+export interface AgentAction {
+  id: string;
+  agentId: string;
+  type: 'action' | 'thought' | 'observation' | 'tool_call' | 'approval_request';
+  content: string;
+  toolName?: string;
+  toolArgs?: any;
+  status: 'pending' | 'executing' | 'completed' | 'failed' | 'waiting_approval';
+  timestamp: number;
+}
+
+export interface Agent {
+  id: string;
+  name: string;
+  role: 'sales' | 'finance' | 'ops' | 'pm' | 'dev' | 'support' | 'executive';
+  avatar: string;
+  status: 'idle' | 'thinking' | 'acting' | 'offline';
+  description: string;
+  currentGoal?: string;
+  actions: AgentAction[];
+}
+
 // ── Default Column Presets ────────────────────────────────
 
 export const DEFAULT_STATUS_LABELS: StatusLabel[] = [

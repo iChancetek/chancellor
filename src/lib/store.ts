@@ -274,3 +274,72 @@ export const useUIStore = create<UIState>((set) => ({
   addAIMessage: (message) => set((state) => ({ aiMessages: [...state.aiMessages, message] })),
   setAIMessages: (messages) => set({ aiMessages: messages }),
 }));
+
+// ── Agent Store ───────────────────────────────────────────
+
+interface AgentState {
+  agents: Agent[];
+  activeAgentId: string | null;
+  setAgents: (agents: Agent[]) => void;
+  setActiveAgent: (id: string | null) => void;
+  updateAgent: (id: string, updates: Partial<Agent>) => void;
+  addAgentAction: (agentId: string, action: AgentAction) => void;
+  updateAgentAction: (agentId: string, actionId: string, updates: Partial<AgentAction>) => void;
+}
+
+import type { Agent, AgentAction } from './types';
+
+export const useAgentStore = create<AgentState>()(
+  persist(
+    (set) => ({
+      agents: [
+        {
+          id: 'sales-agent-1',
+          name: 'Sales Intelligence',
+          role: 'sales',
+          avatar: '💼',
+          status: 'idle',
+          description: 'Autonomous sales pipeline optimization and lead engagement.',
+          actions: []
+        },
+        {
+          id: 'finance-agent-1',
+          name: 'Finance Controller',
+          role: 'finance',
+          avatar: '📊',
+          status: 'idle',
+          description: 'Automated ledger reconciliation and cash flow forecasting.',
+          actions: []
+        },
+        {
+          id: 'pm-agent-1',
+          name: 'Project Orchestrator',
+          role: 'pm',
+          avatar: '📅',
+          status: 'idle',
+          description: 'Resource management and project timeline optimization.',
+          actions: []
+        }
+      ],
+      activeAgentId: null,
+      setAgents: (agents) => set({ agents }),
+      setActiveAgent: (id) => set({ activeAgentId: id }),
+      updateAgent: (id, updates) => set((state) => ({
+        agents: state.agents.map(a => a.id === id ? { ...a, ...updates } : a)
+      })),
+      addAgentAction: (agentId, action) => set((state) => ({
+        agents: state.agents.map(a => a.id === agentId ? { ...a, actions: [action, ...a.actions].slice(0, 50) } : a)
+      })),
+      updateAgentAction: (agentId, actionId, updates) => set((state) => ({
+        agents: state.agents.map(a => a.id === agentId ? { 
+          ...a, 
+          actions: a.actions.map(act => act.id === actionId ? { ...act, ...updates } : act) 
+        } : a)
+      })),
+    }),
+    {
+      name: 'chancellor-agents',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
