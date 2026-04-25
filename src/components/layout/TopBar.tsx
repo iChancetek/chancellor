@@ -56,6 +56,7 @@ export default function TopBar() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         <button 
           onClick={toggleAIChat} 
+          className="hide-on-mobile"
           style={{ 
             color: '#6161FF', background: '#6161FF1A', padding: '6px 12px', 
             borderRadius: '6px', fontSize: '13px', fontWeight: 700, 
@@ -66,9 +67,9 @@ export default function TopBar() {
           Copilot
         </button>
 
-        <button style={{ color: '#676879' }}><Bell size={20} /></button>
-        <button style={{ color: '#676879' }}><HelpCircle size={20} /></button>
-        <button style={{ color: '#676879' }}><Grid size={20} /></button>
+        <button className="hide-on-mobile" style={{ color: '#676879' }}><Bell size={20} /></button>
+        <button className="hide-on-mobile" style={{ color: '#676879' }}><HelpCircle size={20} /></button>
+        <button className="hide-on-mobile" style={{ color: '#676879' }}><Grid size={20} /></button>
         
         <div style={{ position: 'relative' }} ref={menuRef}>
           <button 

@@ -78,7 +78,7 @@ export default function AIPulseSummary() {
         </div>
         <h2 style={{ fontSize: '20px', fontWeight: 800, color: '#323338' }}>{summary?.headline || "Daily Neural Briefing"}</h2>
         <div style={{ marginLeft: 'auto', fontSize: '11px', fontWeight: 700, color: '#6161FF', background: '#6161FF1A', padding: '4px 10px', borderRadius: '20px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-          GPT-4o Logic Active
+          GPT-5.4 Logic Active
         </div>
       </div>
 

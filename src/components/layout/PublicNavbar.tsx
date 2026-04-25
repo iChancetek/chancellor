@@ -13,9 +13,11 @@ export default function PublicNavbar() {
         Chancellor
       </Link>
       <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-        <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Products</Link>
-        <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Solutions</Link>
-        <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Resources</Link>
+        <div className="hide-on-mobile" style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
+          <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Products</Link>
+          <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Solutions</Link>
+          <Link href="/" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Resources</Link>
+        </div>
         
         {user ? (
           <Link href="/dashboard" className="btn-monday-primary" style={{ padding: '10px 24px', fontSize: '15px', textDecoration: 'none' }}>
