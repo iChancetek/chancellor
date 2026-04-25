@@ -89,7 +89,7 @@ export default function Sidebar() {
         {/* Main Nav */}
         {navItems.map((item) => {
           // RBAC Check for nav items
-          if (item.id === 'agents' && user?.role === 'contributor') return null;
+          if (item.id === 'agents' && (user as any)?.role === 'contributor') return null;
           
           return (
             <div 
