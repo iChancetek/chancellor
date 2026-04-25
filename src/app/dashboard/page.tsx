@@ -97,6 +97,37 @@ export default function DashboardHome() {
 
       <AIPulseSummary />
 
+      {/* Real-Time Agentic Feed (Point 12: Visible Intelligence) */}
+      <div style={{ marginBottom: '40px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px', fontSize: '11px', fontWeight: 800, color: 'rgba(0,0,0,0.4)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00c875', boxShadow: '0 0 10px #00c875' }} />
+          Live Agentic Execution Loop
+        </div>
+        <div style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e1e4e8', padding: '20px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(97, 97, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+            💼
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+              <span style={{ fontWeight: 700, fontSize: '14px', color: '#323338' }}>Sales Intelligence Agent</span>
+              <span style={{ fontSize: '11px', color: '#6161FF', fontWeight: 700, background: 'rgba(97, 97, 255, 0.1)', padding: '2px 8px', borderRadius: '10px' }}>THINKING</span>
+            </div>
+            <div style={{ fontSize: '13px', color: '#676879' }}>
+              Reasoning: "Analyzing CRM Pipeline for stalled opportunities in the 'Qualified' stage..."
+            </div>
+          </div>
+          <div style={{ width: '200px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#9699a6', marginBottom: '4px' }}>
+              <span>Analysis Progress</span>
+              <span>72%</span>
+            </div>
+            <div style={{ height: '6px', background: '#f5f6f8', borderRadius: '3px', overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: '72%', background: '#6161FF', borderRadius: '3px' }} />
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Quick Actions */}
       <div style={{ marginBottom: 'var(--space-8)' }}>
         <div className="dashboard-section-title">

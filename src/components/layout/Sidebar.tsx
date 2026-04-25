@@ -7,7 +7,7 @@ import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones,
-  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot
+  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -178,6 +178,13 @@ export default function Sidebar() {
         >
           <Settings size={18} />
           <span style={{ fontSize: '13px' }}>Administration</span>
+        </div>
+        <div 
+          onClick={() => router.push('/dashboard/mcp')}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: pathname === '/dashboard/mcp' ? '#fff' : 'rgba(255,255,255,0.6)', cursor: 'pointer', background: pathname === '/dashboard/mcp' ? 'rgba(255,255,255,0.1)' : 'transparent', borderRadius: '6px' }}
+        >
+          <LinkIcon size={18} />
+          <span style={{ fontSize: '13px' }}>MCP Tool Orchestration</span>
         </div>
         <div 
           onClick={() => router.push('/dashboard/automations')}
