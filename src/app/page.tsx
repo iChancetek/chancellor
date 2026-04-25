@@ -23,7 +23,7 @@ export default function LandingPage() {
   const products = [
     { id: 'work', label: 'Work Management', icon: LayoutGrid, color: '#0073ea' },
     { id: 'erp', label: 'ChancellorOS ERP', icon: Building2, color: '#00c875' },
-    { id: 'crm', label: 'CRM', icon: Users, color: '#ffcb00' },
+    { id: 'crm', label: 'ChancellorOS CRM', icon: Users, color: '#ffcb00' },
     { id: 'dev', label: 'Dev', icon: Code2, color: '#ff3d57' },
     { id: 'marketing', label: 'Marketing', icon: Megaphone, color: '#a25ddc' },
     { id: 'support', label: 'Support', icon: Headphones, color: '#579bfc' },
@@ -118,7 +118,7 @@ export default function LandingPage() {
               {[
                 'Work Management: Automated projects & Gantt charts',
                 'ChancellorOS ERP: Resource planning & financials',
-                'Sales CRM: AI lead scoring & Gmail/Outlook sync',
+                'ChancellorOS CRM: AI lead scoring & Gmail/Outlook sync',
                 'Dev & R&D: Sprint planning & Git integration',
                 'Chancellor AI: Autonomous agents & neural workflows'
               ].map(text => (

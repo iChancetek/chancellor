@@ -35,7 +35,7 @@ const PRODUCT_DATA: Record<string, any> = {
     ]
   },
   crm: {
-    title: 'Sales CRM',
+    title: 'ChancellorOS CRM',
     subtitle: 'Track and manage your entire sales pipeline.',
     color: '#ffcb00',
     icon: Users,
