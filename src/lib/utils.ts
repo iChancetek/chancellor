@@ -117,7 +117,7 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
 
   // -- ERP TEMPLATES --
   if (type === 'erp') {
-    if (lowerName.includes('ledger') || lowerName.includes('finance') || lowerName.includes('cash') || lowerName.includes('forecast')) {
+    if (lowerName.includes('ledger')) {
       return [
         { id: 'status', type: 'status', title: 'Recon Status', width: 140, position: 0, settings: { labels: [{id:'reconciled',text:'Reconciled',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'discrepancy',text:'Discrepancy',color:'#E2445C'}] } },
         { id: 'account', type: 'text', title: 'Account Code', width: 140, position: 1, settings: {} },
@@ -125,6 +125,24 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
         { id: 'type', type: 'status', title: 'Type', width: 130, position: 3, settings: { labels: [{id:'debit',text:'Debit',color:'#579BFC'},{id:'credit',text:'Credit',color:'#A25DDC'}] } },
         { id: 'date', type: 'date', title: 'Transaction Date', width: 130, position: 4, settings: {} },
         { id: 'person', type: 'person', title: 'Approved By', width: 120, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('cash')) {
+      return [
+        { id: 'status', type: 'status', title: 'Payment Status', width: 140, position: 0, settings: { labels: [{id:'cleared',text:'Cleared',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'failed',text:'Failed',color:'#E2445C'}] } },
+        { id: 'method', type: 'status', title: 'Method', width: 130, position: 1, settings: { labels: [{id:'ach',text:'ACH',color:'#579BFC'},{id:'wire',text:'Wire',color:'#A25DDC'},{id:'card',text:'Card',color:'#FDAB3D'}] } },
+        { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'category', type: 'text', title: 'Category', width: 140, position: 3, settings: {} },
+        { id: 'date', type: 'date', title: 'Expected Date', width: 130, position: 4, settings: {} },
+      ];
+    }
+    if (lowerName.includes('forecast')) {
+      return [
+        { id: 'status', type: 'status', title: 'Confidence', width: 140, position: 0, settings: { labels: [{id:'high',text:'High',color:'#00C875'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#E2445C'}] } },
+        { id: 'projected', type: 'number', title: 'Projected Revenue', width: 150, position: 1, settings: { format: 'currency', unit: '$' } },
+        { id: 'actual', type: 'number', title: 'Actual to Date', width: 150, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'variance', type: 'number', title: 'Variance %', width: 120, position: 3, settings: { format: 'number' } },
+        { id: 'date', type: 'date', title: 'Period End', width: 130, position: 4, settings: {} },
       ];
     }
     if (lowerName.includes('inventory') || lowerName.includes('warehouse') || lowerName.includes('supply') || lowerName.includes('production')) {
@@ -249,9 +267,12 @@ function getDefaultGroupsForType(type: string, name: string, boardId: string): G
     else if (lowerName.includes('campaign')) groupTitles = ['Q1 Campaigns', 'Q2 Campaigns', 'Archived'];
     else groupTitles = ['New Leads', 'Qualified', 'Proposal Sent', 'Closed Won'];
   } else if (type === 'erp') {
-    if (lowerName.includes('ledger') || lowerName.includes('finance') || lowerName.includes('cash') || lowerName.includes('forecast')) groupTitles = ['Assets', 'Liabilities', 'Equity', 'Revenue', 'Expenses'];
-    else if (lowerName.includes('inventory') || lowerName.includes('warehouse') || lowerName.includes('supply') || lowerName.includes('production')) groupTitles = ['Raw Materials', 'Work In Progress', 'Finished Goods'];
-    else if (lowerName.includes('employee') || lowerName.includes('hr') || lowerName.includes('compensation') || lowerName.includes('skill')) groupTitles = ['Full-Time', 'Part-Time', 'Contractors'];
+    if (lowerName.includes('ledger')) groupTitles = ['Assets', 'Liabilities', 'Equity', 'Revenue', 'Expenses'];
+    else if (lowerName.includes('cash')) groupTitles = ['Cash Inflow', 'Cash Outflow', 'Reconciliation'];
+    else if (lowerName.includes('forecast')) groupTitles = ['Q1 Forecast', 'Q2 Forecast', 'Historical Data'];
+    else if (lowerName.includes('inventory')) groupTitles = ['Raw Materials', 'Work In Progress', 'Finished Goods'];
+    else if (lowerName.includes('warehouse')) groupTitles = ['Receiving', 'Picking/Packing', 'Shipping'];
+    else if (lowerName.includes('hr') || lowerName.includes('employee') || lowerName.includes('compensation') || lowerName.includes('skill')) groupTitles = ['Onboarding', 'Active Employees', 'Offboarding'];
     else groupTitles = ['Planning', 'Execution', 'Review'];
   } else if (type === 'dev') {
     if (lowerName.includes('bug')) groupTitles = ['Critical Bugs', 'High Priority', 'Backlog'];
