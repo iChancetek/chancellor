@@ -1,11 +1,6 @@
-import { OpenAI } from 'openai';
 import { Agent, run, tool } from '@openai/agents';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 // ── Tools Definition ──────────────────────────────────────
 
