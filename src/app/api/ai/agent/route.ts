@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { Agent, run } from '@openai/agents';
+import { Agent, run, functionTool } from '@openai/agents';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -9,7 +9,7 @@ const openai = new OpenAI({
 
 // ── Tools Definition ──────────────────────────────────────
 
-const getWorkspaceData = {
+const getWorkspaceData = functionTool({
   name: 'get_workspace_data',
   description: 'Get current workspace boards and status.',
   parameters: z.object({}),
@@ -22,9 +22,9 @@ const getWorkspaceData = {
       stalledLeads: ['Acme Corp', 'Globex']
     };
   }
-};
+});
 
-const updateItemStatus = {
+const updateItemStatus = functionTool({
   name: 'update_item_status',
   description: 'Update the status of a specific item or deal.',
   parameters: z.object({
@@ -35,11 +35,11 @@ const updateItemStatus = {
   run: async ({ itemId, newStatus, reason }: { itemId: string, newStatus: string, reason: string }) => {
     return { success: true, message: `Updated item ${itemId} to ${newStatus}. Reason: ${reason}` };
   }
-};
+});
 
 // ── Agents Definition ─────────────────────────────────────
 
-const getKnowledge = {
+const getKnowledge = functionTool({
   name: 'get_knowledge',
   description: 'Query the enterprise knowledge base for business context, policies, or past decisions.',
   parameters: z.object({
@@ -54,7 +54,7 @@ const getKnowledge = {
     ];
     return knowledgeBase.filter(k => k.topic.toLowerCase().includes(query.toLowerCase()) || k.content.toLowerCase().includes(query.toLowerCase()));
   }
-};
+});
 
 const salesAgent = new Agent({
   name: 'Sales Intelligence',
