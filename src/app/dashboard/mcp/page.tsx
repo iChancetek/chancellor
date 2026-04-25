@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { 
   Link as LinkIcon, Share2, Zap, Shield, Database, 
-  Slack, Github, Mail, Globe, Settings, Plus, CheckCircle2
+  MessageSquare, Code2, Mail, Globe, Settings, Plus, CheckCircle2
 } from 'lucide-react';
 
 export default function MCPConnectorsPage() {
   const [connectors, setConnectors] = useState([
-    { id: 'slack', name: 'Slack', status: 'connected', type: 'Messaging', icon: <Slack size={20} color="#4A154B" /> },
-    { id: 'github', name: 'GitHub', status: 'connected', type: 'Dev Tools', icon: <Github size={20} color="#181717" /> },
+    { id: 'slack', name: 'Slack', status: 'connected', type: 'Messaging', icon: <MessageSquare size={20} color="#4A154B" /> },
+    { id: 'github', name: 'GitHub', status: 'connected', type: 'Dev Tools', icon: <Code2 size={20} color="#181717" /> },
     { id: 'salesforce', name: 'Salesforce', status: 'pending', type: 'CRM', icon: <Database size={20} color="#00A1E0" /> },
     { id: 'zapier', name: 'Zapier', status: 'disconnected', type: 'Automation', icon: <Zap size={20} color="#FF4A00" /> },
     { id: 'gmail', name: 'Gmail', status: 'connected', type: 'Email', icon: <Mail size={20} color="#EA4335" /> },
