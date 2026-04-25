@@ -23,7 +23,7 @@ const PRODUCT_DATA: Record<string, any> = {
     ]
   },
   erp: {
-    title: 'Enterprise ERP',
+    title: 'ChancellorOS ERP',
     subtitle: 'Unified resource planning and financials.',
     color: '#00c875',
     icon: Building2,
