@@ -171,9 +171,11 @@ export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, o
                 padding: '10px 0', fontSize: '14px', cursor: 'pointer',
                 color: activeTab === tab ? '#0073ea' : '#676879',
                 borderBottom: activeTab === tab ? '2px solid #0073ea' : 'none',
-                fontWeight: activeTab === tab ? 600 : 400
+                fontWeight: activeTab === tab ? 600 : 400,
+                display: 'flex', alignItems: 'center', gap: '6px'
               }}
             >
+              {tab === 'AI Copilot' && <Sparkles size={14} color="#6161FF" />}
               {tab}
             </div>
           ))}

@@ -47,6 +47,18 @@ export default function TopBar() {
 
       {/* Right side: Utilities & AI */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+        <button 
+          onClick={toggleAIChat} 
+          style={{ 
+            color: '#6161FF', background: '#6161FF1A', padding: '6px 12px', 
+            borderRadius: '6px', fontSize: '13px', fontWeight: 700, 
+            display: 'flex', alignItems: 'center', gap: '8px' 
+          }}
+        >
+          <Sparkles size={16} />
+          Copilot
+        </button>
+
         <button style={{ color: '#676879' }}><Bell size={20} /></button>
         <button style={{ color: '#676879' }}><HelpCircle size={20} /></button>
         <button style={{ color: '#676879' }}><Grid size={20} /></button>
