@@ -10,6 +10,7 @@ export interface User {
   email: string;
   displayName: string;
   photoURL: string | null;
+  role: 'admin' | 'manager' | 'contributor'; // Added RBAC role
   createdAt: number;
   updatedAt: number;
 }

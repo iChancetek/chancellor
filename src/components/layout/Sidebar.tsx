@@ -87,27 +87,32 @@ export default function Sidebar() {
 
       <div style={{ flex: 1, overflowY: 'auto', paddingTop: '16px' }}>
         {/* Main Nav */}
-        {navItems.map((item) => (
-          <div 
-            key={item.id} 
-            className={`sidebar-nav-item ${pathname === item.path ? 'active' : ''}`}
-            onClick={() => router.push(item.path)}
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', 
-              fontSize: '14px', color: pathname === item.path ? '#fff' : 'rgba(255,255,255,0.7)',
-              background: pathname === item.path ? 'rgba(255,255,255,0.1)' : 'transparent',
-              cursor: 'pointer'
-            }}
-          >
-            <item.icon size={18} style={{ color: item.id === 'home' ? '#6161FF' : 'inherit' }} />
-            <span style={{ flex: 1 }}>{item.label}</span>
-            {item.badge && (
-              <span style={{ background: '#6161FF', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '2px 6px', borderRadius: '10px' }}>
-                {item.badge}
-              </span>
-            )}
-          </div>
-        ))}
+        {navItems.map((item) => {
+          // RBAC Check for nav items
+          if (item.id === 'agents' && user?.role === 'contributor') return null;
+          
+          return (
+            <div 
+              key={item.id} 
+              className={`sidebar-nav-item ${pathname === item.path ? 'active' : ''}`}
+              onClick={() => router.push(item.path)}
+              style={{ 
+                display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 16px', 
+                fontSize: '14px', color: pathname === item.path ? '#fff' : 'rgba(255,255,255,0.7)',
+                background: pathname === item.path ? 'rgba(255,255,255,0.1)' : 'transparent',
+                cursor: 'pointer'
+              }}
+            >
+              <item.icon size={18} style={{ color: item.id === 'home' ? '#6161FF' : 'inherit' }} />
+              <span style={{ flex: 1 }}>{item.label}</span>
+              {item.badge && (
+                <span style={{ background: '#6161FF', color: '#fff', fontSize: '9px', fontWeight: 800, padding: '2px 6px', borderRadius: '10px' }}>
+                  {item.badge}
+                </span>
+              )}
+            </div>
+          );
+        })}
 
         {/* Product Modules */}
         <div style={{ padding: '24px 16px 8px', fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>

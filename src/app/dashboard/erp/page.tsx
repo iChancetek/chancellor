@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
 import ModuleCopilot from '@/components/ai/ModuleCopilot';
+import AIForecastChart from '@/components/dashboard/AIForecastChart';
 import { 
   Building2, Plus, TrendingUp, DollarSign, ArrowRight, Target,
   Briefcase, Activity, ShoppingCart, Users, Settings, Zap, 
@@ -84,6 +85,10 @@ export default function ERPPage() {
       </div>
 
       <ModuleCopilot module="erp" />
+
+      <div style={{ marginBottom: '32px' }}>
+        <AIForecastChart />
+      </div>
 
       <div className="dashboard-grid" style={{ marginBottom: 'var(--space-8)' }}>
         <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.02))' }}>

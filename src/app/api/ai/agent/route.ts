@@ -39,15 +39,32 @@ const updateItemStatus = {
 
 // ── Agents Definition ─────────────────────────────────────
 
+const getKnowledge = {
+  name: 'get_knowledge',
+  description: 'Query the enterprise knowledge base for business context, policies, or past decisions.',
+  parameters: z.object({
+    query: z.string(),
+  }),
+  run: async ({ query }: { query: string }) => {
+    // Mock RAG retrieval
+    const knowledgeBase = [
+      { topic: 'Budget Policy', content: 'All expenditures over $5,000 require CFO approval.' },
+      { topic: 'Sales Strategy', content: 'Focus on enterprise clients in the APAC region for Q3.' },
+      { topic: 'Support SLA', content: 'Priority 1 tickets must be responded to within 1 hour.' }
+    ];
+    return knowledgeBase.filter(k => k.topic.toLowerCase().includes(query.toLowerCase()) || k.content.toLowerCase().includes(query.toLowerCase()));
+  }
+};
+
 const salesAgent = new Agent({
   name: 'Sales Intelligence',
   instructions: `
     You are the Sales Intelligence Agent for ChancellorOS. 
     Your goal is to optimize the sales pipeline. 
-    You have access to workspace data and can update item statuses.
-    If you identify a financial risk, hand off to the CFO Agent.
+    You have access to workspace data and the enterprise knowledge base.
+    Always use 'get_knowledge' if you are unsure about company policy or strategy.
   `,
-  tools: [getWorkspaceData, updateItemStatus],
+  tools: [getWorkspaceData, updateItemStatus, getKnowledge],
 });
 
 const cfoAgent = new Agent({
