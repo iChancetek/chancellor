@@ -109,13 +109,33 @@ export async function POST(req: Request) {
 
     return NextResponse.json({
       output: result.finalOutput,
-      steps: result.steps.map(s => ({
-        type: s.type,
-        content: s.content,
-        toolCalls: s.toolCalls,
-        agentName: s.agentName,
-        timestamp: Date.now()
-      }))
+      steps: result.newItems.map((item: any) => {
+        const data = item.toJSON();
+        let type = 'thought';
+        let content = '';
+        let toolCalls = null;
+        
+        if (data.type === 'message_output_item') {
+          content = data.rawItem.content?.find((c: any) => c.type === 'output_text')?.text || 'Reasoning...';
+        } else if (data.type === 'tool_call_item') {
+          type = 'tool-call';
+          if (data.rawItem.type === 'function_call') {
+             try {
+               toolCalls = [{ name: data.rawItem.name, args: JSON.parse(data.rawItem.arguments || '{}') }];
+             } catch (e) {
+               toolCalls = [{ name: data.rawItem.name, args: {} }];
+             }
+          }
+        }
+
+        return {
+          type,
+          content,
+          toolCalls,
+          agentName: data.agent?.name || 'System',
+          timestamp: Date.now()
+        };
+      })
     });
   } catch (error: any) {
     console.error('Agent Runtime Error:', error);
