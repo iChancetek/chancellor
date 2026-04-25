@@ -21,6 +21,13 @@ export default function AIChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [aiMessages]);
 
+  // Initial greeting audio
+  useEffect(() => {
+    if (aiChatOpen && aiMessages.length === 0) {
+      playTTS("Welcome back. I'm Chancellor AI, your multimodal advisor. I can see, hear, and speak. How can we optimize your workflow today?");
+    }
+  }, [aiChatOpen, aiMessages.length]);
+
   const handleSend = async (overrideText?: string) => {
     const textToSend = overrideText || input.trim();
     if (!textToSend && !selectedImage) return;
