@@ -108,30 +108,42 @@ export default function LandingPage() {
         <p style={{ marginTop: '16px', fontSize: '13px', color: '#676879' }}>No credit card needed ✦ Unlimited time on Free plan</p>
       </section>
 
-      {/* Auth Section - Replicating the clean Monday sign-up feel */}
-      <section id="solutions-section" style={{ backgroundColor: '#f5f6f8', padding: '100px 5%' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '80px', alignItems: 'center' }}>
+      {/* Solutions Section - Redesigned for Premium Look */}
+      <section id="solutions-section" className="dark-premium-section" style={{ padding: '120px 5%', position: 'relative', overflow: 'hidden' }}>
+        {/* Abstract background glow */}
+        <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(97,97,255,0.15) 0%, transparent 70%)', filter: 'blur(80px)' }} />
+        
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '80px', alignItems: 'center', position: 'relative', zIndex: 1 }}>
           <div style={{ flex: 1 }}>
-            <h2 className="heading-section" style={{ marginBottom: '24px' }}>
-              The OS that powers <br /> teams to run <br /> everything
+            <h2 className="heading-section" style={{ marginBottom: '32px', color: '#fff' }}>
+              The OS that powers <br /> <span className="gradient-text">teams to run everything</span>
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <p style={{ fontSize: '20px', color: '#9699a6', marginBottom: '48px', lineHeight: '1.6' }}>
+              ChancellorOS is not just a tool; it is a comprehensive neural ecosystem designed for the modern enterprise. 
+              Seamlessly bridge the gap between CRM, ERP, and project execution.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {[
-                'Work Management: Automated projects & Gantt charts',
-                'ChancellorOS ERP: Resource planning & financials',
-                'ChancellorOS CRM: AI lead scoring & Gmail/Outlook sync',
-                'Dev & R&D: Sprint planning & Git integration',
-                'Chancellor AI: Autonomous agents & neural workflows'
-              ].map(text => (
-                <div key={text} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '18px', color: '#333' }}>
-                  <CheckCircle2 size={24} color="#00c875" />
-                  {text}
+                { title: 'Work Management', desc: 'Automated projects & Gantt charts' },
+                { title: 'ChancellorOS ERP', desc: 'Unified resource planning & financials' },
+                { title: 'ChancellorOS CRM', desc: 'AI lead scoring & sales automation' },
+                { title: 'Dev & R&D', desc: 'Sprint planning & technical roadmap' },
+                { title: 'Chancellor AI', desc: 'Autonomous agents & multimodal reasoning' }
+              ].map((item, i) => (
+                <div key={i} className="modern-grid-card" style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(97,97,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CheckCircle2 size={20} color="#00c875" />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>{item.title}</h4>
+                    <p style={{ fontSize: '13px', color: '#9699a6' }}>{item.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="monday-auth-card" style={{ flex: '0 0 440px' }}>
+          <div className="monday-auth-card glass-card" style={{ flex: '0 0 460px', border: '1px solid rgba(255,255,255,0.1)' }}>
             <h3 style={{ fontSize: '24px', fontWeight: 800, marginBottom: '32px', textAlign: 'center' }}>
               {isLogin ? 'Log in to Chancellor' : 'Create your account'}
             </h3>
@@ -192,15 +204,38 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Bottom Showcase - INTERCONNECTED APPS */}
-      <section id="resources-section" style={{ padding: '100px 10%', textAlign: 'center' }}>
-        <h2 className="heading-section" style={{ fontSize: '40px' }}>Interconnected apps <br /> for every team</h2>
-        <div style={{ marginTop: '60px', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 20px 50px rgba(0,0,0,0.1)', background: '#fff' }}>
+      {/* Bottom Showcase - INTERCONNECTED APPS Redesigned */}
+      <section id="resources-section" style={{ padding: '140px 10%', textAlign: 'center', background: '#fff' }}>
+        <h2 className="heading-section" style={{ fontSize: '48px', marginBottom: '16px' }}>
+          Interconnected apps <br /> <span className="gradient-text">for every team</span>
+        </h2>
+        <p style={{ fontSize: '20px', color: '#676879', marginBottom: '80px', maxWidth: '800px', margin: '0 auto 80px' }}>
+          Break down silos and unify your entire organizational workflow. 
+          Our suite of interconnected modules ensures that data flows effortlessly between every department.
+        </p>
+        
+        <div style={{ position: 'relative', borderRadius: '40px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.15)', background: '#000' }}>
           <img 
-            src="/crm_pm_dashboard.png" 
-            alt="Chancellor Project Management & CRM Dashboard" 
-            style={{ width: '100%', display: 'block', maxHeight: '700px', objectFit: 'cover' }} 
+            src="/apps_grid.png" 
+            alt="Chancellor Interconnected Apps Grid" 
+            style={{ width: '100%', display: 'block', maxHeight: '800px', objectFit: 'cover' }} 
           />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,17,26,0.4), transparent)' }} />
+        </div>
+
+        <div style={{ marginTop: '80px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+          {[
+            { title: 'Global Sync', desc: 'Real-time data parity across all modules.' },
+            { title: 'Neural Connect', desc: 'AI-driven cross-module intelligence.' },
+            { title: 'Deep Integration', desc: 'Bespoke webhooks for external tools.' },
+            { title: 'Enterprise Security', desc: 'Governance and encryption at scale.' }
+          ].map((item, i) => (
+            <div key={i} style={{ textAlign: 'left', padding: '24px', borderRadius: '20px', border: '1px solid #eee' }}>
+              <Zap size={24} color="#6161FF" style={{ marginBottom: '16px' }} />
+              <h5 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>{item.title}</h5>
+              <p style={{ fontSize: '14px', color: '#676879' }}>{item.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
       
