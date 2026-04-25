@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   Search, Grid, Box, MessageSquare, Users, Code2, 
   Megaphone, HardDrive, Zap, ExternalLink, ShieldCheck, 
@@ -48,6 +49,7 @@ const APPS = [
 ];
 
 export default function AppsMarketplace() {
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -125,6 +127,7 @@ export default function AppsMarketplace() {
             {filteredApps.map(app => (
               <div 
                 key={app.id} 
+                onClick={() => router.push(`/dashboard/apps/${app.id}`)}
                 className="app-card-hover"
                 style={{ 
                   padding: '24px', borderRadius: '12px', border: '1px solid #e1e4e8', 
@@ -146,7 +149,7 @@ export default function AppsMarketplace() {
                 <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#323338', marginBottom: '8px' }}>{app.name}</h3>
                 <p style={{ fontSize: '14px', color: '#676879', lineHeight: '1.5', marginBottom: '20px', flex: 1 }}>{app.description}</p>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '16px', borderTop: '1px solid #f5f6f8' }}>
-                  <button style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#0073ea', color: '#fff', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>Connect</button>
+                  <button onClick={(e) => { e.stopPropagation(); router.push(`/dashboard/apps/${app.id}`); }} style={{ padding: '8px 16px', borderRadius: '6px', border: 'none', background: '#0073ea', color: '#fff', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>Connect</button>
                   <div style={{ color: '#676879', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px' }}>
                     Learn more <ArrowRight size={14} />
                   </div>
