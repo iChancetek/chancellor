@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { 
   X, MessageSquare, Clock, User, Send, Bell, Home, Share2, MoreHorizontal,
-  Mic, Image as ImageIcon, Video, Music, FileText, Play, Upload, Download, Loader2
+  Mic, Image as ImageIcon, Video, Music, FileText, Play, Upload, Download, Loader2, Sparkles
 } from 'lucide-react';
 import { formatDate, formatRelativeTime, getInitials, generateId } from '@/lib/utils';
 import type { Board, Item, Column, Attachment } from '@/lib/types';
@@ -29,7 +29,41 @@ export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, o
   const [isUploading, setIsUploading] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
-  const tabs = ['Updates', 'Activity Log', 'Files'];
+  const [aiInput, setAiInput] = useState('');
+  const [aiMessages, setAiMessages] = useState<{role: 'user' | 'assistant', content: string}[]>([]);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+
+  const tabs = ['Updates', 'AI Copilot', 'Files', 'Activity Log'];
+
+  const handleAiSubmit = async () => {
+    if (!aiInput.trim()) return;
+    const userMsg = { role: 'user' as const, content: aiInput };
+    setAiMessages(prev => [...prev, userMsg]);
+    setAiInput('');
+    setIsAiLoading(true);
+
+    try {
+      const itemContext = `Current context:\nBoard Type: ${board.type}\nBoard Name: ${board.name}\nItem Name: ${item.name}\nItem Details: ${JSON.stringify(item.values)}`;
+      
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [
+            { role: 'system', content: `You are assisting the user inside an item detail view. ${itemContext}. Provide highly specific, elite-level advice, drafts, or analysis based on this context. Do not use placeholders, be directly actionable.` },
+            ...aiMessages,
+            userMsg
+          ]
+        })
+      });
+      const data = await response.json();
+      setAiMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsAiLoading(false);
+    }
+  };
 
   const startDictation = async () => {
     try {
@@ -228,6 +262,56 @@ export default function ItemDetailPanel({ item, board, onClose, onUpdateValue, o
                 <p style={{ fontSize: '14px', fontWeight: 600 }}>Item created</p>
                 <p style={{ fontSize: '12px', color: '#676879' }}>{formatDate(item.createdAt)}</p>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'AI Copilot' && (
+          <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 250px)' }}>
+            <div style={{ flex: 1, overflowY: 'auto', paddingRight: '10px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '20px' }}>
+              {aiMessages.length === 0 ? (
+                <div style={{ textAlign: 'center', margin: 'auto', color: '#676879' }}>
+                  <Sparkles size={48} color="#6161FF" style={{ margin: '0 auto 16px', opacity: 0.8 }} />
+                  <p style={{ fontSize: '18px', fontWeight: 600, color: '#323338' }}>AI Copilot</p>
+                  <p style={{ fontSize: '14px', maxWidth: '300px', margin: '0 auto' }}>
+                    I understand the context of this {board.type.toUpperCase()} record. Ask me to draft emails, analyze data, or generate summaries.
+                  </p>
+                </div>
+              ) : (
+                aiMessages.map((msg, i) => (
+                  <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+                    <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: msg.role === 'user' ? '#0073ea' : '#6161FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      {msg.role === 'user' ? <User size={16} /> : <Sparkles size={16} />}
+                    </div>
+                    <div style={{ background: msg.role === 'user' ? '#eef2fc' : '#f5f6f8', padding: '12px 16px', borderRadius: '12px', fontSize: '14px', color: '#323338', maxWidth: '80%', whiteSpace: 'pre-wrap' }}>
+                      {msg.content}
+                    </div>
+                  </div>
+                ))
+              )}
+              {isAiLoading && (
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#6161FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Loader2 size={16} className="animate-spin" />
+                  </div>
+                </div>
+              )}
+            </div>
+            <div style={{ position: 'relative', borderTop: '1px solid #e6e9ef', paddingTop: '16px' }}>
+              <input 
+                value={aiInput}
+                onChange={e => setAiInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleAiSubmit()}
+                placeholder="Ask Copilot..."
+                style={{ width: '100%', padding: '12px 48px 12px 16px', borderRadius: '24px', border: '1px solid #d0d4e4', outline: 'none', fontSize: '14px' }}
+              />
+              <button 
+                onClick={handleAiSubmit}
+                disabled={isAiLoading || !aiInput.trim()}
+                style={{ position: 'absolute', right: '8px', top: '22px', background: aiInput.trim() ? '#6161FF' : '#d0d4e4', border: 'none', width: '32px', height: '32px', borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: aiInput.trim() ? 'pointer' : 'default' }}
+              >
+                <Send size={14} />
+              </button>
             </div>
           </div>
         )}

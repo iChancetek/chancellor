@@ -7,7 +7,7 @@ import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones,
-  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown
+  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -53,6 +53,7 @@ export default function Sidebar() {
   const moduleItems = [
     { id: 'workplace', label: 'Work Management', icon: LayoutGrid, path: '/dashboard/workplace', color: '#579BFC' },
     { id: 'crm', label: 'CRM', icon: Users, path: '/dashboard/crm', color: '#00C875' },
+    { id: 'erp', label: 'ERP', icon: Building2, path: '/dashboard/erp', color: '#16A34A' },
     { id: 'dev', label: 'Dev', icon: Code2, path: '/dashboard/dev', color: '#FDAB3D' },
     { id: 'support', label: 'Support', icon: Headphones, path: '/dashboard/support', color: '#E2445C' },
     { id: 'marketing', label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },

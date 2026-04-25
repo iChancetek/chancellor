@@ -9,6 +9,8 @@ import {
   TrendingUp, Clock, Sparkles, Zap, ArrowRight
 } from 'lucide-react';
 
+import AIPulseSummary from '@/components/dashboard/AIPulseSummary';
+
 export default function DashboardHome() {
   const { user } = useAuth();
   const router = useRouter();
@@ -90,8 +92,10 @@ export default function DashboardHome() {
     <div className="dashboard-home">
       <div className="dashboard-greeting">
         <h1>{greeting()}, {user?.displayName?.split(' ')[0] || 'there'} 👋</h1>
-        <p>Here&apos;s an overview of your workspace. Let Chancellor AI help you stay on top of everything.</p>
+        <p>ChancellorOS is online. Intelligence layers are active across your workspace.</p>
       </div>
+
+      <AIPulseSummary />
 
       {/* Quick Actions */}
       <div style={{ marginBottom: 'var(--space-8)' }}>

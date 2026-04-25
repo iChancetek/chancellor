@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { Board, Group, Item, Column, Workspace, StatusLabel, DEFAULT_STATUS_LABELS, DEFAULT_PRIORITY_LABELS } from './types';
+import type { Board, Group, Item, Column, Workspace, StatusLabel, DEFAULT_STATUS_LABELS, DEFAULT_PRIORITY_LABELS, BoardType } from './types';
 
 export function generateId(): string {
   return uuidv4();
@@ -43,7 +43,7 @@ export function getContrastColor(hexColor: string): string {
   return luminance > 0.5 ? '#000000' : '#FFFFFF';
 }
 
-export function createDefaultBoard(workspaceId: string, name: string, type: 'work' | 'crm' | 'dev' | 'support' | 'marketing' = 'work'): Board {
+export function createDefaultBoard(workspaceId: string, name: string, type: BoardType = 'work'): Board {
   const boardId = generateId();
   const defaultColumns = getDefaultColumnsForType(type, name);
   const defaultGroups = getDefaultGroupsForType(type, name, boardId);
@@ -77,6 +77,7 @@ function getIconForType(type: string): string {
     dev: '💻',
     support: '🎧',
     marketing: '📣',
+    erp: '🏢',
   };
   return icons[type] || '📋';
 }
@@ -111,6 +112,48 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
       { id: 'dealvalue', type: 'number', title: 'Deal Value', width: 130, position: 2, settings: { format: 'currency', unit: '$' } },
       { id: 'contact', type: 'text', title: 'Contact Name', width: 140, position: 3, settings: {} },
       { id: 'date', type: 'date', title: 'Expected Close', width: 130, position: 4, settings: {} },
+    ];
+  }
+
+  // -- ERP TEMPLATES --
+  if (type === 'erp') {
+    if (lowerName.includes('ledger') || lowerName.includes('finance') || lowerName.includes('cash') || lowerName.includes('forecast')) {
+      return [
+        { id: 'status', type: 'status', title: 'Recon Status', width: 140, position: 0, settings: { labels: [{id:'reconciled',text:'Reconciled',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'discrepancy',text:'Discrepancy',color:'#E2445C'}] } },
+        { id: 'account', type: 'text', title: 'Account Code', width: 140, position: 1, settings: {} },
+        { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'type', type: 'status', title: 'Type', width: 130, position: 3, settings: { labels: [{id:'debit',text:'Debit',color:'#579BFC'},{id:'credit',text:'Credit',color:'#A25DDC'}] } },
+        { id: 'date', type: 'date', title: 'Transaction Date', width: 130, position: 4, settings: {} },
+        { id: 'person', type: 'person', title: 'Approved By', width: 120, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('inventory') || lowerName.includes('warehouse') || lowerName.includes('supply') || lowerName.includes('production')) {
+      return [
+        { id: 'status', type: 'status', title: 'Stock Status', width: 140, position: 0, settings: { labels: [{id:'instock',text:'In Stock',color:'#00C875'},{id:'low',text:'Low Stock',color:'#FDAB3D'},{id:'out',text:'Out of Stock',color:'#E2445C'}] } },
+        { id: 'sku', type: 'text', title: 'SKU', width: 140, position: 1, settings: {} },
+        { id: 'quantity', type: 'number', title: 'Quantity', width: 120, position: 2, settings: { format: 'number' } },
+        { id: 'location', type: 'text', title: 'Location / Bin', width: 140, position: 3, settings: {} },
+        { id: 'supplier', type: 'text', title: 'Supplier', width: 150, position: 4, settings: {} },
+        { id: 'date', type: 'date', title: 'Last Restock', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('employee') || lowerName.includes('hr') || lowerName.includes('compensation') || lowerName.includes('skill')) {
+      return [
+        { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'active',text:'Active',color:'#00C875'},{id:'onboarding',text:'Onboarding',color:'#FDAB3D'},{id:'leave',text:'On Leave',color:'#A25DDC'}] } },
+        { id: 'person', type: 'person', title: 'Employee', width: 140, position: 1, settings: {} },
+        { id: 'role', type: 'text', title: 'Role/Title', width: 160, position: 2, settings: {} },
+        { id: 'department', type: 'text', title: 'Department', width: 140, position: 3, settings: {} },
+        { id: 'salary', type: 'number', title: 'Compensation', width: 140, position: 4, settings: { format: 'currency', unit: '$' } },
+        { id: 'date', type: 'date', title: 'Start Date', width: 130, position: 5, settings: {} },
+      ];
+    }
+    // Default ERP Template
+    return [
+      { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'active',text:'Active',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'blocked',text:'Blocked',color:'#E2445C'}] } },
+      { id: 'person', type: 'person', title: 'Owner', width: 120, position: 1, settings: {} },
+      { id: 'department', type: 'text', title: 'Department', width: 140, position: 2, settings: {} },
+      { id: 'budget', type: 'number', title: 'Budget', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+      { id: 'date', type: 'date', title: 'Deadline', width: 130, position: 4, settings: {} },
     ];
   }
 
@@ -205,6 +248,11 @@ function getDefaultGroupsForType(type: string, name: string, boardId: string): G
     if (lowerName.includes('contact')) groupTitles = ['Active Clients', 'Past Clients', 'Cold Leads'];
     else if (lowerName.includes('campaign')) groupTitles = ['Q1 Campaigns', 'Q2 Campaigns', 'Archived'];
     else groupTitles = ['New Leads', 'Qualified', 'Proposal Sent', 'Closed Won'];
+  } else if (type === 'erp') {
+    if (lowerName.includes('ledger') || lowerName.includes('finance') || lowerName.includes('cash') || lowerName.includes('forecast')) groupTitles = ['Assets', 'Liabilities', 'Equity', 'Revenue', 'Expenses'];
+    else if (lowerName.includes('inventory') || lowerName.includes('warehouse') || lowerName.includes('supply') || lowerName.includes('production')) groupTitles = ['Raw Materials', 'Work In Progress', 'Finished Goods'];
+    else if (lowerName.includes('employee') || lowerName.includes('hr') || lowerName.includes('compensation') || lowerName.includes('skill')) groupTitles = ['Full-Time', 'Part-Time', 'Contractors'];
+    else groupTitles = ['Planning', 'Execution', 'Review'];
   } else if (type === 'dev') {
     if (lowerName.includes('bug')) groupTitles = ['Critical Bugs', 'High Priority', 'Backlog'];
     else if (lowerName.includes('release')) groupTitles = ['Upcoming Release', 'In QA', 'Deployed'];
