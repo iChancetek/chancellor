@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
+import ModuleCopilot from '@/components/ai/ModuleCopilot';
 import { 
   Users, Plus, TrendingUp, DollarSign, UserCheck, ArrowRight, Target, Mail, 
   CheckSquare, Calendar, MessageSquare, Share2, Layers, Search, Headset, 
@@ -79,6 +80,8 @@ export default function CRMPage() {
         <h1>🧩 CRM</h1>
         <p>Manage leads, contacts, deals, and customer relationships — powered by Chancellor AI.</p>
       </div>
+
+      <ModuleCopilot module="crm" />
 
       <div className="dashboard-grid" style={{ marginBottom: 'var(--space-8)' }}>
         <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(0, 200, 117, 0.1), rgba(0, 200, 117, 0.02))' }}>

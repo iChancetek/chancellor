@@ -6,6 +6,8 @@ import { createDefaultBoard } from '@/lib/utils';
 
 import { LayoutGrid, Plus, FolderKanban, ListChecks, CalendarDays, ArrowRight, Sparkles } from 'lucide-react';
 
+import ModuleCopilot from '@/components/ai/ModuleCopilot';
+
 export default function WorkplacePage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
@@ -39,6 +41,8 @@ export default function WorkplacePage() {
         <h1>🧱 Work Management</h1>
         <p>Boards, tasks, and project tracking — the backbone of your workspace.</p>
       </div>
+
+      <ModuleCopilot module="work" />
 
       <div className="dashboard-grid" style={{ marginBottom: '32px' }}>
         <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(87, 155, 252, 0.1), rgba(87, 155, 252, 0.02))' }}>

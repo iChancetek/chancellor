@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useWorkspaceStore, useBoardStore } from '@/lib/store';
 import { createDefaultBoard } from '@/lib/utils';
+import ModuleCopilot from '@/components/ai/ModuleCopilot';
 import { 
   Building2, Plus, TrendingUp, DollarSign, ArrowRight, Target,
   Briefcase, Activity, ShoppingCart, Users, Settings, Zap, 
@@ -81,6 +82,8 @@ export default function ERPPage() {
         <h1>🏢 ERP</h1>
         <p>Integrate finance, manufacturing, supply chain, and human resources into a single unified platform.</p>
       </div>
+
+      <ModuleCopilot module="erp" />
 
       <div className="dashboard-grid" style={{ marginBottom: 'var(--space-8)' }}>
         <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.02))' }}>

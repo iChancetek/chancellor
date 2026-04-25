@@ -6,6 +6,8 @@ import { createDefaultBoard } from '@/lib/utils';
 
 import { Code2, Plus, Bug, GitBranch, Rocket, ArrowRight, Gauge } from 'lucide-react';
 
+import ModuleCopilot from '@/components/ai/ModuleCopilot';
+
 export default function DevPage() {
   const router = useRouter();
   const { activeWorkspace } = useWorkspaceStore();
@@ -39,6 +41,8 @@ export default function DevPage() {
         <h1>🛠️ Dev</h1>
         <p>Sprint planning, bug tracking, and release management — enhanced with AI-powered insights.</p>
       </div>
+
+      <ModuleCopilot module="dev" />
 
       <div className="dashboard-grid" style={{ marginBottom: 'var(--space-8)' }}>
         <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(253, 171, 61, 0.1), rgba(253, 171, 61, 0.02))' }}>
