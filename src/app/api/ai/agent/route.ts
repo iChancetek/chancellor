@@ -1,5 +1,5 @@
 import { OpenAI } from 'openai';
-import { Agent, run, functionTool } from '@openai/agents';
+import { Agent, run, tool } from '@openai/agents';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -9,22 +9,22 @@ const openai = new OpenAI({
 
 // ── Tools Definition ──────────────────────────────────────
 
-const getWorkspaceData = functionTool({
+const getWorkspaceData = tool({
   name: 'get_workspace_data',
   description: 'Get current workspace boards and status.',
   parameters: z.object({}),
-  run: async () => {
+  execute: async () => {
     // In a real app, this would fetch from Firestore/DB
-    return { 
-      boardsCount: 12, 
-      activeDeals: 5, 
+    return {
+      boardsCount: 12,
+      activeDeals: 5,
       revenueForecast: '$120,000',
       stalledLeads: ['Acme Corp', 'Globex']
     };
   }
 });
 
-const updateItemStatus = functionTool({
+const updateItemStatus = tool({
   name: 'update_item_status',
   description: 'Update the status of a specific item or deal.',
   parameters: z.object({
@@ -32,20 +32,20 @@ const updateItemStatus = functionTool({
     newStatus: z.string(),
     reason: z.string()
   }),
-  run: async ({ itemId, newStatus, reason }: { itemId: string, newStatus: string, reason: string }) => {
+  execute: async ({ itemId, newStatus, reason }: { itemId: string, newStatus: string, reason: string }) => {
     return { success: true, message: `Updated item ${itemId} to ${newStatus}. Reason: ${reason}` };
   }
 });
 
 // ── Agents Definition ─────────────────────────────────────
 
-const getKnowledge = functionTool({
+const getKnowledge = tool({
   name: 'get_knowledge',
   description: 'Query the enterprise knowledge base for business context, policies, or past decisions.',
   parameters: z.object({
     query: z.string(),
   }),
-  run: async ({ query }: { query: string }) => {
+  execute: async ({ query }: { query: string }) => {
     // Mock RAG retrieval
     const knowledgeBase = [
       { topic: 'Budget Policy', content: 'All expenditures over $5,000 require CFO approval.' },
