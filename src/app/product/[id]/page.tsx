@@ -192,6 +192,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
+      {/* Deep Options Section */}
+      <section style={{ padding: '100px 10%', background: '#fcfcfd', borderTop: '1px solid #eee' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px' }}>
+            <Zap size={24} color={product.color} />
+            <h2 style={{ fontSize: '28px', fontWeight: 800, color: '#323338' }}>Advanced Enterprise Capabilities</h2>
+          </div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+            {product.deepOptions?.map((option: string, index: number) => (
+              <div key={index} style={{ padding: '24px', background: '#fff', borderRadius: '16px', border: '1px solid #e1e4e8', transition: 'all 0.2s' }}>
+                <h4 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '8px', color: '#323338' }}>{option.split(':')[0]}</h4>
+                <p style={{ fontSize: '13px', color: '#676879', lineHeight: '1.5' }}>{option.split(':')[1]}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section style={{ padding: '100px 10%', background: '#1c1f3b', color: '#fff', textAlign: 'center' }}>
         <h2 style={{ fontSize: '48px', fontWeight: 800, marginBottom: '24px' }}>Ready to transform your work?</h2>
