@@ -6,6 +6,7 @@ import { useAuth } from '@/lib/auth-context';
 import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
 import AIChat from '@/components/ai/AIChat';
+import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
 
 function DashboardShell({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
@@ -39,6 +40,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
         </div>
       </div>
       <AIChat />
+      <OnboardingWizard />
     </div>
   );
 }
