@@ -8,13 +8,15 @@ import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function VerifyPage() {
-  const { user, loading } = useAuth();
+  const { user, loading, updateUserEmail } = useAuth();
   const router = useRouter();
   const [code, setCode] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
   const [initializing, setInitializing] = useState(true);
+  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [newEmail, setNewEmail] = useState('');
 
   const initVerification = async (forceNew = false) => {
     if (!user) return;
@@ -55,8 +57,28 @@ export default function VerifyPage() {
 
     if (user) {
       initVerification();
+      setNewEmail(user.email || '');
     }
   }, [user, loading, router]);
+
+  const handleChangeEmail = async () => {
+    if (!newEmail || newEmail === user?.email) {
+      setIsEditingEmail(false);
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await updateUserEmail(newEmail);
+      await initVerification(true); // Regenerate code for new email
+      setIsEditingEmail(false);
+      setError('');
+    } catch (err) {
+      console.error("Update email error:", err);
+      setError('Failed to update email. You may need to log in again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleChange = (index: number, value: string) => {
     if (value.length > 1) value = value[0];
@@ -120,11 +142,47 @@ export default function VerifyPage() {
         </div>
         
         <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338', marginBottom: '16px' }}>Check your email</h1>
-        <p style={{ color: '#676879', fontSize: '16px', lineHeight: '1.6', marginBottom: '40px' }}>
-          We've sent a 6-digit verification code to <br />
-          <strong style={{ color: '#323338' }}>{user!.email}</strong>. <br />
-          Please enter it below to activate your account.
-        </p>
+        
+        {isEditingEmail ? (
+          <div style={{ marginBottom: '40px' }}>
+            <p style={{ color: '#676879', fontSize: '15px', marginBottom: '16px' }}>Correct your email address below:</p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input 
+                type="email" 
+                value={newEmail} 
+                onChange={(e) => setNewEmail(e.target.value)}
+                style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid #d0d4e4', outline: 'none' }}
+              />
+              <button 
+                onClick={handleChangeEmail}
+                disabled={submitting}
+                className="btn-monday-primary"
+                style={{ padding: '0 20px', borderRadius: '8px' }}
+              >
+                Save
+              </button>
+            </div>
+            <button 
+              onClick={() => setIsEditingEmail(false)} 
+              style={{ background: 'none', border: 'none', color: '#676879', marginTop: '12px', cursor: 'pointer', fontSize: '13px' }}
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <p style={{ color: '#676879', fontSize: '16px', lineHeight: '1.6', marginBottom: '40px' }}>
+            We've sent a 6-digit verification code to <br />
+            <strong style={{ color: '#323338' }}>{user!.email}</strong>. 
+            <button 
+              onClick={() => setIsEditingEmail(true)}
+              style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer', fontSize: '14px' }}
+            >
+              (Edit)
+            </button>
+            <br />
+            Please enter it below to activate your account.
+          </p>
+        )}
 
         {/* PROMINENT DEMO CARD */}
         <div style={{ 

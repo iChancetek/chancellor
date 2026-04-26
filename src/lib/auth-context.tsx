@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { onAuthStateChanged, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, updateProfile, type User as FirebaseUser } from 'firebase/auth';
+import { onAuthStateChanged, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, updateProfile, updateEmail, type User as FirebaseUser } from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { useAuthStore } from '@/lib/store';
 
@@ -11,6 +11,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
+  updateUserEmail: (newEmail: string) => Promise<void>;
   signOut: () => Promise<void>;
   error: string | null;
   clearError: () => void;
@@ -98,10 +99,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const updateUserEmail = async (newEmail: string) => {
+    try {
+      setError(null);
+      if (auth.currentUser) {
+        await updateEmail(auth.currentUser, newEmail);
+        setUser({ ...auth.currentUser });
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to update email';
+      setError(message);
+      throw err;
+    }
+  };
+
   const clearError = () => setError(null);
 
   return (
-    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, signOut, error, clearError }}>
+    <AuthContext.Provider value={{ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, updateUserEmail, signOut, error, clearError }}>
       {children}
     </AuthContext.Provider>
   );
