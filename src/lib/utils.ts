@@ -91,10 +91,12 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
       return [
         { id: 'status', type: 'status', title: 'Status', width: 140, position: 0, settings: { labels: [{id:'active',text:'Active',color:'#00C875'},{id:'inactive',text:'Inactive',color:'#e2445c'}] } },
         { id: 'person', type: 'person', title: 'Account Manager', width: 120, position: 1, settings: {} },
-        { id: 'email', type: 'text', title: 'Email', width: 180, position: 2, settings: {} },
-        { id: 'phone', type: 'text', title: 'Phone', width: 140, position: 3, settings: {} },
-        { id: 'company', type: 'text', title: 'Company', width: 140, position: 4, settings: {} },
-        { id: 'date', type: 'date', title: 'Last Contacted', width: 130, position: 5, settings: {} },
+        { id: 'email', type: 'text', title: 'Email Address', width: 180, position: 2, settings: {} },
+        { id: 'phone', type: 'text', title: 'Phone Number', width: 140, position: 3, settings: {} },
+        { id: 'social', type: 'text', title: 'Social Media', width: 140, position: 4, settings: {} },
+        { id: 'company', type: 'text', title: 'Company', width: 140, position: 5, settings: {} },
+        { id: 'notes', type: 'text', title: 'Notes', width: 200, position: 6, settings: {} },
+        { id: 'date', type: 'date', title: 'Last Contacted', width: 130, position: 7, settings: {} },
       ];
     }
     if (lowerName.includes('campaign') || lowerName.includes('outreach')) {
@@ -102,7 +104,8 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
         { id: 'status', type: 'status', title: 'Campaign Status', width: 140, position: 0, settings: { labels: [{id:'draft',text:'Draft',color:'#c4c4c4'},{id:'sent',text:'Sent',color:'#579BFC'},{id:'responded',text:'Responded',color:'#00C875'}] } },
         { id: 'person', type: 'person', title: 'Owner', width: 120, position: 1, settings: {} },
         { id: 'audience', type: 'number', title: 'Audience Size', width: 130, position: 2, settings: { format: 'number' } },
-        { id: 'date', type: 'date', title: 'Send Date', width: 130, position: 3, settings: {} },
+        { id: 'channel', type: 'text', title: 'Channel', width: 120, position: 3, settings: {} },
+        { id: 'date', type: 'date', title: 'Send Date', width: 130, position: 4, settings: {} },
       ];
     }
     // Default Sales Pipeline / Deal Tracker
@@ -110,8 +113,11 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
       { id: 'status', type: 'status', title: 'Stage', width: 140, position: 0, settings: { labels: [{id:'lead',text:'Lead',color:'#579BFC'},{id:'qualified',text:'Qualified',color:'#A25DDC'},{id:'proposal',text:'Proposal',color:'#FDAB3D'},{id:'won',text:'Won',color:'#00C875'},{id:'lost',text:'Lost',color:'#E2445C'}] } },
       { id: 'person', type: 'person', title: 'Sales Rep', width: 120, position: 1, settings: {} },
       { id: 'dealvalue', type: 'number', title: 'Deal Value', width: 130, position: 2, settings: { format: 'currency', unit: '$' } },
-      { id: 'contact', type: 'text', title: 'Contact Name', width: 140, position: 3, settings: {} },
-      { id: 'date', type: 'date', title: 'Expected Close', width: 130, position: 4, settings: {} },
+      { id: 'email', type: 'text', title: 'Contact Email', width: 160, position: 3, settings: {} },
+      { id: 'phone', type: 'text', title: 'Contact Phone', width: 140, position: 4, settings: {} },
+      { id: 'social', type: 'text', title: 'LinkedIn/Social', width: 140, position: 5, settings: {} },
+      { id: 'notes', type: 'text', title: 'Notes/Next Steps', width: 200, position: 6, settings: {} },
+      { id: 'date', type: 'date', title: 'Expected Close', width: 130, position: 7, settings: {} },
     ];
   }
 

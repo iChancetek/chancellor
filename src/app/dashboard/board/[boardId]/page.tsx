@@ -6,11 +6,12 @@ import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from 
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import {
-  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2
+  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download
 } from 'lucide-react';
 import type { Board, Item, Column, ViewType } from '@/lib/types';
 import ItemDetailPanel from '@/components/board/ItemDetailPanel';
 import BoardAIInsights from '@/components/ai/insights/BoardAIInsights';
+import ImportModal from '@/components/dashboard/ImportModal';
 
 export default function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
   const { boardId } = use(params);
@@ -157,6 +158,8 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     </div>
   );
 
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' }}>
       {/* Board Secondary Header */}
@@ -205,6 +208,13 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
             <Plus size={14} /> New Item
           </button>
           
+          <button 
+            onClick={() => setIsImportModalOpen(true)}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#fff', color: '#323338', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: '1px solid #d0d4e4', cursor: 'pointer' }}
+          >
+            <Download size={14} /> Import Data
+          </button>
+
           <button 
             onClick={handleListenToBoard}
             disabled={isListening}
@@ -263,13 +273,39 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
         ) : null}
       </div>
 
-      {itemDetailOpen && selectedItemId && (
+      {itemDetailOpen && selectedItemId && boardItems.find(i => i.id === selectedItemId) && (
         <ItemDetailPanel
           item={boardItems.find(i => i.id === selectedItemId)!}
           board={activeBoard}
           onClose={closeItemDetail}
           onUpdateValue={handleUpdateValue}
           onUpdateName={(id, name) => { handleUpdateName(id, name); }}
+        />
+      )}
+
+      {isImportModalOpen && (
+        <ImportModal 
+          onClose={() => setIsImportModalOpen(false)} 
+          onImport={(data) => {
+            if (!activeBoard || !user) return;
+            data.forEach((row, idx) => {
+              const item: Item = {
+                id: generateId(),
+                boardId: activeBoard.id,
+                groupId: activeBoard.groups[0]?.id || 'group1',
+                name: row.name || 'Imported Item',
+                values: row,
+                position: items.length + idx,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                createdBy: user.uid,
+                subscribers: [user.uid],
+              };
+              addItem(item);
+              createItem(item).catch(err => console.error('Import sync failed:', err));
+            });
+            flashSave();
+          }}
         />
       )}
     </div>
