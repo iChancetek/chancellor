@@ -145,8 +145,8 @@ export default function ImportModal({ onClose, onImport }: ImportModalProps) {
         {/* Footer */}
         <div style={{ padding: '20px 32px', background: '#f5f6f8', borderTop: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: '16px' }}>
-            <FileJson size={18} color="#676879" title="JSON Support" />
-            <FileSpreadsheet size={18} color="#676879" title="Excel Support" />
+            <FileJson size={18} color="#676879" aria-label="JSON Support" />
+            <FileSpreadsheet size={18} color="#676879" aria-label="Excel Support" />
           </div>
           <span style={{ fontSize: '12px', color: '#676879' }}>Chancellor Enterprise Integration Engine v2.4</span>
         </div>
