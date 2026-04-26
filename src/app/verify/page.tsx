@@ -26,9 +26,17 @@ export default function VerifyPage() {
     if (!user) return;
     
     try {
+      const { isSuperAdmin } = await import('@/lib/admin');
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       
-      // Check both Firestore and Native Auth state
+      // 1. Admin Bypass - Always allow
+      if (isSuperAdmin(user.email)) {
+        await setDoc(doc(db, 'users', user.uid), { emailVerified: true }, { merge: true });
+        router.push('/dashboard');
+        return;
+      }
+
+      // 2. Check both Firestore and Native Auth state
       if (!forceNew && (user.emailVerified || (userDoc.exists() && userDoc.data().emailVerified))) {
         // Sync Firestore if native is verified
         if (user.emailVerified && userDoc.exists() && !userDoc.data().emailVerified) {

@@ -27,16 +27,23 @@ function DashboardShell({ children }: { children: ReactNode }) {
       try {
         const { doc, getDoc, setDoc } = await import('firebase/firestore');
         const { db } = await import('@/lib/firebase');
+        const { isSuperAdmin } = await import('@/lib/admin');
         
-        // 1. Check Native Firebase State first - Google users are usually pre-verified
-        if (user.emailVerified) {
-          // Sync to Firestore if verified natively
+        // 1. Check if Super Admin - Always bypass
+        if (isSuperAdmin(user.email)) {
           await setDoc(doc(db, 'users', user.uid), { emailVerified: true }, { merge: true });
           setIsVerifying(false);
           return;
         }
 
-        // 2. Check Firestore state
+        // 2. Check Native Firebase State
+        if (user.emailVerified) {
+          await setDoc(doc(db, 'users', user.uid), { emailVerified: true }, { merge: true });
+          setIsVerifying(false);
+          return;
+        }
+
+        // 3. Check Firestore state
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         
         if (userDoc.exists() && userDoc.data().emailVerified) {
