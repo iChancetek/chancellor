@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 
@@ -14,6 +14,38 @@ export default function VerifyPage() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [generatedCode, setGeneratedCode] = useState('');
+  const [initializing, setInitializing] = useState(true);
+
+  const initVerification = async (forceNew = false) => {
+    if (!user) return;
+    
+    try {
+      const userDoc = await getDoc(doc(db, 'users', user.uid));
+      
+      if (!forceNew && userDoc.exists() && userDoc.data().emailVerified) {
+        router.push('/dashboard');
+        return;
+      }
+
+      // Generate a code
+      const newCode = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedCode(newCode);
+      
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        verificationCode: newCode,
+        emailVerified: false,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+      
+      console.log(`[VERIFICATION CODE FOR ${user.email}]: ${newCode}`);
+    } catch (err) {
+      console.error("Initialization error:", err);
+      setError("Could not initialize verification. Please refresh.");
+    } finally {
+      setInitializing(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && !user) {
@@ -22,27 +54,6 @@ export default function VerifyPage() {
     }
 
     if (user) {
-      // Generate a code if it doesn't exist for this user in Firestore
-      const initVerification = async () => {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists() && userDoc.data().emailVerified) {
-          router.push('/dashboard');
-          return;
-        }
-
-        // For this demo, we'll generate it here and "send" it (log it)
-        const newCode = Math.floor(100000 + Math.random() * 900000).toString();
-        setGeneratedCode(newCode);
-        console.log(`[VERIFICATION CODE FOR ${user.email}]: ${newCode}`);
-        
-        await setDoc(doc(db, 'users', user.uid), {
-          email: user.email,
-          verificationCode: newCode,
-          emailVerified: false,
-          createdAt: new Date().toISOString()
-        }, { merge: true });
-      };
-
       initVerification();
     }
   }, [user, loading, router]);
@@ -55,17 +66,14 @@ export default function VerifyPage() {
     newCode[index] = value;
     setCode(newCode);
 
-    // Auto-focus next
     if (value && index < 5) {
-      const nextInput = document.getElementById(`code-${index + 1}`);
-      nextInput?.focus();
+      document.getElementById(`code-${index + 1}`)?.focus();
     }
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
-      const prevInput = document.getElementById(`code-${index - 1}`);
-      prevInput?.focus();
+      document.getElementById(`code-${index - 1}`)?.focus();
     }
   };
 
@@ -82,11 +90,11 @@ export default function VerifyPage() {
       if (userDoc.exists() && userDoc.data().verificationCode === fullCode) {
         await updateDoc(doc(db, 'users', user!.uid), {
           emailVerified: true,
-          verificationCode: null // Clear code after success
+          verificationCode: null
         });
         router.push('/dashboard');
       } else {
-        setError('Invalid verification code. Please try again.');
+        setError('Invalid verification code. Please check the code provided below.');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -95,33 +103,49 @@ export default function VerifyPage() {
     }
   };
 
-  if (loading || !user) {
+  if (loading || initializing) {
     return (
-      <div style={{ height: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
         <Loader2 className="animate-spin" size={32} color="#6161FF" />
+        <p style={{ marginTop: '16px', color: '#676879' }}>Initializing security layer...</p>
       </div>
     );
   }
 
   return (
     <div style={{ minHeight: '100dvh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
-      <div style={{ maxWidth: '480px', width: '100%', textAlign: 'center' }}>
+      <div style={{ maxWidth: '520px', width: '100%', textAlign: 'center' }}>
         <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: '#6161FF15', color: '#6161FF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px' }}>
           <Mail size={40} />
         </div>
         
-        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338', marginBottom: '16px' }}>Verify your email</h1>
+        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338', marginBottom: '16px' }}>Check your email</h1>
         <p style={{ color: '#676879', fontSize: '16px', lineHeight: '1.6', marginBottom: '40px' }}>
-          We&apos;ve sent a 6-digit verification code to <br />
-          <strong style={{ color: '#323338' }}>{user.email}</strong>. <br />
+          We've sent a 6-digit verification code to <br />
+          <strong style={{ color: '#323338' }}>{user!.email}</strong>. <br />
           Please enter it below to activate your account.
         </p>
 
-        {generatedCode && (
-          <div style={{ marginBottom: '32px', padding: '16px', background: '#f5f6f8', borderRadius: '12px', border: '1px solid #e1e4e8', fontSize: '14px', color: '#676879' }}>
-            <p><strong>Demo Mode:</strong> Your verification code is <strong>{generatedCode}</strong></p>
+        {/* PROMINENT DEMO CARD */}
+        <div style={{ 
+          marginBottom: '40px', 
+          padding: '24px', 
+          background: 'linear-gradient(135deg, #6161FF05 0%, #6161FF10 100%)', 
+          borderRadius: '20px', 
+          border: '2px dashed #6161FF30',
+          textAlign: 'left'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', color: '#6161FF' }}>
+            <AlertCircle size={20} />
+            <span style={{ fontWeight: 700, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Demo Verification Engine</span>
           </div>
-        )}
+          <p style={{ fontSize: '14px', color: '#676879', marginBottom: '16px', lineHeight: '1.5' }}>
+            In this environment, we simulate the email delivery. Your secure verification code is:
+          </p>
+          <div style={{ fontSize: '36px', fontWeight: 900, color: '#6161FF', letterSpacing: '4px', textAlign: 'center', background: '#fff', padding: '12px', borderRadius: '12px', border: '1px solid #6161FF20' }}>
+            {generatedCode}
+          </div>
+        </div>
 
         <form onSubmit={handleVerify}>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '32px' }}>
@@ -138,28 +162,36 @@ export default function VerifyPage() {
                   fontSize: '24px', fontWeight: 700, textAlign: 'center', outline: 'none',
                   transition: 'all 0.2s',
                   background: digit ? '#f5f6f8' : '#fff',
-                  borderColor: digit ? '#6161FF' : '#d0d4e4'
+                  borderColor: digit ? '#6161FF' : '#d0d4e4',
+                  boxShadow: digit ? '0 0 0 4px #6161FF10' : 'none'
                 }}
                 autoFocus={i === 0}
               />
             ))}
           </div>
 
-          {error && <p style={{ color: '#df2f4a', fontSize: '14px', marginBottom: '24px' }}>{error}</p>}
+          {error && (
+            <div style={{ background: '#df2f4a10', color: '#df2f4a', padding: '12px', borderRadius: '8px', fontSize: '14px', marginBottom: '24px', fontWeight: 600 }}>
+              {error}
+            </div>
+          )}
 
           <button 
             type="submit" 
             disabled={submitting || code.join('').length < 6}
             className="btn-monday-primary" 
-            style={{ width: '100%', padding: '16px', fontSize: '16px', borderRadius: '12px', marginBottom: '24px' }}
+            style={{ width: '100%', padding: '18px', fontSize: '16px', borderRadius: '12px', marginBottom: '24px', boxShadow: '0 8px 24px rgba(97, 97, 255, 0.25)' }}
           >
-            {submitting ? 'Verifying...' : 'Verify & Continue'}
+            {submitting ? 'Verifying...' : 'Activate Account'}
           </button>
         </form>
 
         <p style={{ fontSize: '14px', color: '#676879' }}>
-          Didn&apos;t receive the code? 
-          <button style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer' }}>
+          Didn't receive the code? 
+          <button 
+            onClick={() => initVerification(true)}
+            style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer' }}
+          >
             Resend Code
           </button>
         </p>

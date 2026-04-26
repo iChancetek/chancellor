@@ -8,42 +8,52 @@ import TopBar from '@/components/layout/TopBar';
 import AIChat from '@/components/ai/AIChat';
 import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
 
+import { useState } from 'react';
+
 function DashboardShell({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
+  const [isVerifying, setIsVerifying] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     const checkVerification = async () => {
-      if (!loading && !user) {
+      if (loading) return;
+
+      if (!user) {
         router.push('/');
         return;
       }
 
-      if (user) {
+      try {
         const { doc, getDoc } = await import('firebase/firestore');
         const { db } = await import('@/lib/firebase');
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         
         if (userDoc.exists() && !userDoc.data().emailVerified) {
           router.push('/verify');
+        } else {
+          setIsVerifying(false);
         }
+      } catch (err) {
+        console.error("Verification check failed:", err);
+        setIsVerifying(false);
       }
     };
 
     checkVerification();
   }, [user, loading, router]);
 
-  if (loading) {
+  if (loading || isVerifying) {
     return (
       <div className="loading-screen" style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
         <img src="/icon.svg" alt="Chancellor" style={{ width: '48px', height: '48px', marginBottom: '16px' }} />
         <div className="loading-spinner"></div>
-        <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>Loading workspace...</p>
+        <p style={{ color: 'var(--text-secondary)', fontSize: 'var(--text-sm)' }}>
+          {loading ? 'Loading workspace...' : 'Verifying account...'}
+        </p>
       </div>
     );
   }
-
-  if (!user) return null;
 
   return (
     <div className="dashboard-layout">
