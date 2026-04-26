@@ -97,8 +97,8 @@ export default function LandingPage() {
           src="/Chancellor_CRM_ERP2.mp4"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
-        {/* Adjusted white overlay to be less aggressive, allowing the video to be seen more clearly */}
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255, 255, 255, 0.4)' }} />
+        {/* Even more subtle overlay to allow the video to be seen clearly */}
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255, 255, 255, 0.15)' }} />
       </div>
 
       {/* Navbar */}
