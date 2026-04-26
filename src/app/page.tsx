@@ -80,7 +80,21 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="landing-container">
+    <div className="landing-container" style={{ position: 'relative' }}>
+      {/* Background Video Layer */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden' }}>
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.2 }}
+        >
+          <source src="/Chancellor_CRM_ERP2.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, background: '#fff', opacity: 0.6 }} />
+      </div>
+
       {/* Navbar */}
       <PublicNavbar />
 
