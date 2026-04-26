@@ -80,9 +80,9 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="landing-container" style={{ position: 'relative' }}>
+    <div className="landing-container" style={{ position: 'relative', background: 'transparent' }}>
       {/* Background Video Layer */}
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden', background: '#fff' }}>
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden' }}>
         <video 
           autoPlay 
           loop 
@@ -92,11 +92,11 @@ export default function LandingPage() {
           style={{ 
             width: '100%', 
             height: '100%', 
-            objectFit: 'cover', 
-            opacity: 0.4,
-            transition: 'opacity 1s ease' 
+            objectFit: 'cover'
           }}
         />
+        {/* Semi-transparent white overlay to maintain the "white look" while showing the video */}
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255, 255, 255, 0.7)' }} />
       </div>
 
       {/* Navbar */}
