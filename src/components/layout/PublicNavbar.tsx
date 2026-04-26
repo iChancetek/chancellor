@@ -16,6 +16,7 @@ export default function PublicNavbar() {
         <div className="hide-on-mobile" style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
           <Link href="/#products-section" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Products</Link>
           <Link href="/#solutions-section" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Solutions</Link>
+          <Link href="/architecture" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Architecture</Link>
           <Link href="/#resources-section" style={{ fontWeight: 500, color: '#333', textDecoration: 'none' }}>Resources</Link>
         </div>
         

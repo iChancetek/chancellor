@@ -234,6 +234,16 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
+      {/* Architecture Quick Link */}
+      <section style={{ padding: '60px 10%', background: '#fff', textAlign: 'center', borderTop: '1px solid #eee' }}>
+        <p style={{ color: '#676879', fontSize: '15px' }}>
+          Interested in the technical foundation? 
+          <Link href="/architecture" style={{ color: '#6161FF', fontWeight: 700, marginLeft: '8px', textDecoration: 'none' }}>
+            Explore our Enterprise Architecture <ArrowRight size={16} style={{ verticalAlign: 'middle', marginLeft: '4px' }} />
+          </Link>
+        </p>
+      </section>
+
       {/* CTA Section */}
       <section style={{ padding: '100px 10%', background: '#1c1f3b', color: '#fff', textAlign: 'center' }}>
         <h2 style={{ fontSize: '48px', fontWeight: 800, marginBottom: '24px' }}>Ready to transform your work?</h2>

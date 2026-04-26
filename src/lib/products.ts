@@ -203,7 +203,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Generative Action Agents: Deploy specialized agents that can perform multi-step organizational tasks, from scheduling meetings to generating complex financial reports.',
       'Neural Workspace Discovery: AI that proactively surfaces relevant boards, documents, and contacts based on your current project focus and historical activity.',
       'Real-Time Multilingual Translation: Instant translation of all workspace content, enabling seamless collaboration for global, distributed teams.',
-      'Executive Strategy Synthesis: High-level AI summaries of organizational health, market position, and operational risks tailored for C-suite decision-makers.'
+      'Executive Strategy Synthesis: High-level AI summaries of organizational health, market position, and operational risks tailored for C-suite decision-makers.',
+      'Microservices & Event-Driven Core: A resilient architecture built on horizontally scalable microservices and real-time event streams for high-concurrency enterprise workloads.',
+      'Multi-Agent Runtime Engine: Orchestrate swarms of specialized AI agents that collaborate in real-time to solve complex business logic and operational hurdles.',
+      'Neural Vector Memory: High-fidelity vector storage for long-term organizational memory, enabling rapid retrieval and high-context R&D and operational reasoning.',
+      'Enterprise Knowledge Graph: A multi-dimensional map of your organization\'s relationships, connecting people, projects, and data points for deep semantic discovery.'
     ],
     deepOptions: [
       'Custom Model Fine-Tuning: Train the Chancellor AI on your specific organizational terminology and document styles.',
