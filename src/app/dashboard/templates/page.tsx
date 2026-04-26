@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Filter, MessageSquare, Sparkles, Plus, MoreHorizontal } from 'lucide-react';
+import { Search, Filter, MessageSquare, Sparkles, Plus, MoreHorizontal, LayoutGrid } from 'lucide-react';
 import { TEMPLATE_CATEGORIES, MOCK_TEMPLATES, Template } from '@/lib/templates';
 
 export default function TemplateCenter() {
