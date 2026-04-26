@@ -40,7 +40,7 @@ export default function PublicFooter() {
           </div>
         </div>
       </div>
-      <div style={{ paddingWidth: '100%', height: '1px', background: '#eee', marginBottom: '32px' }} />
+      <div style={{ width: '100%', height: '1px', background: '#eee', marginBottom: '32px' }} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', color: '#9699a6' }}>
         <p>© 2026 ChancellorOS. All rights reserved.</p>
         <p>Built for Enterprise Scale</p>
