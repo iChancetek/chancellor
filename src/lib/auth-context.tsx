@@ -1,7 +1,12 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
-import { onAuthStateChanged, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut as firebaseSignOut, updateProfile, updateEmail, type User as FirebaseUser } from 'firebase/auth';
+import { 
+  onAuthStateChanged, signInWithPopup, signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, signOut as firebaseSignOut, 
+  updateProfile, updateEmail, sendEmailVerification,
+  type User as FirebaseUser 
+} from 'firebase/auth';
 import { auth, googleProvider } from '@/lib/firebase';
 import { useAuthStore } from '@/lib/store';
 
@@ -92,8 +97,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await updateProfile(credential.user, { displayName: name });
       
       // Send Firebase Native Verification Link
-      const { sendEmailVerification } = await import('firebase/auth');
-      await sendEmailVerification(credential.user);
+      try {
+        await sendEmailVerification(credential.user, {
+          url: window.location.origin + '/dashboard',
+          handleCodeInApp: true,
+        });
+      } catch (emailErr) {
+        console.error("Critical: Verification email failed to dispatch:", emailErr);
+        // We don't block the UI here, but we log it for the Dev Log telemetry
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to create account';
       if (message.includes('email-already-in-use')) {
@@ -105,7 +117,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
   };
-
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);

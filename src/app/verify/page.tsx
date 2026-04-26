@@ -241,18 +241,32 @@ export default function VerifyPage() {
             <div style={{ background: '#f5f6f8', borderRadius: '16px', padding: '24px', border: '1px solid #e1e4e8' }}>
               <h4 style={{ fontWeight: 700, fontSize: '14px', marginBottom: '12px', color: '#323338' }}>Action Required</h4>
               <p style={{ fontSize: '13px', color: '#676879', marginBottom: '20px' }}>Click the link in your email to activate your enterprise workspace. We'll automatically detect your activation.</p>
-              <button 
-                onClick={handleSendLink}
-                disabled={submitting || verificationSent}
-                style={{ 
-                  width: '100%', padding: '12px', background: verificationSent ? '#00c87515' : '#6161FF', 
-                  color: verificationSent ? '#00c875' : '#fff', borderRadius: '8px', 
-                  fontSize: '14px', fontWeight: 700, border: 'none', cursor: 'pointer',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                }}
-              >
-                {verificationSent ? <><CheckCircle2 size={16} /> Link Sent Successfully</> : <><ExternalLink size={16} /> Resend Verification Link</>}
-              </button>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <button 
+                  onClick={handleSendLink}
+                  disabled={submitting || verificationSent}
+                  style={{ 
+                    width: '100%', padding: '12px', background: verificationSent ? '#00c87515' : '#6161FF', 
+                    color: verificationSent ? '#00c875' : '#fff', borderRadius: '8px', 
+                    fontSize: '14px', fontWeight: 700, border: 'none', cursor: 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                  }}
+                >
+                  {verificationSent ? <><CheckCircle2 size={16} /> Link Sent Successfully</> : <><ExternalLink size={16} /> Resend Verification Link</>}
+                </button>
+
+                <div style={{ padding: '16px', background: '#fff', borderRadius: '12px', border: '1px solid #eee', textAlign: 'left' }}>
+                   <p style={{ fontSize: '12px', color: '#323338', fontWeight: 700, marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <AlertCircle size={14} color="#FDAB3D" /> Didn't get the email?
+                   </p>
+                   <ul style={{ paddingLeft: '20px', fontSize: '12px', color: '#676879', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      <li>Check your spam or junk folder.</li>
+                      <li>Verify your email address above is correct.</li>
+                      <li>Wait 5 minutes for delivery or use the manual code below.</li>
+                   </ul>
+                </div>
+              </div>
             </div>
           </div>
         )}
