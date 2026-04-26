@@ -51,6 +51,7 @@ export default function Sidebar() {
     { id: 'intelligence', label: 'Enterprise Intelligence', icon: Brain, path: '/dashboard/intelligence' },
     { id: 'inbox', label: 'Inbox', icon: Inbox, path: '/dashboard/inbox' },
     { id: 'calendar', label: 'My Week', icon: Calendar, path: '/dashboard/calendar' },
+    { id: 'templates', label: 'Template Center', icon: LayoutGrid, path: '/dashboard/templates' },
     { id: 'apps', label: 'Apps Marketplace', icon: LayoutGrid, path: '/dashboard/apps' },
   ];
 
