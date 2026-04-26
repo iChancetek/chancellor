@@ -110,9 +110,12 @@ export default function LandingPage() {
           A platform built for a <br />
           <span style={{ color: '#6161FF' }}>new way of working</span>
         </h1>
-        <p className="text-subtitle" style={{ color: '#323338', fontWeight: 500 }}>
-          What would you like to manage with Chancellor Work OS?
-        </p>
+        
+        <div style={{ marginTop: '32px', padding: '24px 32px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(12px)', borderRadius: '20px', border: '1px solid #fff', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', maxWidth: '800px' }}>
+          <p className="text-subtitle" style={{ color: '#1c1c1c', fontWeight: 600, margin: 0 }}>
+            What would you like to manage with Chancellor Work OS?
+          </p>
+        </div>
 
         {/* Product selector grid */}
         <div className="product-selector-grid">
