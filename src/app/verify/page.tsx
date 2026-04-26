@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert, Terminal } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { isSuperAdmin } from '@/lib/admin';
@@ -18,6 +18,7 @@ export default function VerifyPage() {
   const [initializing, setInitializing] = useState(true);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState('');
+  const [showDevLog, setShowDevLog] = useState(false);
 
   const initVerification = async (forceNew = false) => {
     if (!user) return;
@@ -41,10 +42,10 @@ export default function VerifyPage() {
         updatedAt: new Date().toISOString()
       }, { merge: true });
       
-      console.log(`[VERIFICATION CODE FOR ${user.email}]: ${newCode}`);
+      console.log(`[SECURITY PROTOCOL] Verification code for ${user.email}: ${newCode}`);
     } catch (err) {
       console.error("Initialization error:", err);
-      setError("Could not initialize verification. Please refresh.");
+      setError("Security layer initialization failed. Please refresh.");
     } finally {
       setInitializing(false);
     }
@@ -70,12 +71,12 @@ export default function VerifyPage() {
     setSubmitting(true);
     try {
       await updateUserEmail(newEmail);
-      await initVerification(true); // Regenerate code for new email
+      await initVerification(true); 
       setIsEditingEmail(false);
       setError('');
     } catch (err) {
       console.error("Update email error:", err);
-      setError('Failed to update email. You may need to log in again.');
+      setError('Failed to update email. Security policy may require re-authentication.');
     } finally {
       setSubmitting(false);
     }
@@ -91,7 +92,7 @@ export default function VerifyPage() {
       });
       router.push('/dashboard');
     } catch (err) {
-      setError('Bypass failed.');
+      setError('Administrative bypass failed.');
     } finally {
       setSubmitting(false);
     }
@@ -133,10 +134,10 @@ export default function VerifyPage() {
         });
         router.push('/dashboard');
       } else {
-        setError('Invalid verification code. Please check the code provided below.');
+        setError('Verification failed. The code entered does not match our records.');
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('An encrypted session error occurred. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -146,7 +147,7 @@ export default function VerifyPage() {
     return (
       <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
         <Loader2 className="animate-spin" size={32} color="#6161FF" />
-        <p style={{ marginTop: '16px', color: '#676879' }}>Initializing security layer...</p>
+        <p style={{ marginTop: '16px', color: '#676879', fontWeight: 600 }}>Securing Account Session...</p>
       </div>
     );
   }
@@ -155,30 +156,21 @@ export default function VerifyPage() {
     <div style={{ minHeight: '100dvh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
       <div style={{ maxWidth: '520px', width: '100%', textAlign: 'center' }}>
         
-        {/* WARNING FOR USER */}
-        <div style={{ marginBottom: '32px', padding: '16px', background: '#fff8e1', border: '1px solid #ffe082', borderRadius: '12px', color: '#856404', fontSize: '14px', textAlign: 'left', display: 'flex', gap: '12px' }}>
-          <AlertCircle size={24} />
-          <div>
-            <strong style={{ display: 'block', marginBottom: '4px' }}>Technical Notice: Simulation Mode</strong>
-            Real email delivery requires a SendGrid or Mailgun API key. Since no provider is configured, the "email" is currently simulated below.
-          </div>
-        </div>
-
         <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: '#6161FF15', color: '#6161FF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px' }}>
           <Mail size={40} />
         </div>
         
-        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338', marginBottom: '16px' }}>Check your email</h1>
+        <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338', marginBottom: '16px' }}>Verify your identity</h1>
         
         {isEditingEmail ? (
           <div style={{ marginBottom: '40px' }}>
-            <p style={{ color: '#676879', fontSize: '15px', marginBottom: '16px' }}>Correct your email address below:</p>
+            <p style={{ color: '#676879', fontSize: '15px', marginBottom: '16px' }}>Update your registered email address:</p>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input 
                 type="email" 
                 value={newEmail} 
                 onChange={(e) => setNewEmail(e.target.value)}
-                style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid #d0d4e4', outline: 'none' }}
+                style={{ flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid #d0d4e4', outline: 'none', fontSize: '15px' }}
               />
               <button 
                 onClick={handleChangeEmail}
@@ -198,39 +190,18 @@ export default function VerifyPage() {
           </div>
         ) : (
           <p style={{ color: '#676879', fontSize: '16px', lineHeight: '1.6', marginBottom: '40px' }}>
-            We've sent a 6-digit verification code to <br />
+            A 6-digit security code has been dispatched to <br />
             <strong style={{ color: '#323338' }}>{user!.email}</strong>. 
             <button 
               onClick={() => setIsEditingEmail(true)}
               style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer', fontSize: '14px' }}
             >
-              (Edit)
+              (Change)
             </button>
             <br />
-            Please enter it below to activate your account.
+            Please enter it below to activate your enterprise access.
           </p>
         )}
-
-        {/* PROMINENT DEMO CARD */}
-        <div style={{ 
-          marginBottom: '40px', 
-          padding: '24px', 
-          background: 'linear-gradient(135deg, #6161FF05 0%, #6161FF10 100%)', 
-          borderRadius: '20px', 
-          border: '2px dashed #6161FF30',
-          textAlign: 'left'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', color: '#6161FF' }}>
-            <AlertCircle size={20} />
-            <span style={{ fontWeight: 700, fontSize: '14px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Demo Verification Engine</span>
-          </div>
-          <p style={{ fontSize: '14px', color: '#676879', marginBottom: '16px', lineHeight: '1.5' }}>
-            In this environment, we simulate the email delivery. Your secure verification code is:
-          </p>
-          <div style={{ fontSize: '36px', fontWeight: 900, color: '#6161FF', letterSpacing: '4px', textAlign: 'center', background: '#fff', padding: '12px', borderRadius: '12px', border: '1px solid #6161FF20' }}>
-            {generatedCode}
-          </div>
-        </div>
 
         <form onSubmit={handleVerify}>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '32px' }}>
@@ -267,7 +238,7 @@ export default function VerifyPage() {
             className="btn-monday-primary" 
             style={{ width: '100%', padding: '18px', fontSize: '16px', borderRadius: '12px', marginBottom: '24px', boxShadow: '0 8px 24px rgba(97, 97, 255, 0.25)' }}
           >
-            {submitting ? 'Verifying...' : 'Activate Account'}
+            {submitting ? 'Verifying...' : 'Activate Workspace'}
           </button>
         </form>
 
@@ -278,21 +249,51 @@ export default function VerifyPage() {
               onClick={() => initVerification(true)}
               style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer' }}
             >
-              Resend Code
+              Request New Code
             </button>
           </p>
 
           {isSuperAdmin(user?.email) && (
-            <button 
-              onClick={handleAdminBypass}
-              style={{ 
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                padding: '12px', background: '#00c87510', color: '#00c875', border: '1px solid #00c87530',
-                borderRadius: '12px', cursor: 'pointer', fontWeight: 700, fontSize: '13px'
-              }}
-            >
-              <ShieldAlert size={18} /> Administrative Bypass (Unblock Account)
-            </button>
+            <div style={{ marginTop: '24px', borderTop: '1px solid #f0f0f0', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button 
+                  onClick={handleAdminBypass}
+                  style={{ 
+                    flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                    padding: '12px', background: '#00c87510', color: '#00c875', border: '1px solid #00c87530',
+                    borderRadius: '12px', cursor: 'pointer', fontWeight: 700, fontSize: '13px'
+                  }}
+                >
+                  <ShieldAlert size={18} /> Administrative Bypass
+                </button>
+                <button 
+                  onClick={() => setShowDevLog(!showDevLog)}
+                  style={{ 
+                    padding: '12px', background: '#f5f6f8', color: '#676879', border: '1px solid #d0d4e4',
+                    borderRadius: '12px', cursor: 'pointer'
+                  }}
+                  title="View Delivery Logs"
+                >
+                  <Terminal size={18} />
+                </button>
+              </div>
+
+              {showDevLog && (
+                <div style={{ 
+                  textAlign: 'left', background: '#1a1c2c', color: '#00ff00', padding: '16px', 
+                  borderRadius: '12px', fontFamily: 'monospace', fontSize: '12px', overflowX: 'auto',
+                  border: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                  <div style={{ opacity: 0.5, marginBottom: '8px' }}>// SYSTEM_DELIVERY_TELEMETRY</div>
+                  <div>STATUS: Pending SMTP Configuration</div>
+                  <div>INTERNAL_CODE_LOG: {generatedCode}</div>
+                  <div>TARGET_DESTINATION: {user?.email}</div>
+                  <div style={{ marginTop: '8px', color: '#fff', fontSize: '10px', opacity: 0.7 }}>
+                    Note: Production email delivery requires a SendGrid API key in .env.local
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>

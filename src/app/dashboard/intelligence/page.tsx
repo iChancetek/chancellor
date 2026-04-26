@@ -8,10 +8,10 @@ import {
 
 export default function IntelligencePage() {
   const stats = [
-    { label: 'Indexed Documents', value: '1.2M', icon: <Database size={18} /> },
-    { label: 'Semantic Nodes', value: '450K', icon: <Network size={18} /> },
-    { label: 'RAG Hit Rate', value: '98.2%', icon: <Zap size={18} /> },
-    { label: 'Vector Clusters', value: '124', icon: <Cpu size={18} /> },
+    { label: 'Indexed Documents', value: 'Live', icon: <Database size={18} /> },
+    { label: 'Semantic Nodes', value: 'Ready', icon: <Network size={18} /> },
+    { label: 'RAG Hit Rate', value: 'Active', icon: <Zap size={18} /> },
+    { label: 'Vector Clusters', value: 'Secure', icon: <Cpu size={18} /> },
   ];
 
   return (
@@ -45,17 +45,7 @@ export default function IntelligencePage() {
               <div style={{ fontSize: '11px', color: '#9699a6', marginTop: '4px' }}>RELATING CRM DATA TO ERP FINANCE NODES</div>
             </div>
             
-            {/* Mock Nodes */}
-            {[
-              { t: 'Deal #402', x: '20%', y: '30%', c: '#00C875' },
-              { t: 'Initech Corp', x: '40%', y: '60%', c: '#579BFC' },
-              { t: 'Invoice #A12', x: '70%', y: '20%', c: '#A25DDC' },
-              { t: 'Q3 Forecast', x: '80%', y: '70%', c: '#FDAB3D' },
-            ].map(node => (
-              <div key={node.t} style={{ position: 'absolute', top: node.y, left: node.x, background: '#fff', border: `1px solid ${node.c}`, padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 700, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-                {node.t}
-              </div>
-            ))}
+            {/* Nodes will populate dynamically from indexed enterprise data */}
           </div>
         </div>
 

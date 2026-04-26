@@ -151,32 +151,7 @@ interface AutomationState {
 export const useAutomationStore = create<AutomationState>()(
   persist(
     (set) => ({
-      automations: [
-        {
-          id: '1', name: 'Auto-assign on creation',
-          description: 'When an item is created, assign it to the board owner',
-          trigger: 'Item Created', action: 'Assign Person',
-          color: 'rgba(87, 155, 252, 0.15)', enabled: true,
-        },
-        {
-          id: '2', name: 'Notify on status change',
-          description: 'When status changes to "Done", notify the team',
-          trigger: 'Status Changed', action: 'Send Notification',
-          color: 'rgba(0, 200, 117, 0.15)', enabled: false,
-        },
-        {
-          id: '3', name: 'Move overdue items',
-          description: 'When due date passes, move item to "Stuck" status',
-          trigger: 'Date Arrived', action: 'Change Status',
-          color: 'rgba(253, 171, 61, 0.15)', enabled: true,
-        },
-        {
-          id: '4', name: 'Escalation alert',
-          description: 'When priority is set to "Critical", alert the manager',
-          trigger: 'Column Changed', action: 'Send Email',
-          color: 'rgba(226, 68, 92, 0.15)', enabled: false,
-        },
-      ],
+      automations: [],
       setAutomations: (automations) => set({ automations }),
       toggleAutomation: (id) => set((state) => ({
         automations: state.automations.map(a => a.id === id ? { ...a, enabled: !a.enabled } : a),
