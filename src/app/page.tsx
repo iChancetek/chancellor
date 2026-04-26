@@ -24,6 +24,7 @@ export default function LandingPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState('work');
+  const [isMuted, setIsMuted] = useState(true);
 
   const products = [
     { id: 'work', label: 'Work Management', icon: LayoutGrid, color: '#0073ea' },
@@ -78,8 +79,6 @@ export default function LandingPage() {
       </div>
     );
   }
-
-  const [isMuted, setIsMuted] = useState(true);
 
   return (
     <div className="landing-container" style={{ overflowX: 'hidden', position: 'relative' }}>
