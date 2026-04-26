@@ -53,15 +53,15 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div style={{ padding: '40px', background: '#f5f6f8', minHeight: '100%', overflowY: 'auto' }}>
-      <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-        <div>
-          <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338' }}>Administration Dashboard</h1>
-          <p style={{ color: '#676879', marginTop: '8px' }}>Manage users, monitor audit logs, and oversee enterprise infrastructure.</p>
+    <div style={{ padding: 'clamp(16px, 5vw, 40px)', background: '#f5f6f8', minHeight: '100%', overflowX: 'hidden' }}>
+      <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
+        <div style={{ flex: '1', minWidth: '280px' }}>
+          <h1 className="heading-section" style={{ color: '#323338', marginBottom: '8px' }}>Administration Dashboard</h1>
+          <p style={{ color: '#676879' }}>Manage users, monitor audit logs, and oversee enterprise infrastructure.</p>
         </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
+        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
           <button className="btn-monday-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#fff' }}>
-            <Download size={18} /> Export Report
+            <Download size={18} /> <span className="mobile-hide">Export Report</span>
           </button>
           <button className="btn-monday-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <UserPlus size={18} /> Add User
@@ -70,7 +70,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Stats Overview */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginBottom: '40px' }}>
         {[
           { label: 'Total Users', value: '1,432', change: '+12%', icon: Users, color: '#0073ea' },
           { label: 'Active Sessions', value: '284', change: '+5%', icon: Activity, color: '#00c875' },
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Charts Section */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '40px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px', marginBottom: '40px' }}>
         <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e1e4e8' }}>
           <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '32px' }}>User Growth (6 Months)</h3>
           <div style={{ height: '300px' }}>

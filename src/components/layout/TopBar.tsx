@@ -97,12 +97,23 @@ export default function TopBar() {
                 <div style={{ fontWeight: 700, fontSize: '14px' }}>{user?.displayName}</div>
                 <div style={{ fontSize: '12px', color: '#676879' }}>{user?.email}</div>
               </div>
-              <button 
-                onClick={() => signOut()} 
-                style={{ width: '100%', textAlign: 'left', padding: '12px', color: '#df2f4a', fontSize: '14px', fontWeight: 600 }}
-              >
-                Log out
-              </button>
+              <div style={{ padding: '4px' }}>
+                <button 
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent('chancellor_reset_onboarding'));
+                    setUserMenuOpen(false);
+                  }} 
+                  style={{ width: '100%', textAlign: 'left', padding: '12px', color: '#6161FF', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}
+                >
+                  <RefreshCw size={14} /> Restart Platform Tour
+                </button>
+                <button 
+                  onClick={() => signOut()} 
+                  style={{ width: '100%', textAlign: 'left', padding: '12px', color: '#df2f4a', fontSize: '14px', fontWeight: 600, borderTop: '1px solid #eee' }}
+                >
+                  Log out
+                </button>
+              </div>
             </div>
           )}
         </div>

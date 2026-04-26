@@ -58,7 +58,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
   return (
     <div className="dashboard-layout">
       <Sidebar />
-      <div className="main-content">
+      <div className="main-content" style={{ overflowX: 'hidden' }}>
         <TopBar />
         <div className="main-scroll">
           {children}

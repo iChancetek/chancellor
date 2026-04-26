@@ -86,13 +86,13 @@
 /* ── Reset & Baseline ──────────────────────────────────── */
 * { box-sizing: border-box; padding: 0; margin: 0; }
 html, body { 
-  max-width: 100vw; 
+  max-width: 100%; 
   overflow-x: hidden; 
-  background: var(--background); 
-  color: var(--text-primary);
+  background: var(--bg-page); 
+  color: var(--text-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overscroll-behavior: none;
+  overscroll-behavior: contain;
 }
 
 img {
@@ -107,15 +107,17 @@ input { font-family: inherit; outline: none; }
 
 /* ── Typography Utilities ─────────────────────────────── */
 .heading-hero { 
-  font-size: clamp(40px, 8vw, 72px); 
+  font-size: clamp(32px, 8vw, 72px); 
   font-weight: 800; 
   line-height: 1.1; 
   letter-spacing: -1px; 
+  word-wrap: break-word;
 }
 .heading-section { 
-  font-size: clamp(32px, 6vw, 48px); 
+  font-size: clamp(24px, 6vw, 48px); 
   font-weight: 700; 
   line-height: 1.2; 
+  word-wrap: break-word;
 }
 .text-subtitle { 
   font-size: clamp(18px, 4vw, 24px); 
@@ -317,8 +319,10 @@ input { font-family: inherit; outline: none; }
 .main-scroll {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   background: var(--bg-page);
-  overscroll-behavior: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── Dashboard Exact Styles ───────────────────────────── */

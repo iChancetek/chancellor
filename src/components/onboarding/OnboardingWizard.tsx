@@ -72,6 +72,15 @@ export default function OnboardingWizard() {
     if (!isCompleted) {
       setIsOpen(true);
     }
+
+    const handleReset = () => {
+      localStorage.removeItem('chancellor_onboarding_completed');
+      setCurrentStep(0);
+      setIsOpen(true);
+    };
+
+    window.addEventListener('chancellor_reset_onboarding', handleReset);
+    return () => window.removeEventListener('chancellor_reset_onboarding', handleReset);
   }, []);
 
   // Speak when step changes
