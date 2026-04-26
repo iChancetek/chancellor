@@ -110,7 +110,7 @@ export default function LandingPage() {
           A platform built for a <br />
           <span style={{ color: '#6161FF' }}>new way of working</span>
         </h1>
-        <p className="text-subtitle">
+        <p className="text-subtitle" style={{ color: '#323338', fontWeight: 500 }}>
           What would you like to manage with Chancellor Work OS?
         </p>
 
@@ -138,7 +138,7 @@ export default function LandingPage() {
             Learn more about {products.find(p => p.id === selectedProduct)?.label}
           </Link>
         </div>
-        <p style={{ marginTop: '16px', fontSize: '13px', color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>No credit card needed ✦ Unlimited time on Free plan</p>
+        <p style={{ marginTop: '24px', fontSize: '14px', color: '#676879', textAlign: 'center', fontWeight: 500 }}>No credit card needed ✦ Unlimited time on Free plan</p>
       </section>
 
       {/* Solutions Section */}
@@ -150,7 +150,7 @@ export default function LandingPage() {
             <h2 className="heading-section" style={{ marginBottom: '32px', color: '#fff' }}>
               The OS that powers <br /> <span className="gradient-text">teams to run everything</span>
             </h2>
-            <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#9699a6', marginBottom: '48px', lineHeight: '1.6' }}>
+            <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#b0b3c0', marginBottom: '48px', lineHeight: '1.6', fontWeight: 400 }}>
               ChancellorOS is not just a tool; it is a comprehensive neural ecosystem designed for the modern enterprise. 
               Seamlessly bridge the gap between CRM, ERP, and project execution.
             </p>
@@ -200,18 +200,18 @@ export default function LandingPage() {
         <h2 className="heading-section" style={{ marginBottom: '16px' }}>
           Interconnected apps <br /> <span className="gradient-text">for every team</span>
         </h2>
-        <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#676879', marginBottom: '60px', maxWidth: '800px', margin: '0 auto 60px' }}>
+        <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#323338', marginBottom: '60px', maxWidth: '800px', margin: '0 auto 60px', fontWeight: 500 }}>
           Break down silos and unify your entire organizational workflow. 
           Our suite of interconnected modules ensures that data flows effortlessly between every department.
         </p>
         
-        <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.12)', background: '#000', margin: '0 auto', maxWidth: '1000px' }}>
+        <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.12)', background: 'rgba(0,0,0,0.8)', margin: '0 auto', maxWidth: '1000px' }}>
           <img 
             src="/apps_grid.png" 
             alt="Chancellor Interconnected Apps Grid" 
-            style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '600px', objectFit: 'cover' }} 
+            style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '600px', objectFit: 'cover', opacity: 0.9 }} 
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,17,26,0.3), transparent)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.4), transparent)' }} />
         </div>
 
         <div style={{ marginTop: '60px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
@@ -221,10 +221,10 @@ export default function LandingPage() {
             { title: 'Deep Integration', desc: 'Bespoke webhooks for external tools.' },
             { title: 'Enterprise Security', desc: 'Governance and encryption at scale.' }
           ].map((item, i) => (
-            <div key={i} style={{ textAlign: 'left', padding: '24px', borderRadius: '16px', border: '1px solid #eee' }}>
+            <div key={i} style={{ textAlign: 'left', padding: '24px', borderRadius: '16px', border: '1px solid #d0d4e4', background: 'rgba(255,255,255,0.6)', backdropFilter: 'blur(8px)' }}>
               <Zap size={24} color="#6161FF" style={{ marginBottom: '16px' }} />
-              <h5 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '8px' }}>{item.title}</h5>
-              <p style={{ fontSize: '14px', color: '#676879' }}>{item.desc}</p>
+              <h5 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '8px', color: '#1c1c1c' }}>{item.title}</h5>
+              <p style={{ fontSize: '14px', color: '#323338', fontWeight: 500 }}>{item.desc}</p>
             </div>
           ))}
         </div>
