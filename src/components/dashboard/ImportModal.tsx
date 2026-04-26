@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { 
   X, Upload, Download, Database, Mail, Globe, 
   MessageSquare, Layout, Server, ArrowRight, CheckCircle2, 
-  FileJson, FileSpreadsheet, AlertCircle
+  FileJson, FileSpreadsheet, AlertCircle, Loader2
 } from 'lucide-react';
 
 interface ImportModalProps {
