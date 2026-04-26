@@ -67,12 +67,12 @@ export default function LandingPage() {
   }
 
   return (
-    <div className="landing-container">
+    <div className="landing-container" style={{ overflowX: 'hidden' }}>
       {/* Navbar */}
       <PublicNavbar />
 
       {/* Hero Section */}
-      <section id="products-section" className="lp-hero">
+      <section id="products-section" className="lp-hero" style={{ padding: 'clamp(80px, 15vh, 120px) 24px' }}>
         <h1 className="heading-hero animate-fade-in-up">
           A platform built for a <br />
           <span style={{ color: '#6161FF' }}>new way of working</span>
@@ -81,7 +81,7 @@ export default function LandingPage() {
           What would you like to manage with Chancellor Work OS?
         </p>
 
-        {/* Product selector grid - EXACT Monday look */}
+        {/* Product selector grid */}
         <div className="product-selector-grid animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
           {products.map((p) => (
             <div 
@@ -97,32 +97,31 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <Link href="#solutions-section" className="btn-monday-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className="animate-fade-in-up" style={{ animationDelay: '0.3s', display: 'flex', gap: '16px', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Link href="#auth-section" className="btn-monday-primary full-width-on-mobile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
             Get Started <ArrowRight size={20} />
           </Link>
-          <Link href={`/product/${selectedProduct}`} className="btn-monday-secondary" style={{ padding: '14px 24px', fontSize: '16px', fontWeight: 600, color: '#333', border: '1px solid #d0d4e4', borderRadius: '9999px', background: '#fff' }}>
+          <Link href={`/product/${selectedProduct}`} className="btn-monday-secondary full-width-on-mobile" style={{ padding: '14px 24px', fontSize: '16px', fontWeight: 600, color: '#333', border: '1px solid #d0d4e4', borderRadius: '9999px', background: '#fff', textAlign: 'center' }}>
             Learn more about {products.find(p => p.id === selectedProduct)?.label}
           </Link>
         </div>
-        <p style={{ marginTop: '16px', fontSize: '13px', color: '#676879' }}>No credit card needed ✦ Unlimited time on Free plan</p>
+        <p style={{ marginTop: '16px', fontSize: '13px', color: '#676879', textAlign: 'center' }}>No credit card needed ✦ Unlimited time on Free plan</p>
       </section>
 
-      {/* Solutions Section - Redesigned for Premium Look */}
-      <section id="solutions-section" className="dark-premium-section" style={{ padding: '120px 5%', position: 'relative', overflow: 'hidden' }}>
-        {/* Abstract background glow */}
+      {/* Solutions Section */}
+      <section id="solutions-section" className="dark-premium-section section-padding" style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(97,97,255,0.15) 0%, transparent 70%)', filter: 'blur(80px)' }} />
         
-        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '80px', alignItems: 'center', position: 'relative', zIndex: 1 }}>
+        <div className="responsive-flex" style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
           <div style={{ flex: 1 }}>
             <h2 className="heading-section" style={{ marginBottom: '32px', color: '#fff' }}>
               The OS that powers <br /> <span className="gradient-text">teams to run everything</span>
             </h2>
-            <p style={{ fontSize: '20px', color: '#9699a6', marginBottom: '48px', lineHeight: '1.6' }}>
+            <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#9699a6', marginBottom: '48px', lineHeight: '1.6' }}>
               ChancellorOS is not just a tool; it is a comprehensive neural ecosystem designed for the modern enterprise. 
               Seamlessly bridge the gap between CRM, ERP, and project execution.
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px' }}>
               {[
                 { title: 'Work Management', desc: 'Automated projects & Gantt charts' },
                 { title: 'ChancellorOS ERP', desc: 'Unified resource planning & financials' },
@@ -130,69 +129,68 @@ export default function LandingPage() {
                 { title: 'Dev & R&D', desc: 'Sprint planning & technical roadmap' },
                 { title: 'Chancellor AI', desc: 'Autonomous agents & multimodal reasoning' }
               ].map((item, i) => (
-                <div key={i} className="modern-grid-card" style={{ padding: '20px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', gap: '16px' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(97,97,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CheckCircle2 size={20} color="#00c875" />
+                <div key={i} className="modern-grid-card" style={{ padding: '16px', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', gap: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                  <div style={{ width: '36px', height: '36px', flexShrink: 0, borderRadius: '8px', background: 'rgba(97,97,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CheckCircle2 size={18} color="#00c875" />
                   </div>
                   <div>
-                    <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#fff' }}>{item.title}</h4>
-                    <p style={{ fontSize: '13px', color: '#9699a6' }}>{item.desc}</p>
+                    <h4 style={{ fontSize: '15px', fontWeight: 700, color: '#fff' }}>{item.title}</h4>
+                    <p style={{ fontSize: '12px', color: '#9699a6' }}>{item.desc}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div style={{ flex: 1.2, position: 'relative' }}>
+          <div style={{ flex: 1.2, position: 'relative', marginTop: '40px' }}>
             <div className="animate-float" style={{ position: 'relative', zIndex: 2 }}>
               <img 
                 src="/erp_crm.png" 
                 alt="Chancellor ERP and CRM Interface" 
-                style={{ width: '100%', borderRadius: '32px', boxShadow: '0 30px 60px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)' }} 
+                style={{ width: '100%', height: 'auto', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.1)' }} 
               />
-              {/* Decorative elements */}
-              <div style={{ position: 'absolute', top: '-20px', left: '-20px', padding: '16px 24px', background: 'rgba(97,97,255,0.9)', color: '#fff', borderRadius: '12px', fontWeight: 700, fontSize: '14px', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
+              {/* Responsive Decorative elements */}
+              <div className="mobile-hide" style={{ position: 'absolute', top: '-20px', left: '-20px', padding: '12px 20px', background: 'rgba(97,97,255,0.9)', color: '#fff', borderRadius: '10px', fontWeight: 700, fontSize: '13px', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
                 Real-time ERP
               </div>
-              <div style={{ position: 'absolute', bottom: '40px', right: '-30px', padding: '16px 24px', background: 'rgba(0,200,117,0.9)', color: '#fff', borderRadius: '12px', fontWeight: 700, fontSize: '14px', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
+              <div className="mobile-hide" style={{ position: 'absolute', bottom: '40px', right: '-20px', padding: '12px 20px', background: 'rgba(0,200,117,0.9)', color: '#fff', borderRadius: '10px', fontWeight: 700, fontSize: '13px', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
                 Intelligent CRM
               </div>
             </div>
-            {/* Background glow for the image */}
-            <div style={{ position: 'absolute', inset: '20px', background: 'linear-gradient(135deg, #6161FF, #00c875)', filter: 'blur(60px)', opacity: 0.2, zIndex: 1 }} />
+            <div style={{ position: 'absolute', inset: '20px', background: 'linear-gradient(135deg, #6161FF, #00c875)', filter: 'blur(60px)', opacity: 0.15, zIndex: 1 }} />
           </div>
         </div>
       </section>
 
-      {/* Bottom Showcase - INTERCONNECTED APPS Redesigned */}
-      <section id="resources-section" style={{ padding: '140px 10%', textAlign: 'center', background: '#fff' }}>
-        <h2 className="heading-section" style={{ fontSize: '48px', marginBottom: '16px' }}>
+      {/* Bottom Showcase */}
+      <section id="resources-section" className="section-padding" style={{ textAlign: 'center', background: '#fff' }}>
+        <h2 className="heading-section" style={{ marginBottom: '16px' }}>
           Interconnected apps <br /> <span className="gradient-text">for every team</span>
         </h2>
-        <p style={{ fontSize: '20px', color: '#676879', marginBottom: '80px', maxWidth: '800px', margin: '0 auto 80px' }}>
+        <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#676879', marginBottom: '60px', maxWidth: '800px', margin: '0 auto 60px' }}>
           Break down silos and unify your entire organizational workflow. 
           Our suite of interconnected modules ensures that data flows effortlessly between every department.
         </p>
         
-        <div style={{ position: 'relative', borderRadius: '40px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.15)', background: '#000' }}>
+        <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.12)', background: '#000', margin: '0 auto', maxWidth: '1000px' }}>
           <img 
             src="/apps_grid.png" 
             alt="Chancellor Interconnected Apps Grid" 
-            style={{ width: '100%', display: 'block', maxHeight: '800px', objectFit: 'cover' }} 
+            style={{ width: '100%', height: 'auto', display: 'block', maxHeight: '600px', objectFit: 'cover' }} 
           />
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,17,26,0.4), transparent)' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,17,26,0.3), transparent)' }} />
         </div>
 
-        <div style={{ marginTop: '80px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+        <div style={{ marginTop: '60px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
           {[
             { title: 'Global Sync', desc: 'Real-time data parity across all modules.' },
             { title: 'Neural Connect', desc: 'AI-driven cross-module intelligence.' },
             { title: 'Deep Integration', desc: 'Bespoke webhooks for external tools.' },
             { title: 'Enterprise Security', desc: 'Governance and encryption at scale.' }
           ].map((item, i) => (
-            <div key={i} style={{ textAlign: 'left', padding: '24px', borderRadius: '20px', border: '1px solid #eee' }}>
+            <div key={i} style={{ textAlign: 'left', padding: '24px', borderRadius: '16px', border: '1px solid #eee' }}>
               <Zap size={24} color="#6161FF" style={{ marginBottom: '16px' }} />
-              <h5 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '8px' }}>{item.title}</h5>
+              <h5 style={{ fontSize: '17px', fontWeight: 700, marginBottom: '8px' }}>{item.title}</h5>
               <p style={{ fontSize: '14px', color: '#676879' }}>{item.desc}</p>
             </div>
           ))}
@@ -201,12 +199,12 @@ export default function LandingPage() {
       
       <LandingAIChat />
 
-      {/* NEW Auth Section at the bottom */}
-      <section id="auth-section" style={{ background: '#f5f6f8', padding: '100px 5%', borderTop: '1px solid #e1e4e8' }}>
+      {/* Auth Section */}
+      <section id="auth-section" style={{ background: '#f5f6f8', padding: '80px 24px', borderTop: '1px solid #e1e4e8' }}>
         <div style={{ maxWidth: '460px', margin: '0 auto' }}>
-          <div className="monday-auth-card" style={{ padding: '48px', borderRadius: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}>
-            <h3 style={{ fontSize: '28px', fontWeight: 800, marginBottom: '32px', textAlign: 'center' }}>
-              {isLogin ? 'Welcome back' : 'Start your 14-day free trial'}
+          <div className="monday-auth-card" style={{ padding: 'clamp(24px, 5vw, 48px)', borderRadius: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}>
+            <h3 style={{ fontSize: 'clamp(24px, 5vw, 28px)', fontWeight: 800, marginBottom: '32px', textAlign: 'center' }}>
+              {isLogin ? 'Welcome back' : 'Start your free trial'}
             </h3>
 
             <button

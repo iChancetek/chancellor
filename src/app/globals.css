@@ -84,19 +84,21 @@
 }
 
 /* ── Reset & Baseline ──────────────────────────────────── */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+* { box-sizing: border-box; padding: 0; margin: 0; }
+html, body { 
+  max-width: 100vw; 
+  overflow-x: hidden; 
+  background: var(--background); 
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 }
 
-html, body {
-  font-family: var(--font-main);
-  background-color: var(--bg-card);
-  color: var(--text-main);
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  overscroll-behavior: none;
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
 a { text-decoration: none; color: inherit; }
@@ -104,9 +106,81 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 input { font-family: inherit; outline: none; }
 
 /* ── Typography Utilities ─────────────────────────────── */
-.heading-hero { font-size: 72px; font-weight: 800; line-height: 1.1; letter-spacing: -2px; }
-.heading-section { font-size: 48px; font-weight: 700; line-height: 1.2; }
-.text-subtitle { font-size: 24px; font-weight: 400; color: var(--text-secondary); }
+.heading-hero { 
+  font-size: clamp(40px, 8vw, 72px); 
+  font-weight: 800; 
+  line-height: 1.1; 
+  letter-spacing: -1px; 
+}
+.heading-section { 
+  font-size: clamp(32px, 6vw, 48px); 
+  font-weight: 700; 
+  line-height: 1.2; 
+}
+.text-subtitle { 
+  font-size: clamp(18px, 4vw, 24px); 
+  font-weight: 400; 
+  color: var(--text-secondary); 
+}
+
+/* ── Responsive Layout Utilities ──────────────────────── */
+.responsive-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .responsive-flex {
+    flex-direction: row;
+    gap: 80px;
+    align-items: center;
+  }
+}
+
+.section-padding {
+  padding: 60px 24px;
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 120px 5%;
+  }
+}
+
+.login-split-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: #fff;
+  overflow-x: hidden;
+}
+
+@media (min-width: 1024px) {
+  .login-split-container {
+    flex-direction: row;
+  }
+}
+
+.mobile-hide {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .mobile-hide {
+    display: flex;
+  }
+}
+
+.full-width-on-mobile {
+  width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .full-width-on-mobile {
+    width: auto;
+  }
+}
 
 .gradient-text {
   background: linear-gradient(135deg, #6161FF, #a25ddc);
