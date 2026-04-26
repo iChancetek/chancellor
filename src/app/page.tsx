@@ -79,18 +79,59 @@ export default function LandingPage() {
     );
   }
 
+  const [isMuted, setIsMuted] = useState(true);
+
   return (
-    <div className="landing-container" style={{ overflowX: 'hidden' }}>
+    <div className="landing-container" style={{ overflowX: 'hidden', position: 'relative' }}>
+      {/* Background Video Layer */}
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, overflow: 'hidden', background: '#000' }}>
+        <video 
+          autoPlay 
+          loop 
+          muted={isMuted} 
+          playsInline 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5 }}
+        >
+          <source src="/Chancellor_CRM_ERP2.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(15,17,26,0.8), rgba(15,17,26,0.6), rgba(15,17,26,0.9))' }} />
+      </div>
+
+      {/* Audio Control Overlay */}
+      <div style={{ position: 'fixed', bottom: '32px', left: '32px', zIndex: 100 }}>
+        <button 
+          onClick={() => setIsMuted(!isMuted)}
+          style={{ 
+            background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.2)',
+            borderRadius: '50%', width: '56px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#fff', cursor: 'pointer', transition: 'all 0.3s', boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+          }}
+          className="hover-scale"
+          title={isMuted ? "Play platform voice-over" : "Mute voice"}
+        >
+          {isMuted ? (
+            <div style={{ position: 'relative' }}>
+               <Headphones size={24} />
+               <div className="pulse-dot" style={{ position: 'absolute', top: '-4px', right: '-4px', width: '10px', height: '10px', background: '#6161FF', borderRadius: '50%' }} />
+            </div>
+          ) : (
+            <Zap size={24} color="#00c875" />
+          )}
+        </button>
+        <div style={{ marginLeft: '64px', marginTop: '-48px', color: '#fff', fontSize: '13px', fontWeight: 600, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+           {isMuted ? "Platform Overview (Muted)" : "Live Audio Active"}
+        </div>
+      </div>
       {/* Navbar */}
       <PublicNavbar />
 
       {/* Hero Section */}
-      <section id="products-section" className="lp-hero" style={{ padding: 'clamp(80px, 15vh, 120px) 24px' }}>
-        <h1 className="heading-hero animate-fade-in-up">
+      <section id="products-section" className="lp-hero" style={{ padding: 'clamp(80px, 15vh, 120px) 24px', color: '#fff' }}>
+        <h1 className="heading-hero animate-fade-in-up" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
           A platform built for a <br />
           <span style={{ color: '#6161FF' }}>new way of working</span>
         </h1>
-        <p className="text-subtitle animate-fade-in-up" style={{ marginTop: '32px', animationDelay: '0.1s' }}>
+        <p className="text-subtitle animate-fade-in-up" style={{ marginTop: '32px', animationDelay: '0.1s', color: 'rgba(255,255,255,0.8)', textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
           What would you like to manage with Chancellor Work OS?
         </p>
 
@@ -101,6 +142,12 @@ export default function LandingPage() {
               key={p.id} 
               className={`product-selector-card ${selectedProduct === p.id ? 'active' : ''}`}
               onClick={() => setSelectedProduct(p.id)}
+              style={{ 
+                background: selectedProduct === p.id ? 'rgba(97,97,255,0.2)' : 'rgba(255,255,255,0.05)',
+                backdropFilter: 'blur(10px)',
+                borderColor: selectedProduct === p.id ? '#6161FF' : 'rgba(255,255,255,0.1)',
+                color: '#fff'
+              }}
             >
               <div className="product-icon-wrapper" style={{ backgroundColor: p.color }}>
                 <p.icon size={24} />
@@ -114,11 +161,11 @@ export default function LandingPage() {
           <Link href="#auth-section" className="btn-monday-primary full-width-on-mobile" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
             Get Started <ArrowRight size={20} />
           </Link>
-          <Link href={`/product/${selectedProduct}`} className="btn-monday-secondary full-width-on-mobile" style={{ padding: '14px 24px', fontSize: '16px', fontWeight: 600, color: '#333', border: '1px solid #d0d4e4', borderRadius: '9999px', background: '#fff', textAlign: 'center' }}>
+          <Link href={`/product/${selectedProduct}`} className="btn-monday-secondary full-width-on-mobile" style={{ padding: '14px 24px', fontSize: '16px', fontWeight: 600, color: '#fff', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '9999px', background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(8px)', textAlign: 'center' }}>
             Learn more about {products.find(p => p.id === selectedProduct)?.label}
           </Link>
         </div>
-        <p style={{ marginTop: '16px', fontSize: '13px', color: '#676879', textAlign: 'center' }}>No credit card needed ✦ Unlimited time on Free plan</p>
+        <p style={{ marginTop: '16px', fontSize: '13px', color: 'rgba(255,255,255,0.6)', textAlign: 'center' }}>No credit card needed ✦ Unlimited time on Free plan</p>
       </section>
 
       {/* Solutions Section */}
