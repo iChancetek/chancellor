@@ -13,7 +13,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Bespoke Workflow Architecture: Build the exact workflow your industry demands. From complex construction sequences to high-frequency content production, our drag-and-drop builder allows you to define custom logic, transition rules, and required data fields for every stage of your process.',
       'Intelligent Resource Allocation: Maintain peak efficiency with live workload balancing. Visualize team capacity in real-time to prevent burnout and identify bottlenecks before they impact your timeline. The system automatically suggests optimal task assignments based on current availability and past performance metrics.',
       'Interconnected Board Ecosystem: Connect related projects across different departments. Data changes in a marketing board can automatically trigger updates in a product roadmap or a sales pipeline, ensuring that the entire organization moves in perfect synchronization.',
-      'Strategic Insight Dashboards: Transform raw data into executive-level intelligence. Build custom dashboards with real-time widgets for budget tracking, cycle time analysis, and team productivity, providing the clarity needed for rapid, data-driven decision making.'
+      'Strategic Insight Dashboards: Transform raw data into executive-level intelligence. Build custom dashboards with real-time widgets for budget tracking, cycle time analysis, and team productivity, providing the clarity needed for rapid, data-driven decision making.',
+      'Collaborative Document Canvas: Integrated docs that live alongside your projects. Real-time co-editing, version history, and the ability to embed live board widgets directly into your project briefs and meeting notes.',
+      'Advanced Dependency Mapping: Complex "Finish-to-Start", "Start-to-Start", and "Finish-to-Finish" dependency logic with automated lag-time calculations and critical path visualization.',
+      'Workload Heatmaps: High-level visual representation of team bandwidth across multiple workspaces, allowing for effortless resource re-balancing during peak cycles.',
+      'Automated Data Collection: Custom forms that translate directly into board items, with intelligent field mapping and automated response triggers.'
     ],
     deepOptions: [
       'Custom Formula Engine: Create complex calculated columns using our Excel-like formula syntax for advanced data manipulation.',
@@ -21,7 +25,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Conditional Formatting Logic: Apply visual rules to your data based on complex multi-criteria triggers.',
       'Automated Board Templates: Scripted board creation with pre-configured automations and dashboard widgets.',
       'Workload Capacity Mapping: Detailed sub-item level resource tracking for granular task management.',
-      'Enterprise Search API: Programmatic access to the cross-board search engine for external integrations.'
+      'Enterprise Search API: Programmatic access to the cross-board search engine for external integrations.',
+      'RBAC Column Permissions: Granular control over who can view or edit specific data columns within a board.',
+      'Bespoke Status Labels: Unlimited custom status options with color-coding and transition-lock security.',
+      'Historical Data Snapshots: Daily backups of board states with point-in-time restoration capabilities.',
+      'Pivot Table Engine: Advanced data aggregation and cross-tabulation for complex reporting within dashboards.'
     ]
   },
   erp: {
@@ -36,7 +44,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Autonomous HCM & Payroll: Revolutionize your human capital management with integrated time-tracking, benefits administration, and automated payroll processing. The system handles complex tax calculations and compliance requirements across multiple jurisdictions automatically.',
       'Real-Time Compliance Engine: Stay ahead of regulatory requirements with automated reporting and internal controls. The engine continuously monitors transactions for anomalies and generates comprehensive audit trails for SOX, GDPR, and other global standards.',
       'Neural Cash Flow Forecasting: Utilize Chancellor AI to predict your future financial state. By analyzing historical trends and current market data, the system generates high-probability cash flow models that help you plan investments and manage liquidity with confidence.',
-      'Strategic Procurement Portal: Streamline vendor relationships with an automated procurement workflow. From initial RFQ to final payment, the portal manages vendor evaluations, contract terms, and purchase orders, ensuring you always get the best value for your spend.'
+      'Strategic Procurement Portal: Streamline vendor relationships with an automated procurement workflow. From initial RFQ to final payment, the portal manages vendor evaluations, contract terms, and purchase orders, ensuring you always get the best value for your spend.',
+      'Asset Lifecycle Management: Track tangible and intangible assets from acquisition to disposal. Automated depreciation scheduling, maintenance alerts, and valuation tracking integrated directly into the general ledger.',
+      'Multicurrency Treasury Management: Real-time FX exposure monitoring with automated hedging suggestions and centralized liquidity management for global operations.',
+      'Project-Level Profitability: Granular cost tracking that links every project hour and material expense to real-time P&L statements, allowing for precise margin analysis.',
+      'Intercompany Reconciliation: Automated elimination entries and balance matching for multi-entity corporate structures, drastically reducing month-end closing cycles.'
     ],
     deepOptions: [
       'Multi-Entity Consolidation: Automated currency conversion and elimination entries for global corporate structures.',
@@ -44,7 +56,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Automated Tax Nexus Tracking: Real-time monitoring of nexus thresholds across thousands of tax jurisdictions.',
       'Electronic Data Interchange (EDI): Native support for EDI 810/850/856 protocols for seamless partner communication.',
       'Project-Based Accounting: Deep integration between task execution and financial ledger for real-time profitability.',
-      'Predictive Churn Ledger: AI-driven revenue risk assessment integrated directly into your financial forecasts.'
+      'Predictive Churn Ledger: AI-driven revenue risk assessment integrated directly into your financial forecasts.',
+      'Revenue Recognition Engine: Support for ASC 606 / IFRS 15 standards with automated contract-based revenue scheduling.',
+      'Bespoke Chart of Accounts: Flexible, multi-segment ledger structure that adapts to any organizational hierarchy.',
+      'Automated Expense Auditing: AI-driven scanning of receipts and invoices with anomaly detection for policy compliance.',
+      'Vendor Risk Assessment: Continuous monitoring of vendor financial health and compliance status via external data feeds.'
     ]
   },
   crm: {
@@ -59,7 +75,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Intelligent Outreach Automation: Never let a lead go cold. Create complex multi-channel sequences across email, LinkedIn, and SMS that adapt based on recipient behavior. If a prospect clicks a specific link, the sequence can automatically pivot to a more relevant conversation.',
       'Visual Pipeline Acceleration: Track every deal with a high-fidelity pipeline view. Identify stalled opportunities and get AI-driven recommendations on the "next best action" to move the deal toward closing, including relevant case studies or discount triggers.',
       'Multimodal Mobile CRM: Access your entire sales suite from the field. Use voice-to-text to record meeting notes that are instantly transcribed and analyzed for action items, and use the camera to scan business cards or documents directly into the system.',
-      'Revenue Performance Analytics: Gain deep insight into your sales velocity and win rates. Our advanced reporting allows you to drill down into individual performance, territory health, and product-specific trends to identify growth levers and coaching opportunities.'
+      'Revenue Performance Analytics: Gain deep insight into your sales velocity and win rates. Our advanced reporting allows you to drill down into individual performance, territory health, and product-specific trends to identify growth levers and coaching opportunities.',
+      'Email & Calendar Synchronization: Native integration with Gmail and Outlook. Automatically log emails to contacts, sync meetings, and view prospect history without leaving your inbox.',
+      'Bespoke Sales Playbooks: Define standardized sales motions for different deal types. Provide reps with real-time guidance, talk tracks, and required documents at every stage of the funnel.',
+      'Automated Task Orchestration: The CRM automatically creates tasks for follow-ups, contract renewals, and quarterly business reviews, ensuring no revenue opportunity falls through the cracks.',
+      'Account-Based Marketing (ABM) Suite: Target high-value accounts with precision. Coordinate sales and marketing efforts with unified account scoring and personalized content triggers.'
     ],
     deepOptions: [
       'Dynamic Territory Routing: Automated lead assignment based on complex geographic and account-based logic.',
@@ -67,7 +87,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'CPQ Integration: Integrated Configure, Price, Quote tools with automated discount approval workflows.',
       'Sales Sequence Branching: Highly complex "If-This-Then-That" logic for automated sales engagement.',
       'Customer Health Scorecard: Predictive risk modeling for existing accounts integrated into the CRM view.',
-      'Zero-Touch Data Entry: Autonomous CRM updates from calendar invites, email threads, and phone transcripts.'
+      'Zero-Touch Data Entry: Autonomous CRM updates from calendar invites, email threads, and phone transcripts.',
+      'Duplicate Prevention Engine: Real-time scanning for matching contact and company records to maintain database hygiene.',
+      'Sales Forecasting Models: Advanced probability-based revenue predictions with historical accuracy tracking.',
+      'Custom Activity Mapping: Define unique engagement types (e.g., Demo, Trial, Onboarding) with specific metadata requirements.',
+      'LinkedIn Sales Navigator Sync: Bi-directional data flow for prospect insights and InMail activity tracking.'
     ]
   },
   dev: {
@@ -82,7 +106,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Deep Ecosystem Integration: Connect directly to your technical stack. Real-time bi-directional sync with GitHub, GitLab, and Bitbucket means that issue statuses, pull requests, and code reviews are always visible in your project boards.',
       'Agile Quality Metrics: Monitor the health of your development process with live Burndown, Velocity, and Cumulative Flow diagrams. Identify bottlenecks in your "Definition of Done" and optimize your cycle times with data-driven insights.',
       'AI-Powered Code Governance: Leverage Chancellor AI to monitor repository health. The system can flag high-risk code changes, identify duplicate efforts across teams, and suggest optimizations for technical debt management.',
-      'Technical Roadmap Visualization: Align your architecture with your business goals. Build high-level roadmaps that connect individual technical tasks to major product milestones, providing stakeholders with a clear view of the R&D journey.'
+      'Technical Roadmap Visualization: Align your architecture with your business goals. Build high-level roadmaps that connect individual technical tasks to major product milestones, providing stakeholders with a clear view of the R&D journey.',
+      'Automated Sprint Retrospectives: Data-driven synthesis of sprint performance, identifying key patterns in developer velocity and common impediments.',
+      'Security Vulnerability Mapping: Integrated security feed that links repository vulnerabilities directly to remediation tasks in your dev boards.',
+      'Developer Experience (DevEx) Analytics: Monitor the friction in your dev process with metrics on PR cycle time, build success rates, and local environment setup efficiency.',
+      'Cross-Team Dependency Board: A specialized view for managing complex technical dependencies between different engineering squads and microservices.'
     ],
     deepOptions: [
       'Semantic Code Search: Cross-repository AI search to find components, patterns, and logic across your entire codebase.',
@@ -90,7 +118,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Feature Flag Coordination: Integrated management of feature toggles directly from your sprint boards.',
       'Incident Response Engine: Automated ticket creation and team paging triggered by production monitoring alerts.',
       'Technical Debt Ledger: Quantitative tracking of code complexity and its impact on development velocity.',
-      'Sprint Anomaly Detection: AI-driven warnings for potential sprint failures based on real-time commit activity.'
+      'Sprint Anomaly Detection: AI-driven warnings for potential sprint failures based on real-time commit activity.',
+      'Repo Health Scorecard: Predictive analysis of code quality and maintainability trends across all managed repositories.',
+      'Automated Changelog Generation: Scripted creation of user-facing release notes based on completed work items and PR history.',
+      'CI/CD Pipeline Visualization: Live monitoring of build and deployment statuses directly within the project board view.',
+      'Resource-Aware Planning: Integrated tracking of technical compute costs and infrastructure requirements for R&D initiatives.'
     ]
   },
   marketing: {
@@ -105,7 +137,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Creative Request Workflows: Standardize how work enters the marketing department. Custom request forms automatically route tasks to the right specialists with all the necessary assets and briefs, eliminating back-and-forth communication.',
       'Neural Asset Management: Organize your brand identity with an intelligent asset library. Use Chancellor AI to automatically tag images and videos with relevant keywords and ensure that only the latest, approved versions are used by the team.',
       'Collaborative Campaign Canvas: Brainstorm and ideate in real-time. Our integrated whiteboarding tools allow creative teams to sketch out campaign concepts, wireframe landing pages, and build mood boards that translate directly into actionable tasks.',
-      'Executive Marketing Dashboards: Prove the impact of your marketing efforts. Build high-level reports for stakeholders that showcase brand awareness, lead generation, and customer acquisition costs across all active channels.'
+      'Executive Marketing Dashboards: Prove the impact of your marketing efforts. Build high-level reports for stakeholders that showcase brand awareness, lead generation, and customer acquisition costs across all active channels.',
+      'Automated Social Publishing: Schedule and publish directly to LinkedIn, Instagram, and X from your content board with built-in approval loops.',
+      'Dynamic Brand Guidelines: Centralized digital style guide that updates across all templates and assets automatically, ensuring 100% brand consistency.',
+      'Event & Webinar Management: Specialized workflow for planning large-scale activations, including registration tracking, speaker coordination, and post-event nurture.',
+      'AI-Powered Copy Optimization: Leverage Chancellor AI to generate and test headlines, ad copy, and email subject lines for maximum engagement.'
     ],
     deepOptions: [
       'Automated A/B Test Sync: Track experiment results directly on your creative boards with automated performance updates.',
@@ -113,7 +149,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Dynamic Budget Pacing: Automated monitoring of ad spend versus project goals with AI alerts for over/under pacing.',
       'Influencer Relation Portal: Specialized workflow for managing external creative partners and brand ambassadors.',
       'Social Sentiment Heatmap: Visual representation of brand perception integrated directly into your campaign planners.',
-      'Market Trend Extraction: AI-driven synthesis of industry news and competitor activity to guide creative strategy.'
+      'Market Trend Extraction: AI-driven synthesis of industry news and competitor activity to guide creative strategy.',
+      'Digital Asset Proofing: Integrated commenting and annotation directly on images and video files for rapid creative feedback.',
+      'Campaign Attribution Models: Advanced tracking that links marketing touchpoints directly to CRM revenue outcomes.',
+      'Bespoke Landing Page Builder: Drag-and-drop builder for high-converting campaign pages with automated data flow into boards.',
+      'Marketing Velocity Analytics: Track the speed of creative production and campaign rollout to optimize internal resources.'
     ]
   },
   support: {
@@ -128,7 +168,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Neural Sentiment Monitoring: Understand the "voice of the customer" in real-time. Our AI analyzes the tone and language of every interaction, flagging potential escalations before they happen and providing agents with the context needed to de-escalate effectively.',
       'Automated Resolution Pathing: Speed up common requests with intelligent macros and automated workflows. For standard queries like password resets or billing updates, the system can guide customers through the resolution process autonomously.',
       'Omnichannel Support Hub: Manage interactions across email, live chat, phone, and social media from a single, unified interface. Agents never have to switch windows to provide a consistent, personalized experience for every customer.',
-      'CSAT & Loyalty Analytics: Measure the health of your customer base with automated CSAT and NPS surveys. Deep analytics help you identify recurring issues, track agent performance, and discover opportunities for product improvement.'
+      'CSAT & Loyalty Analytics: Measure the health of your customer base with automated CSAT and NPS surveys. Deep analytics help you identify recurring issues, track agent performance, and discover opportunities for product improvement.',
+      'Agent Assistance Copilot: Real-time AI suggestions for ticket responses, relevant documentation, and past similar resolutions to empower support staff.',
+      'Proactive Churn Alerts: AI-driven identification of accounts with declining support engagement or increasing negative sentiment.',
+      'Unified Customer Profile: A holistic view of the customer’s entire journey, including their ERP billing status and CRM sales history, directly in the support view.',
+      'Service Level Agreement (SLA) Tracker: Real-time monitoring of response and resolution targets with automated escalation paths for high-priority accounts.'
     ],
     deepOptions: [
       'Auto-Triage Neural Network: Proprietary NLP models trained on your specific support history for ultra-accurate routing.',
@@ -136,7 +180,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Agent Burnout Detection: Real-time monitoring of agent workload and sentiment to optimize team well-being.',
       'Multilingual AI Translation: Real-time translation for support tickets allowing agents to support global users instantly.',
       'Customer Value Weighting: Priority routing based on account tier and historical lifetime value metrics.',
-      'Support-to-Dev Loop: Automated bug ticket creation in the Dev module directly from customer support interactions.'
+      'Support-to-Dev Loop: Automated bug ticket creation in the Dev module directly from customer support interactions.',
+      'Recursive Solution Engine: AI that identifies patterns in closed tickets to suggest structural product improvements to leadership.',
+      'External Knowledge Sync: Bi-directional synchronization with external documentation platforms like Zendesk or Confluence.',
+      'Custom Support Widgets: Embed support performance data directly into enterprise dashboards for organization-wide transparency.',
+      'Ticket Volume Forecasting: AI-driven predictions of future support load to guide staffing and resource decisions.'
     ]
   },
   ai: {
@@ -151,7 +199,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Natural language board querying: Talk to your workspace. Use simple conversational language to ask complex questions like "Which projects are at risk because of current engineering bottlenecks?" and receive instant, visualized answers.',
       'Autonomous Process Optimization: Eliminate waste automatically. The AI observes your repetitive manual tasks and suggests (or builds) automations to handle them, allowing your team to focus entirely on high-value creative work.',
       'Cognitive Document Synthesis: Summarize thousands of pages of documentation in seconds. Whether it’s legal contracts, technical manuals, or project specs, the AI provides concise, accurate summaries and answers specific questions about the content.',
-      'Enterprise Governance & Ethics: Deploy AI with confidence. Chancellor AI includes built-in safeguards for data privacy, bias mitigation, and human-in-the-loop approvals, ensuring that every AI action is transparent, explainable, and secure.'
+      'Enterprise Governance & Ethics: Deploy AI with confidence. Chancellor AI includes built-in safeguards for data privacy, bias mitigation, and human-in-the-loop approvals, ensuring that every AI action is transparent, explainable, and secure.',
+      'Generative Action Agents: Deploy specialized agents that can perform multi-step organizational tasks, from scheduling meetings to generating complex financial reports.',
+      'Neural Workspace Discovery: AI that proactively surfaces relevant boards, documents, and contacts based on your current project focus and historical activity.',
+      'Real-Time Multilingual Translation: Instant translation of all workspace content, enabling seamless collaboration for global, distributed teams.',
+      'Executive Strategy Synthesis: High-level AI summaries of organizational health, market position, and operational risks tailored for C-suite decision-makers.'
     ],
     deepOptions: [
       'Custom Model Fine-Tuning: Train the Chancellor AI on your specific organizational terminology and document styles.',
@@ -159,7 +211,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Voice Command API: Full programmatic control of the workspace via advanced voice intent recognition.',
       'Autonomous Agent Swarms: Deploy multiple specialized AI agents to solve complex, multi-step organizational tasks.',
       'Vector Data persistence: High-performance vector storage for long-term organizational memory and retrieval.',
-      'Governance Approval Logic: Granular human-in-the-loop controls for AI-driven budget and resource decisions.'
+      'Governance Approval Logic: Granular human-in-the-loop controls for AI-driven budget and resource decisions.',
+      'Private Cloud AI Deployment: Options for hosting the Chancellor AI core within your own secure private cloud infrastructure.',
+      'Advanced Anomaly Detection: Continuous monitoring of organizational data patterns for security threats or operational failures.',
+      'Bespoke AI Skill Library: Build and deploy custom AI "skills" that extend the core capabilities of your autonomous agents.',
+      'Neural Data lineage: Transparent tracking of how the AI arrived at specific conclusions or data extractions for auditability.'
     ]
   }
 };

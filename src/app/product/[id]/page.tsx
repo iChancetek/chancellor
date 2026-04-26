@@ -192,6 +192,29 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
+      {/* Global Platform Capabilities */}
+      <section style={{ padding: '100px 10%', background: '#fff' }}>
+        <div style={{ textAlign: 'center', marginBottom: '64px' }}>
+          <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#323338' }}>Global Platform Foundations</h2>
+          <p style={{ color: '#676879', fontSize: '18px', marginTop: '12px' }}>Every ChancellorOS module is built on our high-performance enterprise core.</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+          {[
+            { title: 'Enterprise SSO', desc: 'SAML, Okta, and Azure AD integration for secure, unified access.' },
+            { title: 'Global 24/7 Support', desc: 'Round-the-clock priority assistance for enterprise-tier partners.' },
+            { title: '99.99% Uptime SLA', desc: 'Architected for zero-downtime operations and peak reliability.' },
+            { title: 'Advanced Encryption', desc: 'AES-256 at rest and TLS 1.3 in transit for all organizational data.' }
+          ].map((cap, i) => (
+            <div key={i} style={{ padding: '24px', background: '#f5f6f8', borderRadius: '16px', textAlign: 'center' }}>
+              <div style={{ fontSize: '14px', fontWeight: 800, color: '#6161FF', marginBottom: '12px' }}>CORE FEATURE</div>
+              <h4 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '8px' }}>{cap.title}</h4>
+              <p style={{ fontSize: '13px', color: '#676879' }}>{cap.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Deep Options Section */}
       <section style={{ padding: '100px 10%', background: '#fcfcfd', borderTop: '1px solid #eee' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
