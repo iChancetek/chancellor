@@ -3,10 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert, Terminal } from 'lucide-react';
-import { db } from '@/lib/firebase';
+import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert, Terminal, ExternalLink } from 'lucide-react';
+import { db, auth } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { isSuperAdmin } from '@/lib/admin';
+import { sendEmailVerification } from 'firebase/auth';
 
 export default function VerifyPage() {
   const { user, loading, updateUserEmail } = useAuth();
@@ -19,6 +20,7 @@ export default function VerifyPage() {
   const [isEditingEmail, setIsEditingEmail] = useState(false);
   const [newEmail, setNewEmail] = useState('');
   const [showDevLog, setShowDevLog] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   const initVerification = async (forceNew = false) => {
     if (!user) return;
@@ -26,12 +28,17 @@ export default function VerifyPage() {
     try {
       const userDoc = await getDoc(doc(db, 'users', user.uid));
       
-      if (!forceNew && userDoc.exists() && userDoc.data().emailVerified) {
+      // Check both Firestore and Native Auth state
+      if (!forceNew && (user.emailVerified || (userDoc.exists() && userDoc.data().emailVerified))) {
+        // Sync Firestore if native is verified
+        if (user.emailVerified && userDoc.exists() && !userDoc.data().emailVerified) {
+          await updateDoc(doc(db, 'users', user.uid), { emailVerified: true });
+        }
         router.push('/dashboard');
         return;
       }
 
-      // Generate a code
+      // Generate a internal code (backup/audit)
       const newCode = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedCode(newCode);
       
@@ -42,7 +49,6 @@ export default function VerifyPage() {
         updatedAt: new Date().toISOString()
       }, { merge: true });
       
-      console.log(`[SECURITY PROTOCOL] Verification code for ${user.email}: ${newCode}`);
     } catch (err) {
       console.error("Initialization error:", err);
       setError("Security layer initialization failed. Please refresh.");
@@ -62,6 +68,35 @@ export default function VerifyPage() {
       setNewEmail(user.email || '');
     }
   }, [user, loading, router]);
+
+  // Polling for native verification status
+  useEffect(() => {
+    if (!user) return;
+    
+    const interval = setInterval(async () => {
+      await auth.currentUser?.reload();
+      if (auth.currentUser?.emailVerified) {
+        await updateDoc(doc(db, 'users', user.uid), { emailVerified: true });
+        router.push('/dashboard');
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [user, router]);
+
+  const handleSendLink = async () => {
+    if (!auth.currentUser) return;
+    setSubmitting(true);
+    try {
+      await sendEmailVerification(auth.currentUser);
+      setVerificationSent(true);
+      setError('');
+    } catch (err) {
+      setError('Too many requests. Please wait a moment before trying again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleChangeEmail = async () => {
     if (!newEmail || newEmail === user?.email) {
@@ -189,19 +224,42 @@ export default function VerifyPage() {
             </button>
           </div>
         ) : (
-          <p style={{ color: '#676879', fontSize: '16px', lineHeight: '1.6', marginBottom: '40px' }}>
-            A 6-digit security code has been dispatched to <br />
-            <strong style={{ color: '#323338' }}>{user!.email}</strong>. 
-            <button 
-              onClick={() => setIsEditingEmail(true)}
-              style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer', fontSize: '14px' }}
-            >
-              (Change)
-            </button>
-            <br />
-            Please enter it below to activate your enterprise access.
-          </p>
+          <div style={{ marginBottom: '40px' }}>
+            <p style={{ color: '#676879', fontSize: '16px', lineHeight: '1.6', marginBottom: '24px' }}>
+              A secure verification link has been dispatched to <br />
+              <strong style={{ color: '#323338' }}>{user!.email}</strong>. 
+              <button 
+                onClick={() => setIsEditingEmail(true)}
+                style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer', fontSize: '14px' }}
+              >
+                (Change)
+              </button>
+            </p>
+            
+            <div style={{ background: '#f5f6f8', borderRadius: '16px', padding: '24px', border: '1px solid #e1e4e8' }}>
+              <h4 style={{ fontWeight: 700, fontSize: '14px', marginBottom: '12px', color: '#323338' }}>Action Required</h4>
+              <p style={{ fontSize: '13px', color: '#676879', marginBottom: '20px' }}>Click the link in your email to activate your enterprise workspace. We'll automatically detect your activation.</p>
+              <button 
+                onClick={handleSendLink}
+                disabled={submitting || verificationSent}
+                style={{ 
+                  width: '100%', padding: '12px', background: verificationSent ? '#00c87515' : '#6161FF', 
+                  color: verificationSent ? '#00c875' : '#fff', borderRadius: '8px', 
+                  fontSize: '14px', fontWeight: 700, border: 'none', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                }}
+              >
+                {verificationSent ? <><CheckCircle2 size={16} /> Link Sent Successfully</> : <><ExternalLink size={16} /> Resend Verification Link</>}
+              </button>
+            </div>
+          </div>
         )}
+
+        <div style={{ margin: '32px 0', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{ flex: 1, height: '1px', background: '#eee' }} />
+          <span style={{ fontSize: '12px', fontWeight: 700, color: '#9699a6' }}>OR ENTER CODE MANUALLY</span>
+          <div style={{ flex: 1, height: '1px', background: '#eee' }} />
+        </div>
 
         <form onSubmit={handleVerify}>
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '32px' }}>
@@ -221,7 +279,6 @@ export default function VerifyPage() {
                   borderColor: digit ? '#6161FF' : '#d0d4e4',
                   boxShadow: digit ? '0 0 0 4px #6161FF10' : 'none'
                 }}
-                autoFocus={i === 0}
               />
             ))}
           </div>
@@ -236,23 +293,13 @@ export default function VerifyPage() {
             type="submit" 
             disabled={submitting || code.join('').length < 6}
             className="btn-monday-primary" 
-            style={{ width: '100%', padding: '18px', fontSize: '16px', borderRadius: '12px', marginBottom: '24px', boxShadow: '0 8px 24px rgba(97, 97, 255, 0.25)' }}
+            style={{ width: '100%', padding: '18px', fontSize: '16px', borderRadius: '12px', marginBottom: '24px' }}
           >
             {submitting ? 'Verifying...' : 'Activate Workspace'}
           </button>
         </form>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <p style={{ fontSize: '14px', color: '#676879' }}>
-            Didn't receive the code? 
-            <button 
-              onClick={() => initVerification(true)}
-              style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer' }}
-            >
-              Request New Code
-            </button>
-          </p>
-
           {isSuperAdmin(user?.email) && (
             <div style={{ marginTop: '24px', borderTop: '1px solid #f0f0f0', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -285,11 +332,11 @@ export default function VerifyPage() {
                   border: '1px solid rgba(255,255,255,0.1)'
                 }}>
                   <div style={{ opacity: 0.5, marginBottom: '8px' }}>// SYSTEM_DELIVERY_TELEMETRY</div>
-                  <div>STATUS: Pending SMTP Configuration</div>
-                  <div>INTERNAL_CODE_LOG: {generatedCode}</div>
+                  <div>NATIVE_VERIFIED: {user?.emailVerified ? 'TRUE' : 'FALSE'}</div>
+                  <div>INTERNAL_CODE: {generatedCode}</div>
                   <div>TARGET_DESTINATION: {user?.email}</div>
                   <div style={{ marginTop: '8px', color: '#fff', fontSize: '10px', opacity: 0.7 }}>
-                    Note: Production email delivery requires a SendGrid API key in .env.local
+                    Note: Production email delivery uses Firebase Auth Native Links.
                   </div>
                 </div>
               )}

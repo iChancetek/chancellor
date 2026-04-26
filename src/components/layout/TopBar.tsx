@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useUIStore, useBoardStore, useWorkspaceStore } from '@/lib/store';
 import { useRouter } from 'next/navigation';
-import { Search, Bell, Sparkles, HelpCircle, UserPlus, Grid, Filter, SortAsc, MoreHorizontal, CloudCheck, Cloud, Loader2, Send, Menu } from 'lucide-react';
+import { Search, Bell, Sparkles, HelpCircle, UserPlus, Grid, Filter, SortAsc, MoreHorizontal, CloudCheck, Cloud, Loader2, Send, Menu, RefreshCw } from 'lucide-react';
 import { getInitials, createDefaultBoard } from '@/lib/utils';
 
 export default function TopBar() {

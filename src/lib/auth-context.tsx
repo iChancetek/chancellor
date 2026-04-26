@@ -78,6 +78,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(null);
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(credential.user, { displayName: name });
+      
+      // Send Firebase Native Verification Link
+      const { sendEmailVerification } = await import('firebase/auth');
+      await sendEmailVerification(credential.user);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to create account';
       if (message.includes('email-already-in-use')) {
