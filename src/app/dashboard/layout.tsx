@@ -13,9 +13,24 @@ function DashboardShell({ children }: { children: ReactNode }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/');
-    }
+    const checkVerification = async () => {
+      if (!loading && !user) {
+        router.push('/');
+        return;
+      }
+
+      if (user) {
+        const { doc, getDoc } = await import('firebase/firestore');
+        const { db } = await import('@/lib/firebase');
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        
+        if (userDoc.exists() && !userDoc.data().emailVerified) {
+          router.push('/verify');
+        }
+      }
+    };
+
+    checkVerification();
   }, [user, loading, router]);
 
   if (loading) {

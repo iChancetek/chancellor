@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { 
   Sparkles, ArrowRight, CheckCircle2, LayoutGrid, 
-  Users, Code2, Headphones, Megaphone, Zap, Bot, Building2
+  Users, Code2, Headphones, Megaphone, Zap, Bot, Building2,
+  Eye, EyeOff
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
 import PublicFooter from '@/components/layout/PublicFooter';
@@ -19,6 +20,8 @@ export default function LandingPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState('work');
 
@@ -40,9 +43,18 @@ export default function LandingPage() {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLogin && password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
     setSubmitting(true);
-    if (isLogin) await signInWithEmail(email, password);
-    else await signUpWithEmail(email, password, name);
+    if (isLogin) {
+      await signInWithEmail(email, password);
+    } else {
+      await signUpWithEmail(email, password, name);
+      // Redirect to verification page
+      router.push('/verify');
+    }
     setSubmitting(false);
   };
 
@@ -241,8 +253,20 @@ export default function LandingPage() {
               </div>
               <div className="monday-input-group">
                 <label className="monday-label">Password</label>
-                <input className="monday-input" style={{ borderRadius: '12px' }} type="password" id="password" name="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Minimal 8 characters" required/>
+                <div style={{ position: 'relative' }}>
+                  <input className="monday-input" style={{ borderRadius: '12px', paddingRight: '48px' }} type={showPassword ? "text" : "password"} id="password" name="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="Minimal 8 characters" required/>
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#676879', cursor: 'pointer' }}>
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
               </div>
+
+              {!isLogin && (
+                <div className="monday-input-group">
+                  <label className="monday-label">Confirm Password</label>
+                  <input className="monday-input" style={{ borderRadius: '12px' }} type={showPassword ? "text" : "password"} id="confirmPassword" name="confirmPassword" value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} placeholder="Repeat password" required/>
+                </div>
+              )}
 
               {error && <p style={{ color: '#df2f4a', fontSize: '12px', margin: '8px 0' }}>{error}</p>}
 

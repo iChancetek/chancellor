@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { ArrowLeft, Sparkles, Building2, Users, Bot } from 'lucide-react';
+import { ArrowLeft, Sparkles, Building2, Users, Bot, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const { user, loading, signInWithGoogle, signInWithEmail, error, clearError } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -85,7 +86,12 @@ export default function LoginPage() {
           </div>
           <div className="monday-input-group" style={{ marginTop: '20px' }}>
             <label className="monday-label">Password</label>
-            <input className="monday-input" style={{ borderRadius: '12px' }} type="password" value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" required/>
+            <div style={{ position: 'relative' }}>
+              <input className="monday-input" style={{ borderRadius: '12px', paddingRight: '48px' }} type={showPassword ? "text" : "password"} value={password} onChange={(e)=>setPassword(e.target.value)} placeholder="••••••••" required/>
+              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#676879', cursor: 'pointer' }}>
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           {error && <p style={{ color: '#df2f4a', fontSize: '12px', margin: '12px 0' }}>{error}</p>}
