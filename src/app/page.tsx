@@ -58,9 +58,15 @@ export default function LandingPage() {
     setSubmitting(false);
   };
 
+  useEffect(() => {
+    // Force body transparency so fixed video at z-index -1 is visible
+    document.body.style.background = 'transparent';
+    return () => { document.body.style.background = ''; };
+  }, []);
+
   if (loading) {
     return (
-      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
         <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px', filter: 'drop-shadow(0 4px 12px rgba(97,97,255,0.2))' }} />
         <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
         <p style={{ color: '#323338', fontSize: '16px', marginTop: '24px', fontWeight: 600 }}>Securing connection...</p>
@@ -70,7 +76,7 @@ export default function LandingPage() {
 
   if (user) {
     return (
-      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ height: '100dvh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#fff' }}>
         <img src="/icon.svg" alt="Chancellor" style={{ width: '80px', height: '80px', marginBottom: '32px', filter: 'drop-shadow(0 4px 12px rgba(97,97,255,0.2))' }} />
         <div className="loading-spinner" style={{ width: '32px', height: '32px', border: '3px solid #6161FF', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
         <p style={{ color: '#323338', fontSize: '16px', marginTop: '24px', fontWeight: 600 }}>Initializing your workspace...</p>
@@ -89,21 +95,17 @@ export default function LandingPage() {
           muted 
           playsInline 
           src="/Chancellor_CRM_ERP2.mp4"
-          style={{ 
-            width: '100%', 
-            height: '100%', 
-            objectFit: 'cover'
-          }}
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
-        {/* Semi-transparent white overlay to maintain the "white look" while showing the video */}
-        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255, 255, 255, 0.7)' }} />
+        {/* Subtle white overlay to maintain readability and the original light look */}
+        <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(255, 255, 255, 0.75)' }} />
       </div>
 
       {/* Navbar */}
       <PublicNavbar />
 
       {/* Hero Section */}
-      <section id="products-section" className="lp-hero">
+      <section id="products-section" className="lp-hero" style={{ background: 'transparent' }}>
         <h1 className="heading-hero">
           A platform built for a <br />
           <span style={{ color: '#6161FF' }}>new way of working</span>
@@ -194,7 +196,7 @@ export default function LandingPage() {
       </section>
 
       {/* Bottom Showcase */}
-      <section id="resources-section" className="section-padding" style={{ textAlign: 'center', background: '#fff' }}>
+      <section id="resources-section" className="section-padding" style={{ textAlign: 'center', background: 'transparent' }}>
         <h2 className="heading-section" style={{ marginBottom: '16px' }}>
           Interconnected apps <br /> <span className="gradient-text">for every team</span>
         </h2>
@@ -231,7 +233,7 @@ export default function LandingPage() {
       <LandingAIChat />
 
       {/* Auth Section */}
-      <section id="auth-section" style={{ background: '#f5f6f8', padding: '80px 24px', borderTop: '1px solid #e1e4e8' }}>
+      <section id="auth-section" style={{ background: 'rgba(245, 246, 248, 0.5)', padding: '80px 24px', borderTop: '1px solid #e1e4e8' }}>
         <div style={{ maxWidth: '460px', margin: '0 auto' }}>
           <div className="monday-auth-card" style={{ padding: 'clamp(24px, 5vw, 48px)', borderRadius: '24px', boxShadow: '0 20px 60px rgba(0,0,0,0.1)' }}>
             <h3 style={{ fontSize: 'clamp(24px, 5vw, 28px)', fontWeight: 800, marginBottom: '32px', textAlign: 'center' }}>
