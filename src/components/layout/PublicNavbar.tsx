@@ -7,7 +7,7 @@ export default function PublicNavbar() {
   const { user } = useAuth();
 
   return (
-    <nav className="lp-navbar">
+    <nav className="lp-navbar" style={{ background: 'transparent', borderBottom: '1px solid rgba(0,0,0,0.05)' }}>
       <Link href="/" className="landing-logo" style={{ color: '#000', fontSize: '28px', display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
         <img src="/icon.svg" alt="Chancellor Logo" style={{ width: '32px', height: '32px' }} />
         Chancellor
