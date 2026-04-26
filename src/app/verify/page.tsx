@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert, Terminal, ExternalLink } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert, Terminal, ExternalLink, CheckCircle2 } from 'lucide-react';
 import { db, auth } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import { isSuperAdmin } from '@/lib/admin';
