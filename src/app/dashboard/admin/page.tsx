@@ -1,250 +1,185 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { useWorkspaceStore, useBoardStore, useSettingsStore } from '@/lib/store';
-import { Settings, Users, Shield, Database, Bell, Palette, Check, Save, ChevronRight, ToggleLeft, ToggleRight } from 'lucide-react';
+import { isSuperAdmin } from '@/lib/admin';
+import { useRouter } from 'next/navigation';
+import { 
+  Users, Shield, Activity, Search, Filter, 
+  MoreHorizontal, UserPlus, Download, CheckCircle2 
+} from 'lucide-react';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
+} from 'recharts';
 
-export default function AdminPage() {
-  const { user } = useAuth();
-  const { activeWorkspace, updateWorkspaceLocal } = useWorkspaceStore();
-  const { boards } = useBoardStore();
-  const settings = useSettingsStore();
+// Mock Data
+const USER_GROWTH_DATA = [
+  { name: 'Jan', users: 450 },
+  { name: 'Feb', users: 520 },
+  { name: 'Mar', users: 610 },
+  { name: 'Apr', users: 840 },
+  { name: 'May', users: 950 },
+  { name: 'Jun', users: 1200 },
+];
 
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState(false);
-  const [nameValue, setNameValue] = useState(activeWorkspace?.name || 'My Workspace');
-  const [saved, setSaved] = useState(false);
+const USER_DISTRIBUTION = [
+  { name: 'Active', value: 850, color: '#00c875' },
+  { name: 'Inactive', value: 120, color: '#ff3d57' },
+  { name: 'Pending', value: 230, color: '#ffcb00' },
+];
 
-  const handleSaveName = () => {
-    if (activeWorkspace) {
-      updateWorkspaceLocal(activeWorkspace.id, { name: nameValue });
-      settings.setWorkspaceName(nameValue);
+const AUDIT_LOGS = [
+  { id: 1, user: 'chancellor@ichancetek.com', action: 'Login Success', target: 'System', time: '2 mins ago', status: 'Success' },
+  { id: 2, user: 'user_42@enterprise.com', action: 'Export Data', target: 'CRM Board', time: '15 mins ago', status: 'Success' },
+  { id: 3, user: 'admin_test@isynera.com', action: 'Update Role', target: 'User #901', time: '1 hour ago', status: 'Success' },
+  { id: 4, user: 'Chanceminus@gmail.com', action: 'Create Workspace', target: 'Dev Ops', time: '3 hours ago', status: 'Success' },
+  { id: 5, user: 'bot_agent_alpha', action: 'Auto-Triage', target: 'Support Ticket #55', time: '5 hours ago', status: 'Success' },
+];
+
+export default function AdminDashboard() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState('overview');
+
+  useEffect(() => {
+    if (!loading && (!user || !isSuperAdmin(user.email))) {
+      router.push('/dashboard');
     }
-    setEditingName(false);
-    flashSaved();
-  };
+  }, [user, loading, router]);
 
-  const flashSaved = () => {
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-  };
-
-  const sections = [
-    { id: 'team', icon: <Users size={20} />, title: 'Team Members', desc: `${activeWorkspace?.members?.length || 1} member(s)`, color: 'rgba(87, 155, 252, 0.15)' },
-    { id: 'permissions', icon: <Shield size={20} />, title: 'Permissions', desc: 'Manage roles and access controls', color: 'rgba(0, 200, 117, 0.15)' },
-    { id: 'data', icon: <Database size={20} />, title: 'Data & Storage', desc: `${boards.length} boards across all modules`, color: 'rgba(253, 171, 61, 0.15)' },
-    { id: 'notifications', icon: <Bell size={20} />, title: 'Notifications', desc: 'Configure notification preferences', color: 'rgba(226, 68, 92, 0.15)' },
-    { id: 'appearance', icon: <Palette size={20} />, title: 'Appearance', desc: 'Customize workspace theme', color: 'rgba(162, 93, 220, 0.15)' },
-    { id: 'general', icon: <Settings size={20} />, title: 'General Settings', desc: 'Workspace name, timezone, and defaults', color: 'rgba(108, 92, 231, 0.15)' },
-  ];
+  if (loading || !user || !isSuperAdmin(user.email)) {
+    return <div style={{ padding: '40px', textAlign: 'center' }}>Verifying Administrator Access...</div>;
+  }
 
   return (
-    <div className="dashboard-home">
-      <div className="dashboard-greeting">
-        <h1>⚙️ Administration</h1>
-        <p>Manage your workspace settings, team members, and permissions.</p>
-        {saved && (
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '6px 16px', background: '#00C875', color: '#fff', borderRadius: '6px', fontSize: '13px', fontWeight: 600, marginTop: '12px' }}>
-            <Check size={14} /> Settings saved
-          </div>
-        )}
-      </div>
+    <div style={{ padding: '40px', background: '#f5f6f8', minHeight: '100%', overflowY: 'auto' }}>
+      <header style={{ marginBottom: '40px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <div>
+          <h1 style={{ fontSize: '32px', fontWeight: 800, color: '#323338' }}>Administration Dashboard</h1>
+          <p style={{ color: '#676879', marginTop: '8px' }}>Manage users, monitor audit logs, and oversee enterprise infrastructure.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button className="btn-monday-secondary" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#fff' }}>
+            <Download size={18} /> Export Report
+          </button>
+          <button className="btn-monday-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <UserPlus size={18} /> Add User
+          </button>
+        </div>
+      </header>
 
-      <div className="dashboard-grid">
-        {sections.map((section) => (
-          <div 
-            key={section.id} 
-            className="dashboard-card" 
-            style={{ cursor: 'pointer', transition: 'transform 0.15s, box-shadow 0.15s', border: activeSection === section.id ? '2px solid #6161FF' : undefined }}
-            onClick={() => setActiveSection(activeSection === section.id ? null : section.id)}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(0,0,0,0.08)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}
-          >
-            <div className="dashboard-card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <div className="dashboard-card-icon" style={{ background: section.color }}>
-                {section.icon}
+      {/* Stats Overview */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '40px' }}>
+        {[
+          { label: 'Total Users', value: '1,432', change: '+12%', icon: Users, color: '#0073ea' },
+          { label: 'Active Sessions', value: '284', change: '+5%', icon: Activity, color: '#00c875' },
+          { label: 'Admin Users', value: '12', change: '0%', icon: Shield, color: '#ffcb00' },
+          { label: 'System Health', value: '99.9%', change: 'Stable', icon: CheckCircle2, color: '#6161FF' }
+        ].map((stat, i) => (
+          <div key={i} style={{ background: '#fff', padding: '24px', borderRadius: '16px', border: '1px solid #e1e4e8', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <div style={{ padding: '10px', background: `${stat.color}15`, color: stat.color, borderRadius: '12px' }}>
+                <stat.icon size={24} />
               </div>
-              <ChevronRight size={16} style={{ color: '#c4c4c4', transform: activeSection === section.id ? 'rotate(90deg)' : 'none', transition: 'transform 0.2s' }} />
+              <span style={{ fontSize: '12px', fontWeight: 700, color: stat.color }}>{stat.change}</span>
             </div>
-            <div className="dashboard-card-title">{section.title}</div>
-            <div className="dashboard-card-desc">{section.desc}</div>
+            <h4 style={{ fontSize: '14px', color: '#676879', fontWeight: 500 }}>{stat.label}</h4>
+            <div style={{ fontSize: '28px', fontWeight: 800, color: '#323338', marginTop: '4px' }}>{stat.value}</div>
           </div>
         ))}
       </div>
 
-      {/* Expanded Section Panels */}
-      {activeSection === 'team' && (
-        <SettingsPanel title="Team Members">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: '#f5f6f8', borderRadius: '8px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#6161FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
-              {user?.displayName?.charAt(0) || 'U'}
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontWeight: 600, fontSize: '14px' }}>{user?.displayName || 'User'}</div>
-              <div style={{ fontSize: '12px', color: '#676879' }}>{user?.email}</div>
-            </div>
-            <span style={{ fontSize: '11px', background: '#6161FF', color: '#fff', padding: '4px 10px', borderRadius: '12px', fontWeight: 600 }}>Owner</span>
+      {/* Charts Section */}
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px', marginBottom: '40px' }}>
+        <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e1e4e8' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '32px' }}>User Growth (6 Months)</h3>
+          <div style={{ height: '300px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={USER_GROWTH_DATA}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#676879', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#676879', fontSize: 12 }} />
+                <Tooltip 
+                  cursor={{ fill: '#f5f6f8' }} 
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}
+                />
+                <Bar dataKey="users" fill="#6161FF" radius={[6, 6, 0, 0]} barSize={40} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-        </SettingsPanel>
-      )}
+        </div>
 
-      {activeSection === 'notifications' && (
-        <SettingsPanel title="Notification Preferences">
-          {[
-            { key: 'notifyOnMention' as const, label: 'Mentions', desc: 'When someone mentions you in a comment' },
-            { key: 'notifyOnAssignment' as const, label: 'Assignments', desc: 'When you are assigned to an item' },
-            { key: 'notifyOnStatusChange' as const, label: 'Status Changes', desc: 'When a status column is updated' },
-            { key: 'notifyOnComment' as const, label: 'Comments', desc: 'When someone comments on your items' },
-          ].map(n => (
-            <div key={n.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 0', borderBottom: '1px solid #f0f1f3' }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: '14px' }}>{n.label}</div>
-                <div style={{ fontSize: '12px', color: '#676879' }}>{n.desc}</div>
-              </div>
-              <button onClick={() => { settings.toggleNotification(n.key); flashSaved(); }} style={{ color: settings[n.key] ? '#00C875' : '#c4c4c4', background: 'none', border: 'none', cursor: 'pointer' }}>
-                {settings[n.key] ? <ToggleRight size={32} /> : <ToggleLeft size={32} />}
-              </button>
-            </div>
-          ))}
-        </SettingsPanel>
-      )}
-
-      {activeSection === 'appearance' && (
-        <SettingsPanel title="Appearance Settings">
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '8px' }}>Theme</div>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              {['light', 'dark'].map(t => (
-                <button
-                  key={t}
-                  onClick={() => { settings.setTheme(t as 'light' | 'dark'); flashSaved(); }}
-                  style={{
-                    padding: '12px 24px', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '14px',
-                    border: settings.theme === t ? '2px solid #6161FF' : '2px solid #e1e4e8',
-                    background: t === 'dark' ? '#292f4c' : '#fff',
-                    color: t === 'dark' ? '#fff' : '#323338',
-                  }}
+        <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', border: '1px solid #e1e4e8' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '32px' }}>User Status</h3>
+          <div style={{ height: '300px' }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={USER_DISTRIBUTION}
+                  innerRadius={80}
+                  outerRadius={100}
+                  paddingAngle={5}
+                  dataKey="value"
                 >
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </button>
-              ))}
-            </div>
-          </div>
-        </SettingsPanel>
-      )}
-
-      {activeSection === 'general' && (
-        <SettingsPanel title="General Settings">
-          <div style={{ marginBottom: '20px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 600, color: '#676879', display: 'block', marginBottom: '6px' }}>Workspace Name</label>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <input 
-                value={nameValue}
-                onChange={(e) => setNameValue(e.target.value)}
-                style={{ flex: 1, padding: '10px 14px', border: '1px solid #d0d4e4', borderRadius: '6px', fontSize: '14px', outline: 'none' }}
-              />
-              <button 
-                onClick={handleSaveName}
-                style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '10px 20px', background: '#6161FF', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '14px' }}
-              >
-                <Save size={14} /> Save
-              </button>
-            </div>
-          </div>
-          <div>
-            <label style={{ fontSize: '13px', fontWeight: 600, color: '#676879', display: 'block', marginBottom: '6px' }}>Timezone</label>
-            <select
-              value={settings.timezone}
-              onChange={(e) => { settings.setTimezone(e.target.value); flashSaved(); }}
-              style={{ width: '100%', padding: '10px 14px', border: '1px solid #d0d4e4', borderRadius: '6px', fontSize: '14px', outline: 'none', background: '#fff' }}
-            >
-              <option value="America/New_York">Eastern Time (ET)</option>
-              <option value="America/Chicago">Central Time (CT)</option>
-              <option value="America/Denver">Mountain Time (MT)</option>
-              <option value="America/Los_Angeles">Pacific Time (PT)</option>
-              <option value="UTC">UTC</option>
-              <option value="Europe/London">London (GMT)</option>
-            </select>
-          </div>
-        </SettingsPanel>
-      )}
-
-      {activeSection === 'data' && (
-        <SettingsPanel title="Data & Storage">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-            <div style={{ padding: '20px', background: '#f5f6f8', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#6161FF' }}>{boards.length}</div>
-              <div style={{ fontSize: '12px', color: '#676879', marginTop: '4px' }}>Total Boards</div>
-            </div>
-            <div style={{ padding: '20px', background: '#f5f6f8', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#00C875' }}>{boards.filter(b => b.type === 'work').length}</div>
-              <div style={{ fontSize: '12px', color: '#676879', marginTop: '4px' }}>Work Boards</div>
-            </div>
-            <div style={{ padding: '20px', background: '#f5f6f8', borderRadius: '8px', textAlign: 'center' }}>
-              <div style={{ fontSize: '28px', fontWeight: 800, color: '#FDAB3D' }}>{boards.filter(b => b.type === 'crm').length}</div>
-              <div style={{ fontSize: '12px', color: '#676879', marginTop: '4px' }}>CRM Boards</div>
-            </div>
-          </div>
-        </SettingsPanel>
-      )}
-
-      {activeSection === 'permissions' && (
-        <SettingsPanel title="Permissions & Roles">
-          <div style={{ padding: '16px', background: '#f5f6f8', borderRadius: '8px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontWeight: 600 }}>Owner</span>
-              <span style={{ fontSize: '12px', color: '#676879' }}>Full access to all workspace settings</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontWeight: 600 }}>Admin</span>
-              <span style={{ fontSize: '12px', color: '#676879' }}>Can manage boards, members, and settings</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontWeight: 600 }}>Member</span>
-              <span style={{ fontSize: '12px', color: '#676879' }}>Can create and edit boards and items</span>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 600 }}>Viewer</span>
-              <span style={{ fontSize: '12px', color: '#676879' }}>Read-only access to boards</span>
-            </div>
-          </div>
-        </SettingsPanel>
-      )}
-
-      {/* Workspace Info */}
-      <div style={{ marginTop: '32px' }}>
-        <div className="dashboard-section-title">Workspace Info</div>
-        <div style={{ background: '#fff', border: '1px solid #e1e4e8', borderRadius: '12px', padding: '24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div>
-              <div style={{ fontSize: '12px', color: '#9699a6', marginBottom: '4px' }}>Workspace Name</div>
-              <div style={{ fontSize: '16px', fontWeight: 600 }}>{activeWorkspace?.name || settings.workspaceName}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '12px', color: '#9699a6', marginBottom: '4px' }}>Owner</div>
-              <div style={{ fontSize: '16px', fontWeight: 600 }}>{user?.displayName || 'User'}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '12px', color: '#9699a6', marginBottom: '4px' }}>Email</div>
-              <div style={{ fontSize: '16px', fontWeight: 600 }}>{user?.email || '—'}</div>
-            </div>
-            <div>
-              <div style={{ fontSize: '12px', color: '#9699a6', marginBottom: '4px' }}>Total Boards</div>
-              <div style={{ fontSize: '16px', fontWeight: 600 }}>{boards.length}</div>
-            </div>
+                  {USER_DISTRIBUTION.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend verticalAlign="bottom" height={36}/>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
 
-function SettingsPanel({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div style={{ marginTop: '24px', background: '#fff', border: '1px solid #e1e4e8', borderRadius: '12px', padding: '24px' }}>
-      <h3 style={{ fontSize: '16px', fontWeight: 700, marginBottom: '16px', color: '#323338' }}>{title}</h3>
-      {children}
+      {/* Audit Log Table */}
+      <div style={{ background: '#fff', borderRadius: '24px', border: '1px solid #e1e4e8', overflow: 'hidden' }}>
+        <div style={{ padding: '24px 32px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: 700 }}>System Audit Log</h3>
+          <div style={{ display: 'flex', gap: '12px' }}>
+             <div style={{ position: 'relative' }}>
+                <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#676879' }} />
+                <input type="text" placeholder="Filter logs..." style={{ padding: '8px 12px 8px 36px', borderRadius: '8px', border: '1px solid #d0d4e4', fontSize: '13px' }} />
+             </div>
+             <button style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #d0d4e4', background: '#fff', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px' }}>
+                <Filter size={16} /> Filter
+             </button>
+          </div>
+        </div>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead style={{ background: '#fcfcfd' }}>
+            <tr>
+              <th style={{ textAlign: 'left', padding: '16px 32px', fontSize: '13px', fontWeight: 600, color: '#676879' }}>User Account</th>
+              <th style={{ textAlign: 'left', padding: '16px 32px', fontSize: '13px', fontWeight: 600, color: '#676879' }}>Action</th>
+              <th style={{ textAlign: 'left', padding: '16px 32px', fontSize: '13px', fontWeight: 600, color: '#676879' }}>Target</th>
+              <th style={{ textAlign: 'left', padding: '16px 32px', fontSize: '13px', fontWeight: 600, color: '#676879' }}>Timestamp</th>
+              <th style={{ textAlign: 'left', padding: '16px 32px', fontSize: '13px', fontWeight: 600, color: '#676879' }}>Status</th>
+              <th style={{ textAlign: 'center', padding: '16px 32px' }}></th>
+            </tr>
+          </thead>
+          <tbody>
+            {AUDIT_LOGS.map((log) => (
+              <tr key={log.id} style={{ borderTop: '1px solid #eee' }}>
+                <td style={{ padding: '20px 32px', fontSize: '14px', fontWeight: 600 }}>{log.user}</td>
+                <td style={{ padding: '20px 32px', fontSize: '14px' }}>{log.action}</td>
+                <td style={{ padding: '20px 32px', fontSize: '14px', color: '#676879' }}>{log.target}</td>
+                <td style={{ padding: '20px 32px', fontSize: '14px', color: '#676879' }}>{log.time}</td>
+                <td style={{ padding: '20px 32px' }}>
+                  <span style={{ padding: '4px 12px', background: '#00c87515', color: '#00c875', borderRadius: '999px', fontSize: '12px', fontWeight: 700 }}>{log.status}</span>
+                </td>
+                <td style={{ padding: '20px 32px', textAlign: 'center' }}>
+                  <MoreHorizontal size={18} color="#676879" style={{ cursor: 'pointer' }} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ padding: '24px 32px', textAlign: 'center', borderTop: '1px solid #eee' }}>
+          <button style={{ background: 'none', border: 'none', color: '#0073ea', fontWeight: 600, cursor: 'pointer', fontSize: '14px' }}>View Full Audit History</button>
+        </div>
+      </div>
     </div>
   );
 }

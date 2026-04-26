@@ -9,6 +9,7 @@ import {
   Users, Code2, Headphones, Megaphone, Zap, Bot, Building2
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
+import PublicFooter from '@/components/layout/PublicFooter';
 import LandingAIChat from '@/components/ai/LandingAIChat';
 
 export default function LandingPage() {
@@ -260,11 +261,12 @@ export default function LandingPage() {
               </button>
             </p>
           </div>
-          <p style={{ textAlign: 'center', marginTop: '32px', color: '#676879', fontSize: '13px' }}>
-            By signing up, you agree to our Terms of Service and Privacy Policy.
-          </p>
+            <p style={{ textAlign: 'center', marginTop: '32px', color: '#676879', fontSize: '13px' }}>
+              By signing up, you agree to our <Link href="/terms" style={{ color: '#6161FF', textDecoration: 'none' }}>Terms of Service</Link> and <Link href="/privacy" style={{ color: '#6161FF', textDecoration: 'none' }}>Privacy Policy</Link>.
+            </p>
         </div>
       </section>
+      <PublicFooter />
     </div>
   );
 }

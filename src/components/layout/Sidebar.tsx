@@ -6,9 +6,10 @@ import { useAuth } from '@/lib/auth-context';
 import { useWorkspaceStore, useBoardStore, useUIStore } from '@/lib/store';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
-  Home, LayoutGrid, Users, Code2, Headphones,
+  Home, LayoutGrid, Users, Code2, Headphones, Shield,
   Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon, Layers, Brain
 } from 'lucide-react';
+import { isSuperAdmin } from '@/lib/admin';
 
 export default function Sidebar() {
   const { user } = useAuth();
@@ -54,6 +55,10 @@ export default function Sidebar() {
     { id: 'templates', label: 'Template Center', icon: LayoutGrid, path: '/dashboard/templates' },
     { id: 'apps', label: 'Apps Marketplace', icon: LayoutGrid, path: '/dashboard/apps' },
   ];
+
+  if (isSuperAdmin(user?.email)) {
+    navItems.unshift({ id: 'admin', label: 'Admin Dashboard', icon: Shield, path: '/dashboard/admin' });
+  }
 
   const moduleItems = [
     { id: 'workplace', label: 'Work Management', icon: LayoutGrid, path: '/dashboard/workplace', color: '#579BFC' },
