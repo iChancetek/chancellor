@@ -197,13 +197,15 @@ export default function LandingPage() {
 
       {/* Bottom Showcase */}
       <section id="resources-section" className="section-padding" style={{ textAlign: 'center', background: 'transparent' }}>
-        <h2 className="heading-section" style={{ marginBottom: '16px' }}>
-          Interconnected apps <br /> <span className="gradient-text">for every team</span>
-        </h2>
-        <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#323338', marginBottom: '60px', maxWidth: '800px', margin: '0 auto 60px', fontWeight: 500 }}>
-          Break down silos and unify your entire organizational workflow. 
-          Our suite of interconnected modules ensures that data flows effortlessly between every department.
-        </p>
+        <div style={{ maxWidth: '900px', margin: '0 auto 60px', padding: '40px', background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(10px)', borderRadius: '24px', border: '1px solid #fff', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
+          <h2 className="heading-section" style={{ marginBottom: '16px' }}>
+            Interconnected apps <br /> <span className="gradient-text">for every team</span>
+          </h2>
+          <p style={{ fontSize: 'clamp(16px, 4vw, 20px)', color: '#323338', maxWidth: '800px', margin: '0 auto', fontWeight: 500, lineHeight: 1.6 }}>
+            Break down silos and unify your entire organizational workflow. 
+            Our suite of interconnected modules ensures that data flows effortlessly between every department.
+          </p>
+        </div>
         
         <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: '0 30px 80px rgba(0,0,0,0.12)', background: 'rgba(0,0,0,0.8)', margin: '0 auto', maxWidth: '1000px' }}>
           <img 
