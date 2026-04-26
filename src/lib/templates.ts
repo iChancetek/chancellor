@@ -4,6 +4,7 @@ import {
   Rocket, GraduationCap, Home, Landmark, HardHat, 
   HeartHandshake, Sparkles, Plus, Search, Zap, Settings
 } from 'lucide-react';
+import type { BoardType } from './types';
 
 export const TEMPLATE_CATEGORIES = [
   { id: 'feedback', label: 'Feedback', icon: HeartHandshake },
@@ -47,6 +48,7 @@ export interface Template {
   category: string;
   image?: string;
   isAI?: boolean;
+  type: BoardType;
 }
 
 export const MOCK_TEMPLATES: Template[] = [
@@ -56,7 +58,9 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Track your tasks, schedule, and team progress in one visual board.',
     creator: 'iSynera',
     category: 'project',
-    isAI: true
+    isAI: true,
+    image: '/templates/t1.png',
+    type: 'work'
   },
   {
     id: 't2',
@@ -64,6 +68,8 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Manage your leads and deals from initial contact to close.',
     creator: 'iSynera',
     category: 'sales',
+    image: '/templates/t2.png',
+    type: 'crm'
   },
   {
     id: 't3',
@@ -71,7 +77,9 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Agile development planning with backlog and sprint tracking.',
     creator: 'iSynera',
     category: 'software',
-    isAI: true
+    isAI: true,
+    image: '/templates/t3.png',
+    type: 'dev'
   },
   {
     id: 't4',
@@ -79,6 +87,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Plan and schedule your social media and blog content.',
     creator: 'iSynera',
     category: 'marketing',
+    type: 'marketing'
   },
   {
     id: 't5',
@@ -86,6 +95,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Advanced customer relationship management for large teams.',
     creator: 'iSynera',
     category: 'sales',
+    type: 'crm'
   },
   {
     id: 't6',
@@ -93,6 +103,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'End-to-end management for design and creative projects.',
     creator: 'iSynera',
     category: 'design',
+    type: 'work'
   },
   {
     id: 't7',
@@ -100,6 +111,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'A comprehensive checklist and workflow for new employee onboarding.',
     creator: 'iSynera',
     category: 'hr',
+    type: 'work'
   },
   {
     id: 't8',
@@ -107,6 +119,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Track properties, clients, and closing statuses in one place.',
     creator: 'iSynera',
     category: 'real-estate',
+    type: 'crm'
   },
   {
     id: 't9',
@@ -114,6 +127,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Organize lessons, resources, and student progress for teachers.',
     creator: 'iSynera',
     category: 'education',
+    type: 'work'
   },
   {
     id: 't10',
@@ -121,6 +135,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Manage volunteer sign-ups, schedules, and impact reporting.',
     creator: 'iSynera',
     category: 'nonprofit',
+    type: 'work'
   },
   {
     id: 't11',
@@ -128,6 +143,7 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Monitor site progress, materials, and contractor schedules.',
     creator: 'iSynera',
     category: 'construction',
+    type: 'work'
   },
   {
     id: 't12',
@@ -135,5 +151,6 @@ export const MOCK_TEMPLATES: Template[] = [
     description: 'Track startups, due diligence, and investment rounds.',
     creator: 'iSynera',
     category: 'vc',
+    type: 'crm'
   }
 ];

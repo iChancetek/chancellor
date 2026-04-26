@@ -1,12 +1,19 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Filter, MessageSquare, Sparkles, Plus, MoreHorizontal, LayoutGrid } from 'lucide-react';
+import { Search, Filter, MessageSquare, Sparkles, Plus, MoreHorizontal, LayoutGrid, Check, Loader2 } from 'lucide-react';
 import { TEMPLATE_CATEGORIES, MOCK_TEMPLATES, Template } from '@/lib/templates';
+import { useBoardStore, useWorkspaceStore } from '@/lib/store';
+import { createDefaultBoard } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 export default function TemplateCenter() {
+  const router = useRouter();
+  const { activeWorkspace } = useWorkspaceStore();
+  const { addBoard, setActiveBoard } = useBoardStore();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+  const [installingId, setInstallingId] = useState<string | null>(null);
 
   const filteredTemplates = MOCK_TEMPLATES.filter(t => {
     const matchesSearch = t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -15,6 +22,29 @@ export default function TemplateCenter() {
     const matchesCategory = activeCategory === 'all' || t.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleUseTemplate = async (template: Template) => {
+    if (!activeWorkspace) return;
+    
+    setInstallingId(template.id);
+    
+    // Simulate a bit of processing for "Enterprise" feel
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    try {
+      const newBoard = createDefaultBoard(activeWorkspace.id, template.name, template.type);
+      newBoard.description = template.description;
+      
+      addBoard(newBoard);
+      setActiveBoard(newBoard);
+      
+      router.push(`/dashboard/boards/${newBoard.id}`);
+    } catch (err) {
+      console.error("Failed to create board from template:", err);
+    } finally {
+      setInstallingId(null);
+    }
+  };
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' }}>
@@ -78,9 +108,12 @@ export default function TemplateCenter() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
             {/* Start from Scratch Card */}
-            <div style={{ background: '#fff', borderRadius: '12px', border: '1px dashed #d0d4e4', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}>
+            <div 
+              onClick={() => handleUseTemplate({ id: 'scratch', name: 'New Board', description: 'Fresh workspace', creator: 'Me', category: 'scratch', type: 'work' })}
+              style={{ background: '#fff', borderRadius: '12px', border: '1px dashed #d0d4e4', padding: '32px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }}
+            >
               <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: '#f5f6f8', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#676879', marginBottom: '16px' }}>
                 <Plus size={24} />
               </div>
@@ -89,26 +122,54 @@ export default function TemplateCenter() {
             </div>
 
             {filteredTemplates.map((template) => (
-              <div key={template.id} style={{ background: '#fff', borderRadius: '12px', border: '1px solid #e1e4e8', overflow: 'hidden', cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ height: '160px', background: '#f5f6f8', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                   <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                      <LayoutGrid size={48} color="#6161FF" style={{ opacity: 0.5 }} />
-                   </div>
+              <div key={template.id} style={{ background: '#fff', borderRadius: '16px', border: '1px solid #e1e4e8', overflow: 'hidden', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                <div style={{ height: '180px', background: '#f8f9ff', position: 'relative', overflow: 'hidden' }}>
+                   {template.image ? (
+                     <img 
+                       src={template.image} 
+                       alt={template.name} 
+                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                     />
+                   ) : (
+                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f0f4ff, #e5f4ff)' }}>
+                        <LayoutGrid size={48} color="#6161FF" style={{ opacity: 0.2 }} />
+                     </div>
+                   )}
+                   
                    {template.isAI && (
-                     <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'linear-gradient(135deg, #6161FF, #a25ddc)', color: '#fff', fontSize: '10px', fontWeight: 800, padding: '4px 8px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                     <div style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(4px)', color: '#6161FF', fontSize: '10px', fontWeight: 800, padding: '4px 10px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                        <Sparkles size={10} /> AI-POWERED
                      </div>
                    )}
                 </div>
-                <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                
+                <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#323338' }}>{template.name}</h3>
-                    <MoreHorizontal size={16} color="#676879" />
+                    <h3 style={{ fontSize: '17px', fontWeight: 700, color: '#323338' }}>{template.name}</h3>
+                    <MoreHorizontal size={18} color="#676879" style={{ cursor: 'pointer' }} />
                   </div>
-                  <p style={{ fontSize: '13px', color: '#676879', marginTop: '8px', lineHeight: '1.5', flex: 1 }}>{template.description}</p>
-                  <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '12px', color: '#9699a6' }}>By {template.creator}</span>
-                    <button className="btn-monday-primary" style={{ padding: '6px 16px', fontSize: '13px', borderRadius: '4px' }}>Use Template</button>
+                  <p style={{ fontSize: '14px', color: '#676879', marginTop: '10px', lineHeight: '1.6', flex: 1 }}>{template.description}</p>
+                  
+                  <div style={{ marginTop: '24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                       <div style={{ width: '20px', height: '20px', borderRadius: '4px', background: '#6161FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>
+                          {template.creator[0]}
+                       </div>
+                       <span style={{ fontSize: '12px', color: '#676879', fontWeight: 500 }}>{template.creator}</span>
+                    </div>
+                    
+                    <button 
+                      onClick={() => handleUseTemplate(template)}
+                      disabled={!!installingId}
+                      className={installingId === template.id ? "btn-monday-secondary" : "btn-monday-primary"}
+                      style={{ padding: '8px 20px', fontSize: '13px', borderRadius: '6px', minWidth: '120px' }}
+                    >
+                      {installingId === template.id ? (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <Loader2 size={14} className="animate-spin" /> Installing
+                        </span>
+                      ) : 'Use Template'}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -116,11 +177,15 @@ export default function TemplateCenter() {
           </div>
           
           {filteredTemplates.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '80px 0', color: '#676879' }}>
-              <p style={{ fontSize: '18px' }}>No templates found matching your search.</p>
+            <div style={{ textAlign: 'center', padding: '100px 0', color: '#676879' }}>
+              <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#f5f6f8', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                 <Search size={32} style={{ opacity: 0.2 }} />
+              </div>
+              <p style={{ fontSize: '20px', fontWeight: 600 }}>No templates found</p>
+              <p style={{ marginTop: '8px' }}>Try adjusting your search or filters to find what you're looking for.</p>
               <button 
                 onClick={() => { setSearchQuery(''); setActiveCategory('all'); }}
-                style={{ color: '#0073ea', fontWeight: 600, marginTop: '16px', cursor: 'pointer' }}
+                style={{ color: '#0073ea', fontWeight: 700, marginTop: '24px', cursor: 'pointer', background: 'none', border: 'none', fontSize: '15px' }}
               >
                 Clear all filters
               </button>
