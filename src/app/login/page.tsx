@@ -7,10 +7,13 @@ import { useAuth } from '@/lib/auth-context';
 import { ArrowLeft, Sparkles, Building2, Users, Bot, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
-  const { user, loading, signInWithGoogle, signInWithEmail, error, clearError } = useAuth();
+  const { user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, error, clearError } = useAuth();
   const router = useRouter();
+  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
@@ -20,10 +23,19 @@ export default function LoginPage() {
     }
   }, [user, loading, router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isLogin && password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
     setSubmitting(true);
-    await signInWithEmail(email, password);
+    if (isLogin) {
+      await signInWithEmail(email, password);
+    } else {
+      await signUpWithEmail(email, password, name);
+      router.push('/verify');
+    }
     setSubmitting(false);
   };
 
@@ -55,7 +67,9 @@ export default function LoginPage() {
         background: '#fff'
       }}>
         <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-          <h1 className="heading-section" style={{ color: '#323338', marginBottom: '12px' }}>Welcome back</h1>
+          <h1 className="heading-section" style={{ color: '#323338', marginBottom: '12px' }}>
+            {isLogin ? 'Welcome back' : 'Create your account'}
+          </h1>
           <p style={{ color: '#676879' }}>ChancellorOS CRM and EPR Cloud Platform</p>
         </div>
 
@@ -79,7 +93,13 @@ export default function LoginPage() {
           <div style={{ flex: 1, height: '1px', background: '#d0d4e4' }} />
         </div>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleAuth}>
+          {!isLogin && (
+            <div className="monday-input-group">
+              <label className="monday-label">Full Name</label>
+              <input className="monday-input" style={{ borderRadius: '12px' }} type="text" value={name} onChange={(e)=>setName(e.target.value)} placeholder="Enter your full name" required/>
+            </div>
+          )}
           <div className="monday-input-group">
             <label className="monday-label">Work Email</label>
             <input className="monday-input" style={{ borderRadius: '12px' }} type="email" value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="name@company.com" required/>
@@ -94,18 +114,28 @@ export default function LoginPage() {
             </div>
           </div>
 
+          {!isLogin && (
+            <div className="monday-input-group" style={{ marginTop: '20px' }}>
+              <label className="monday-label">Confirm Password</label>
+              <input className="monday-input" style={{ borderRadius: '12px' }} type={showPassword ? "text" : "password"} value={confirmPassword} onChange={(e)=>setConfirmPassword(e.target.value)} placeholder="Repeat password" required/>
+            </div>
+          )}
+
           {error && <p style={{ color: '#df2f4a', fontSize: '12px', margin: '12px 0' }}>{error}</p>}
 
           <button className="btn-monday-primary" style={{ width: '100%', marginTop: '32px', borderRadius: '12px', padding: '16px', fontSize: '16px' }} disabled={submitting}>
-            {submitting ? 'Logging in...' : 'Log in'}
+            {submitting ? 'Processing...' : isLogin ? 'Log in' : 'Get Started Free'}
           </button>
         </form>
 
         <p style={{ textAlign: 'center', marginTop: '32px', fontSize: '14px', color: '#676879' }}>
-          Don&apos;t have an account? 
-          <Link href="/#auth-section" style={{ color: '#6161FF', fontWeight: 700, marginLeft: '8px', textDecoration: 'none' }}>
-            Sign up for free
-          </Link>
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
+          <button 
+            onClick={() => { setIsLogin(!isLogin); clearError(); }}
+            style={{ color: '#6161FF', fontWeight: 700, marginLeft: '8px', background: 'none', border: 'none', cursor: 'pointer' }}
+          >
+            {isLogin ? 'Sign up' : 'Log in'}
+          </button>
         </p>
       </div>
 
