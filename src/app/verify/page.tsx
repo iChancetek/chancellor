@@ -42,10 +42,12 @@ export default function VerifyPage() {
       const newCode = Math.floor(100000 + Math.random() * 900000).toString();
       setGeneratedCode(newCode);
       
+      const isCurrentlyVerified = user.emailVerified || (userDoc.exists() && userDoc.data().emailVerified);
+      
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
-        verificationCode: newCode,
-        emailVerified: false,
+        verificationCode: isCurrentlyVerified ? null : newCode,
+        emailVerified: isCurrentlyVerified,
         updatedAt: new Date().toISOString()
       }, { merge: true });
       

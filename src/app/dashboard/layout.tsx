@@ -25,14 +25,24 @@ function DashboardShell({ children }: { children: ReactNode }) {
       }
 
       try {
-        const { doc, getDoc } = await import('firebase/firestore');
+        const { doc, getDoc, setDoc } = await import('firebase/firestore');
         const { db } = await import('@/lib/firebase');
+        
+        // 1. Check Native Firebase State first - Google users are usually pre-verified
+        if (user.emailVerified) {
+          // Sync to Firestore if verified natively
+          await setDoc(doc(db, 'users', user.uid), { emailVerified: true }, { merge: true });
+          setIsVerifying(false);
+          return;
+        }
+
+        // 2. Check Firestore state
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         
-        if (userDoc.exists() && !userDoc.data().emailVerified) {
-          router.push('/verify');
-        } else {
+        if (userDoc.exists() && userDoc.data().emailVerified) {
           setIsVerifying(false);
+        } else {
+          router.push('/verify');
         }
       } catch (err) {
         console.error("Verification check failed:", err);
