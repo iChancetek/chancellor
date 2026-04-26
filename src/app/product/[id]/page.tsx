@@ -3,7 +3,7 @@
 import { use, useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { 
-  ArrowLeft, CheckCircle2, Zap, Sparkles, Mic, Volume2, 
+  ArrowLeft, ArrowRight, CheckCircle2, Zap, Sparkles, Mic, Volume2, 
   HardDrive, LayoutGrid, Users, Code2, Megaphone, Headphones, Bot, Building2,
   Play, Pause, Square, Loader2
 } from 'lucide-react';
