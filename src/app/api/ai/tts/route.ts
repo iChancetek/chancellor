@@ -8,7 +8,7 @@ export async function POST(req: NextRequest) {
   const openai = new OpenAI({ apiKey });
 
   try {
-    const { text, voice = 'onyx' } = await req.json();
+    const { text, voice = 'shimmer' } = await req.json();
 
     if (!text) {
       return NextResponse.json({ error: 'No text provided' }, { status: 400 });

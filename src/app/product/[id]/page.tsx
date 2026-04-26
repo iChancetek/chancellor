@@ -8,81 +8,13 @@ import {
   Play, Pause, Square, Loader2
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
+import TTSPlayer from '@/components/ai/TTSPlayer';
 
 import { PRODUCT_DATA } from '@/lib/products';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const product = PRODUCT_DATA[id] || PRODUCT_DATA.work;
-  
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  const handleTogglePlay = async () => {
-    if (audioRef.current && isPaused) {
-      audioRef.current.play();
-      setIsPlaying(true);
-      setIsPaused(false);
-      return;
-    }
-
-    if (isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-      setIsPaused(true);
-      return;
-    }
-
-    // Start fresh
-    setIsLoading(true);
-    try {
-      const text = `${product.title}. ${product.subtitle}. Our core features include: ${product.features.join(', ')}. Experience the next generation of productivity with Chancellor's Multimodal Work OS.`;
-      
-      const response = await fetch('/api/ai/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-      });
-
-      if (!response.ok) throw new Error('TTS failed');
-      
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audioRef.current = audio;
-      
-      audio.onended = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-      };
-
-      await audio.play();
-      setIsPlaying(true);
-    } catch (err) {
-      console.error('Playback failed:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleStop = () => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
-    setIsPlaying(false);
-    setIsPaused(false);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
-  }, []);
 
   return (
     <div style={{ background: '#fff', minHeight: '100vh' }}>
@@ -107,26 +39,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/" className="btn-monday-primary">Start Building Now</Link>
             
-            <div style={{ display: 'flex', alignItems: 'center', background: '#fff', border: '1px solid #d0d4e4', borderRadius: '999px', padding: '4px 8px' }}>
-              <button 
-                onClick={handleTogglePlay}
-                disabled={isLoading}
-                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', fontSize: '15px', fontWeight: 600, color: '#323338', background: 'none', border: 'none', cursor: 'pointer' }}
-              >
-                {isLoading ? <Loader2 size={18} className="animate-spin" /> : isPlaying ? <Pause size={18} /> : <Play size={18} />}
-                {isLoading ? 'Loading Audio...' : isPlaying ? 'Pause Overview' : isPaused ? 'Resume Overview' : 'Listen to Overview'}
-              </button>
-              
-              {(isPlaying || isPaused) && (
-                <button 
-                  onClick={handleStop}
-                  style={{ padding: '10px', background: 'none', border: 'none', cursor: 'pointer', color: '#676879', borderLeft: '1px solid #d0d4e4', marginLeft: '4px' }}
-                  title="Stop Playback"
-                >
-                  <Square size={16} fill="currentColor" />
-                </button>
-              )}
-            </div>
+            <TTSPlayer 
+              text={`${product.title}. ${product.subtitle}. Our core features include: ${product.features.join(', ')}. Experience the next generation of productivity with Chancellor's Multimodal Work OS.`} 
+              title="Listen to Overview" 
+              color={product.color} 
+            />
           </div>
         </div>
       </section>
