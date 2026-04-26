@@ -152,13 +152,13 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
 
   const boardItems = items.filter(i => i.boardId === boardId);
 
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
   if (!activeBoard) return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#676879' }}>
       <p>Board not found. Please select a board from the sidebar.</p>
     </div>
   );
-
-  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' }}>
