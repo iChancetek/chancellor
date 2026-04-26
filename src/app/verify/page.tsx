@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle } from 'lucide-react';
+import { ShieldCheck, ArrowRight, Mail, Loader2, RefreshCw, AlertCircle, ShieldAlert } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { isSuperAdmin } from '@/lib/admin';
 
 export default function VerifyPage() {
   const { user, loading, updateUserEmail } = useAuth();
@@ -80,6 +81,22 @@ export default function VerifyPage() {
     }
   };
 
+  const handleAdminBypass = async () => {
+    if (!user || !isSuperAdmin(user.email)) return;
+    setSubmitting(true);
+    try {
+      await updateDoc(doc(db, 'users', user.uid), {
+        emailVerified: true,
+        verificationCode: null
+      });
+      router.push('/dashboard');
+    } catch (err) {
+      setError('Bypass failed.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleChange = (index: number, value: string) => {
     if (value.length > 1) value = value[0];
     if (!/^\d*$/.test(value)) return;
@@ -137,6 +154,16 @@ export default function VerifyPage() {
   return (
     <div style={{ minHeight: '100dvh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '24px' }}>
       <div style={{ maxWidth: '520px', width: '100%', textAlign: 'center' }}>
+        
+        {/* WARNING FOR USER */}
+        <div style={{ marginBottom: '32px', padding: '16px', background: '#fff8e1', border: '1px solid #ffe082', borderRadius: '12px', color: '#856404', fontSize: '14px', textAlign: 'left', display: 'flex', gap: '12px' }}>
+          <AlertCircle size={24} />
+          <div>
+            <strong style={{ display: 'block', marginBottom: '4px' }}>Technical Notice: Simulation Mode</strong>
+            Real email delivery requires a SendGrid or Mailgun API key. Since no provider is configured, the "email" is currently simulated below.
+          </div>
+        </div>
+
         <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: '#6161FF15', color: '#6161FF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 32px' }}>
           <Mail size={40} />
         </div>
@@ -244,15 +271,30 @@ export default function VerifyPage() {
           </button>
         </form>
 
-        <p style={{ fontSize: '14px', color: '#676879' }}>
-          Didn't receive the code? 
-          <button 
-            onClick={() => initVerification(true)}
-            style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer' }}
-          >
-            Resend Code
-          </button>
-        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <p style={{ fontSize: '14px', color: '#676879' }}>
+            Didn't receive the code? 
+            <button 
+              onClick={() => initVerification(true)}
+              style={{ background: 'none', border: 'none', color: '#6161FF', fontWeight: 700, marginLeft: '8px', cursor: 'pointer' }}
+            >
+              Resend Code
+            </button>
+          </p>
+
+          {isSuperAdmin(user?.email) && (
+            <button 
+              onClick={handleAdminBypass}
+              style={{ 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                padding: '12px', background: '#00c87510', color: '#00c875', border: '1px solid #00c87530',
+                borderRadius: '12px', cursor: 'pointer', fontWeight: 700, fontSize: '13px'
+              }}
+            >
+              <ShieldAlert size={18} /> Administrative Bypass (Unblock Account)
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
