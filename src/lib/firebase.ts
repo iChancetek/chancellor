@@ -28,4 +28,13 @@ export const db = app ? getFirestore(app) : ({} as any);
 export const storage = app ? getStorage(app) : ({} as any);
 export const googleProvider = new GoogleAuthProvider();
 
+// Enable offline persistence
+if (typeof window !== 'undefined' && db && isConfigured) {
+  import('firebase/firestore').then(({ enableIndexedDbPersistence }) => {
+    enableIndexedDbPersistence(db).catch((err) => {
+      console.warn('Firestore persistence failed:', err.code);
+    });
+  }).catch(() => {});
+}
+
 export default app;

@@ -19,6 +19,14 @@ export default function ERPPage() {
 
   const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
+
+    // Check if board already exists to prevent duplicates and "lost info" confusion
+    const existing = boards.find(b => b.name === name && b.type === 'erp' && b.workspaceId === activeWorkspace.id);
+    if (existing) {
+      router.push(`/dashboard/board/${existing.id}`);
+      return;
+    }
+
     const board = createDefaultBoard(activeWorkspace.id, name, 'erp');
     
     // Optimistic UI update

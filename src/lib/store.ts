@@ -89,10 +89,21 @@ export const useBoardStore = create<BoardState>()(
       setActiveBoard: (board) => set({ activeBoard: board, activeView: board?.activeView || 'table' }),
       setActiveView: (view) => set({ activeView: view }),
       setItems: (items) => set({ items }),
-      syncBoardItems: (boardId, newItems) => set((state) => ({
-        // Keep items from other boards, replace items for this board
-        items: [...state.items.filter(i => i.boardId !== boardId), ...newItems]
-      })),
+      syncBoardItems: (boardId, newItems) => set((state) => {
+        const otherBoardItems = state.items.filter(i => i.boardId !== boardId);
+        const localItems = state.items.filter(i => i.boardId === boardId);
+        
+        // Merge strategy:
+        // 1. Use all items from server (they are source of truth for existing data)
+        // 2. Keep local items that are NOT on the server yet (prevents wipe on initial load)
+        const serverIds = new Set(newItems.map(i => i.id));
+        const mergedItems = [
+          ...newItems,
+          ...localItems.filter(li => !serverIds.has(li.id))
+        ];
+
+        return { items: [...otherBoardItems, ...mergedItems] };
+      }),
       addItem: (item) => set((state) => ({ items: [...state.items, item] })),
       updateItem: (id, updates) =>
         set((state) => ({

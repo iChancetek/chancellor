@@ -26,6 +26,13 @@ export default function TemplateCenter() {
   const handleUseTemplate = async (template: Template) => {
     if (!activeWorkspace) return;
     
+    // Check if board already exists to prevent duplicates and "lost info" confusion
+    const existing = useBoardStore.getState().boards.find(b => b.name === template.name && b.workspaceId === activeWorkspace.id);
+    if (existing) {
+      router.push(`/dashboard/board/${existing.id}`);
+      return;
+    }
+
     setInstallingId(template.id);
     
     // Simulate a bit of processing for "Enterprise" feel
@@ -38,7 +45,7 @@ export default function TemplateCenter() {
       addBoard(newBoard);
       setActiveBoard(newBoard);
       
-      router.push(`/dashboard/boards/${newBoard.id}`);
+      router.push(`/dashboard/board/${newBoard.id}`);
     } catch (err) {
       console.error("Failed to create board from template:", err);
     } finally {

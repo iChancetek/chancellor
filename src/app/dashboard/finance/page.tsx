@@ -82,6 +82,14 @@ export default function FinancePage() {
 
   const handleCreateBoard = (name: string) => {
     if (!activeWorkspace) return;
+    
+    // Check if board already exists to prevent duplicates and "lost info" confusion
+    const existing = boards.find(b => b.name === name && b.type === 'finance' && b.workspaceId === activeWorkspace.id);
+    if (existing) {
+      router.push(`/dashboard/board/${existing.id}`);
+      return;
+    }
+
     const board = createDefaultBoard(activeWorkspace.id, name, 'finance');
     addBoard(board);
     router.push(`/dashboard/board/${board.id}`);

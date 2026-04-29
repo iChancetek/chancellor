@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { useBoardStore, useUIStore, useRBACStore } from '@/lib/store';
 import { canAccessBoard, canEditBoard, canSeeSensitiveData } from '@/lib/rbac';
 import type { ModuleScope } from '@/lib/types';
@@ -8,7 +9,7 @@ import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from 
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import {
-  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download
+  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download, ArrowLeft, CheckCircle
 } from 'lucide-react';
 import type { Board, Item, Column, ViewType } from '@/lib/types';
 import ItemDetailPanel from '@/components/board/ItemDetailPanel';
@@ -17,6 +18,7 @@ import ImportModal from '@/components/dashboard/ImportModal';
 
 export default function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
   const { boardId } = use(params);
+  const router = useRouter();
   const { user } = useAuth();
   const { boards, items, setItems, syncBoardItems, addItem, updateItem, removeItem, activeView, setActiveView, setActiveBoard, activeBoard } = useBoardStore();
   const { itemDetailOpen, selectedItemId, openItemDetail, closeItemDetail } = useUIStore();
@@ -28,6 +30,42 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
   const [newItemName, setNewItemName] = useState('');
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving'>('saved');
   const [isListening, setIsListening] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Manual Save Logic
+  const handleManualSave = async () => {
+    if (!activeBoard) return;
+    setSaveStatus('saving');
+    try {
+      const { updateBoard } = await import('@/lib/firestore');
+      await updateBoard(activeBoard.id, { updatedAt: Date.now() });
+      setIsDirty(false);
+      setSaveStatus('saved');
+    } catch (err) {
+      console.error("Manual save failed:", err);
+      setSaveStatus('saved');
+    }
+  };
+
+  const handleBack = () => {
+    if (isDirty) {
+      if (window.confirm("You have unsaved changes. Do you want to save before leaving?")) {
+        handleManualSave();
+      }
+    }
+    router.back();
+  };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [isDirty]);
 
   // RBAC permission flags
   const canEdit = activeBoard ? canEditBoard(currentUserRole, activeBoard) : true;
@@ -70,6 +108,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     addItem(item);
     if (!overrideName) setNewItemName('');
     setAddingItemGroup(null);
+    setIsDirty(true);
     flashSave();
     
     // Background Cloud Sync
@@ -98,6 +137,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     };
 
     addItem(item);
+    setIsDirty(true);
     flashSave();
     createItem(item).catch(err => console.error('Failed to sync item creation:', err));
   }, [activeBoard, user, items, addItem]);
@@ -107,6 +147,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     if (item) {
       // Optimistic local update
       updateItem(itemId, { values: { ...item.values, [colId]: val } });
+      setIsDirty(true);
       flashSave();
       
       // Background Cloud Sync
@@ -117,6 +158,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
   const handleUpdateName = (itemId: string, name: string) => {
     // Optimistic local update
     updateItem(itemId, { name });
+    setIsDirty(true);
     flashSave();
     
     // Background Cloud Sync
@@ -187,8 +229,25 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
 
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' }}>
+      {/* Board Primary Header (Back Arrow & Info) */}
+      <div style={{ padding: '12px 24px', borderBottom: '1px solid #e1e4e8', display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <button 
+          onClick={handleBack}
+          style={{ padding: '8px', borderRadius: '50%', border: 'none', background: 'transparent', cursor: 'pointer', color: '#676879', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = '#f5f6f8')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <div>
+          <h1 style={{ fontSize: '18px', fontWeight: 800, color: '#323338', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {activeBoard.icon} {activeBoard.name}
+          </h1>
+        </div>
+      </div>
+
       {/* Board Secondary Header */}
-      <div style={{ padding: '24px 24px 0', borderBottom: '1px solid #e1e4e8' }}>
+      <div style={{ padding: '12px 24px 0', borderBottom: '1px solid #e1e4e8' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div style={{ display: 'flex', gap: '40px' }}>
             {['Main Table', 'Kanban', 'Calendar', 'Gantt', 'Chart'].map((view) => {
@@ -235,6 +294,16 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
             </button>
           )}
           
+          {canEdit && (
+            <button 
+              onClick={handleManualSave}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: isDirty ? '#00C875' : '#fff', color: isDirty ? '#fff' : '#323338', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: isDirty ? 'none' : '1px solid #d0d4e4', cursor: 'pointer' }}
+            >
+              {isDirty ? <Save size={14} /> : <CheckCircle size={14} color="#00C875" />} 
+              {isDirty ? 'Save Changes' : 'All Changes Saved'}
+            </button>
+          )}
+
           {canEdit && (
             <button 
               onClick={() => setIsImportModalOpen(true)}
