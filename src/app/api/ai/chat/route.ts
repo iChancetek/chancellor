@@ -33,7 +33,7 @@ Rules:
 - When asked about Finance features, reference budget management, expense tracking, cost allocation, and compliance capabilities.
 - When asked about HR features, reference employee directory, onboarding, performance management, and policy compliance.`;
 
-const MODEL_CHAIN = ['gpt-5.4', 'gpt-5.4-mini', 'gpt-5.2', 'gpt-4o'];
+const MODEL_CHAIN = ['gpt-5.4', 'gpt-5.4-mini', 'gpt-5.2'];
 
 export async function POST(req: NextRequest) {
   const apiKey = process.env.OPENAI_API_KEY;
