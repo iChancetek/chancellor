@@ -78,6 +78,8 @@ function getIconForType(type: string): string {
     support: '🎧',
     marketing: '📣',
     erp: '🏢',
+    finance: '💰',
+    hr: '👥',
   };
   return icons[type] || '📋';
 }
@@ -118,6 +120,164 @@ function getDefaultColumnsForType(type: string, name: string): Column[] {
       { id: 'social', type: 'text', title: 'LinkedIn/Social', width: 140, position: 5, settings: {} },
       { id: 'notes', type: 'text', title: 'Notes/Next Steps', width: 200, position: 6, settings: {} },
       { id: 'date', type: 'date', title: 'Expected Close', width: 130, position: 7, settings: {} },
+    ];
+  }
+
+  // -- FINANCE TEMPLATES --
+  if (type === 'finance') {
+    if (lowerName.includes('ledger') || lowerName.includes('general')) {
+      return [
+        { id: 'status', type: 'status', title: 'Recon Status', width: 140, position: 0, settings: { labels: [{id:'reconciled',text:'Reconciled',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'discrepancy',text:'Discrepancy',color:'#E2445C'}] } },
+        { id: 'account', type: 'text', title: 'Account Code', width: 140, position: 1, settings: {} },
+        { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'type', type: 'status', title: 'Entry Type', width: 130, position: 3, settings: { labels: [{id:'debit',text:'Debit',color:'#579BFC'},{id:'credit',text:'Credit',color:'#A25DDC'}] } },
+        { id: 'book', type: 'status', title: 'Book', width: 120, position: 4, settings: { labels: [{id:'gaap',text:'GAAP',color:'#579BFC'},{id:'ifrs',text:'IFRS',color:'#FDAB3D'}] } },
+        { id: 'date', type: 'date', title: 'Transaction Date', width: 130, position: 5, settings: {} },
+        { id: 'person', type: 'person', title: 'Approved By', width: 120, position: 6, settings: {} },
+      ];
+    }
+    if (lowerName.includes('receivable') || lowerName.includes(' ar')) {
+      return [
+        { id: 'status', type: 'status', title: 'Payment Status', width: 140, position: 0, settings: { labels: [{id:'current',text:'Current',color:'#00C875'},{id:'overdue30',text:'30+ Days',color:'#FDAB3D'},{id:'overdue60',text:'60+ Days',color:'#E2445C'},{id:'overdue90',text:'90+ Days',color:'#333333'}] } },
+        { id: 'customer', type: 'text', title: 'Customer', width: 160, position: 1, settings: {} },
+        { id: 'invoice', type: 'text', title: 'Invoice #', width: 120, position: 2, settings: {} },
+        { id: 'amount', type: 'number', title: 'Amount Due', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'credit', type: 'text', title: 'Credit Terms', width: 120, position: 4, settings: {} },
+        { id: 'risk', type: 'status', title: 'AI Risk Score', width: 130, position: 5, settings: { labels: [{id:'low',text:'Low Risk',color:'#00C875'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'high',text:'High Risk',color:'#E2445C'}] } },
+        { id: 'date', type: 'date', title: 'Due Date', width: 130, position: 6, settings: {} },
+        { id: 'person', type: 'person', title: 'Collections Agent', width: 140, position: 7, settings: {} },
+      ];
+    }
+    if (lowerName.includes('payable') || lowerName.includes(' ap')) {
+      return [
+        { id: 'status', type: 'status', title: 'Approval Status', width: 140, position: 0, settings: { labels: [{id:'draft',text:'Draft',color:'#c4c4c4'},{id:'pending',text:'Pending Approval',color:'#FDAB3D'},{id:'approved',text:'Approved',color:'#00C875'},{id:'paid',text:'Paid',color:'#579BFC'}] } },
+        { id: 'vendor', type: 'text', title: 'Vendor', width: 160, position: 1, settings: {} },
+        { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'category', type: 'text', title: 'Expense Category', width: 140, position: 3, settings: {} },
+        { id: 'priority', type: 'priority', title: 'Payment Priority', width: 130, position: 4, settings: { labels: [{id:'urgent',text:'Urgent',color:'#E2445C'},{id:'normal',text:'Normal',color:'#579BFC'},{id:'deferred',text:'Deferred',color:'#c4c4c4'}] } },
+        { id: 'date', type: 'date', title: 'Due Date', width: 130, position: 5, settings: {} },
+        { id: 'person', type: 'person', title: 'Approver', width: 120, position: 6, settings: {} },
+      ];
+    }
+    if (lowerName.includes('asset')) {
+      return [
+        { id: 'status', type: 'status', title: 'Asset Status', width: 140, position: 0, settings: { labels: [{id:'active',text:'Active',color:'#00C875'},{id:'depreciated',text:'Depreciated',color:'#FDAB3D'},{id:'disposed',text:'Disposed',color:'#E2445C'}] } },
+        { id: 'assetid', type: 'text', title: 'Asset ID', width: 120, position: 1, settings: {} },
+        { id: 'original', type: 'number', title: 'Original Value', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'current', type: 'number', title: 'Current Value', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'method', type: 'status', title: 'Depreciation', width: 130, position: 4, settings: { labels: [{id:'straight',text:'Straight-Line',color:'#579BFC'},{id:'declining',text:'Declining',color:'#A25DDC'},{id:'units',text:'Units of Production',color:'#FDAB3D'}] } },
+        { id: 'date', type: 'date', title: 'Acquisition Date', width: 130, position: 5, settings: {} },
+        { id: 'person', type: 'person', title: 'Custodian', width: 120, position: 6, settings: {} },
+      ];
+    }
+    if (lowerName.includes('revenue') || lowerName.includes('recognition')) {
+      return [
+        { id: 'status', type: 'status', title: 'Recognition Status', width: 150, position: 0, settings: { labels: [{id:'deferred',text:'Deferred',color:'#FDAB3D'},{id:'partial',text:'Partially Recognized',color:'#579BFC'},{id:'recognized',text:'Fully Recognized',color:'#00C875'},{id:'atrisk',text:'At Risk',color:'#E2445C'}] } },
+        { id: 'contract', type: 'text', title: 'Contract / Deal', width: 160, position: 1, settings: {} },
+        { id: 'total', type: 'number', title: 'Total Contract Value', width: 150, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'recognized', type: 'number', title: 'Recognized to Date', width: 150, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'standard', type: 'status', title: 'Standard', width: 120, position: 4, settings: { labels: [{id:'asc606',text:'ASC 606',color:'#579BFC'},{id:'ifrs15',text:'IFRS 15',color:'#A25DDC'}] } },
+        { id: 'date', type: 'date', title: 'Recognition Date', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('multi-book') || lowerName.includes('global') || lowerName.includes('consolidat')) {
+      return [
+        { id: 'status', type: 'status', title: 'Consolidation Status', width: 150, position: 0, settings: { labels: [{id:'draft',text:'Draft',color:'#c4c4c4'},{id:'inprogress',text:'In Progress',color:'#FDAB3D'},{id:'consolidated',text:'Consolidated',color:'#00C875'},{id:'variance',text:'Variance Detected',color:'#E2445C'}] } },
+        { id: 'entity', type: 'text', title: 'Entity / Subsidiary', width: 160, position: 1, settings: {} },
+        { id: 'currency', type: 'text', title: 'Currency', width: 100, position: 2, settings: {} },
+        { id: 'amount', type: 'number', title: 'Local Amount', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'converted', type: 'number', title: 'USD Equivalent', width: 140, position: 4, settings: { format: 'currency', unit: '$' } },
+        { id: 'date', type: 'date', title: 'Period End', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('amortiz') || lowerName.includes('allocation')) {
+      return [
+        { id: 'status', type: 'status', title: 'Allocation Status', width: 140, position: 0, settings: { labels: [{id:'allocated',text:'Allocated',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'review',text:'Under Review',color:'#579BFC'}] } },
+        { id: 'costcenter', type: 'text', title: 'Cost Center', width: 140, position: 1, settings: {} },
+        { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'pct', type: 'number', title: 'Distribution %', width: 120, position: 3, settings: { format: 'percentage' } },
+        { id: 'dept', type: 'text', title: 'Department', width: 140, position: 4, settings: {} },
+        { id: 'date', type: 'date', title: 'Period End', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('budget') || lowerName.includes('planning')) {
+      return [
+        { id: 'status', type: 'status', title: 'Budget Status', width: 140, position: 0, settings: { labels: [{id:'ontrack',text:'On Track',color:'#00C875'},{id:'atrisk',text:'At Risk',color:'#FDAB3D'},{id:'over',text:'Over Budget',color:'#E2445C'}] } },
+        { id: 'person', type: 'person', title: 'Owner', width: 120, position: 1, settings: {} },
+        { id: 'allocated', type: 'number', title: 'Allocated', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'spent', type: 'number', title: 'Spent', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'variance', type: 'number', title: 'Variance %', width: 120, position: 4, settings: { format: 'percentage' } },
+        { id: 'date', type: 'date', title: 'Period End', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('report')) {
+      return [
+        { id: 'status', type: 'status', title: 'Report Status', width: 140, position: 0, settings: { labels: [{id:'draft',text:'Draft',color:'#c4c4c4'},{id:'review',text:'In Review',color:'#FDAB3D'},{id:'published',text:'Published',color:'#00C875'}] } },
+        { id: 'person', type: 'person', title: 'Analyst', width: 120, position: 1, settings: {} },
+        { id: 'type', type: 'status', title: 'Report Type', width: 130, position: 2, settings: { labels: [{id:'pl',text:'P&L',color:'#579BFC'},{id:'bs',text:'Balance Sheet',color:'#A25DDC'},{id:'cf',text:'Cash Flow',color:'#00C875'}] } },
+        { id: 'amount', type: 'number', title: 'Key Metric', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'variance', type: 'number', title: 'Variance %', width: 120, position: 4, settings: { format: 'percentage' } },
+        { id: 'date', type: 'date', title: 'Period', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('tax')) {
+      return [
+        { id: 'status', type: 'status', title: 'Filing Status', width: 140, position: 0, settings: { labels: [{id:'filed',text:'Filed',color:'#00C875'},{id:'preparing',text:'Preparing',color:'#FDAB3D'},{id:'overdue',text:'Overdue',color:'#E2445C'},{id:'exempt',text:'Exempt',color:'#c4c4c4'}] } },
+        { id: 'jurisdiction', type: 'text', title: 'Jurisdiction', width: 140, position: 1, settings: {} },
+        { id: 'taxtype', type: 'text', title: 'Tax Type', width: 130, position: 2, settings: {} },
+        { id: 'liability', type: 'number', title: 'Tax Liability', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'date', type: 'date', title: 'Filing Deadline', width: 130, position: 4, settings: {} },
+        { id: 'person', type: 'person', title: 'Tax Specialist', width: 140, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('audit') || lowerName.includes('compliance')) {
+      return [
+        { id: 'status', type: 'status', title: 'Compliance Status', width: 150, position: 0, settings: { labels: [{id:'passed',text:'Passed',color:'#00C875'},{id:'inreview',text:'In Review',color:'#FDAB3D'},{id:'failed',text:'Failed',color:'#E2445C'},{id:'remediation',text:'Remediation',color:'#A25DDC'}] } },
+        { id: 'person', type: 'person', title: 'Auditor', width: 120, position: 1, settings: {} },
+        { id: 'standard', type: 'text', title: 'Standard / Framework', width: 160, position: 2, settings: {} },
+        { id: 'risk', type: 'priority', title: 'Risk Level', width: 130, position: 3, settings: { labels: [{id:'critical',text:'Critical',color:'#333333'},{id:'high',text:'High',color:'#E2445C'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#00C875'}] } },
+        { id: 'date', type: 'date', title: 'Last Reviewed', width: 130, position: 4, settings: {} },
+        { id: 'notes', type: 'text', title: 'Findings', width: 200, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('forecast')) {
+      return [
+        { id: 'status', type: 'status', title: 'Confidence', width: 140, position: 0, settings: { labels: [{id:'high',text:'High',color:'#00C875'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#E2445C'}] } },
+        { id: 'metric', type: 'text', title: 'Metric', width: 140, position: 1, settings: {} },
+        { id: 'projected', type: 'number', title: 'Projected', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+        { id: 'actual', type: 'number', title: 'Actual to Date', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'variance', type: 'number', title: 'Variance %', width: 120, position: 4, settings: { format: 'percentage' } },
+        { id: 'date', type: 'date', title: 'Period End', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('reconcil')) {
+      return [
+        { id: 'status', type: 'status', title: 'Match Status', width: 140, position: 0, settings: { labels: [{id:'matched',text:'Auto-Matched',color:'#00C875'},{id:'review',text:'Needs Review',color:'#FDAB3D'},{id:'unmatched',text:'Unmatched',color:'#E2445C'}] } },
+        { id: 'source', type: 'text', title: 'Source', width: 130, position: 1, settings: {} },
+        { id: 'reference', type: 'text', title: 'Reference #', width: 130, position: 2, settings: {} },
+        { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 3, settings: { format: 'currency', unit: '$' } },
+        { id: 'confidence', type: 'number', title: 'AI Confidence %', width: 130, position: 4, settings: { format: 'percentage' } },
+        { id: 'date', type: 'date', title: 'Transaction Date', width: 130, position: 5, settings: {} },
+      ];
+    }
+    if (lowerName.includes('alert') || lowerName.includes('workflow')) {
+      return [
+        { id: 'status', type: 'status', title: 'Alert Status', width: 140, position: 0, settings: { labels: [{id:'active',text:'Active',color:'#E2445C'},{id:'acknowledged',text:'Acknowledged',color:'#FDAB3D'},{id:'resolved',text:'Resolved',color:'#00C875'}] } },
+        { id: 'priority', type: 'priority', title: 'Severity', width: 130, position: 1, settings: { labels: [{id:'critical',text:'Critical',color:'#333333'},{id:'high',text:'High',color:'#E2445C'},{id:'medium',text:'Medium',color:'#FDAB3D'},{id:'low',text:'Low',color:'#579BFC'}] } },
+        { id: 'category', type: 'text', title: 'Category', width: 140, position: 2, settings: {} },
+        { id: 'description', type: 'text', title: 'Description', width: 200, position: 3, settings: {} },
+        { id: 'person', type: 'person', title: 'Assigned To', width: 120, position: 4, settings: {} },
+        { id: 'date', type: 'date', title: 'Triggered', width: 130, position: 5, settings: {} },
+      ];
+    }
+    // Default Finance — Expense Manager
+    return [
+      { id: 'status', type: 'status', title: 'Approval Status', width: 140, position: 0, settings: { labels: [{id:'approved',text:'Approved',color:'#00C875'},{id:'pending',text:'Pending',color:'#FDAB3D'},{id:'flagged',text:'Flagged',color:'#E2445C'}] } },
+      { id: 'person', type: 'person', title: 'Submitted By', width: 130, position: 1, settings: {} },
+      { id: 'amount', type: 'number', title: 'Amount', width: 140, position: 2, settings: { format: 'currency', unit: '$' } },
+      { id: 'vendor', type: 'text', title: 'Vendor', width: 150, position: 3, settings: {} },
+      { id: 'category', type: 'text', title: 'Category', width: 140, position: 4, settings: {} },
+      { id: 'date', type: 'date', title: 'Receipt Date', width: 130, position: 5, settings: {} },
     ];
   }
 
@@ -268,7 +428,24 @@ function getDefaultGroupsForType(type: string, name: string, boardId: string): G
   const lowerName = name.toLowerCase();
   let groupTitles = ['To Do', 'In Progress', 'Completed'];
 
-  if (type === 'crm') {
+  if (type === 'finance') {
+    if (lowerName.includes('ledger') || lowerName.includes('general')) groupTitles = ['Assets', 'Liabilities', 'Equity', 'Revenue', 'Expenses'];
+    else if (lowerName.includes('receivable')) groupTitles = ['Current', '30+ Days Overdue', '60+ Days Overdue', '90+ Days Overdue'];
+    else if (lowerName.includes('payable')) groupTitles = ['Due This Week', 'Due This Month', 'Scheduled', 'Completed'];
+    else if (lowerName.includes('asset')) groupTitles = ['Active Assets', 'Under Depreciation', 'Fully Depreciated', 'Disposed'];
+    else if (lowerName.includes('revenue') || lowerName.includes('recognition')) groupTitles = ['Deferred Revenue', 'Partially Recognized', 'Fully Recognized'];
+    else if (lowerName.includes('multi-book') || lowerName.includes('global') || lowerName.includes('consolidat')) groupTitles = ['US Entity', 'EU Entity', 'APAC Entity', 'Eliminations'];
+    else if (lowerName.includes('amortiz') || lowerName.includes('allocation')) groupTitles = ['Direct Costs', 'Shared Costs', 'Overhead'];
+    else if (lowerName.includes('budget') || lowerName.includes('planning')) groupTitles = ['Q1 Budget', 'Q2 Budget', 'Q3 Budget', 'Q4 Budget'];
+    else if (lowerName.includes('report')) groupTitles = ['Monthly Reports', 'Quarterly Reports', 'Annual / Ad-Hoc'];
+    else if (lowerName.includes('tax')) groupTitles = ['Federal', 'State / Local', 'International', 'Credits & Exemptions'];
+    else if (lowerName.includes('audit') || lowerName.includes('compliance')) groupTitles = ['Active Reviews', 'Passed', 'Remediation Required'];
+    else if (lowerName.includes('forecast')) groupTitles = ['Revenue Forecast', 'Expense Forecast', 'Cash Flow Forecast'];
+    else if (lowerName.includes('reconcil')) groupTitles = ['Auto-Matched', 'Needs Review', 'Unmatched'];
+    else if (lowerName.includes('alert') || lowerName.includes('workflow')) groupTitles = ['Active Alerts', 'Acknowledged', 'Resolved'];
+    else if (lowerName.includes('expense')) groupTitles = ['Pending Approval', 'Approved', 'Flagged / Rejected'];
+    else groupTitles = ['Assets', 'Liabilities', 'Revenue', 'Expenses'];
+  } else if (type === 'crm') {
     if (lowerName.includes('contact')) groupTitles = ['Active Clients', 'Past Clients', 'Cold Leads'];
     else if (lowerName.includes('campaign')) groupTitles = ['Q1 Campaigns', 'Q2 Campaigns', 'Archived'];
     else groupTitles = ['New Leads', 'Qualified', 'Proposal Sent', 'Closed Won'];
@@ -317,7 +494,7 @@ export function createDefaultWorkspace(ownerId: string, ownerEmail: string, owne
         email: ownerEmail,
         displayName: ownerName,
         photoURL: null,
-        role: 'owner',
+        role: 'super_admin',
         joinedAt: Date.now(),
       },
     ],

@@ -8,9 +8,12 @@ import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones, Shield,
   Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon, Layers, Brain,
-  PieChart, Briefcase
+  PieChart, Briefcase, Crown, Globe
 } from 'lucide-react';
 import { isSuperAdmin } from '@/lib/admin';
+import { useRBACStore } from '@/lib/store';
+import { canAccess } from '@/lib/rbac';
+import type { ModuleScope } from '@/lib/types';
 
 export default function Sidebar() {
   const { user } = useAuth();
@@ -19,6 +22,7 @@ export default function Sidebar() {
   const { workspaces, activeWorkspace, setWorkspaces, setActiveWorkspace, addWorkspace } = useWorkspaceStore();
   const { boards, addBoard } = useBoardStore();
   const { sidebarCollapsed, toggleSidebar } = useUIStore();
+  const { currentUserRole } = useRBACStore();
 
   // Initialize workspace on first login (local-first)
   useEffect(() => {
@@ -57,19 +61,20 @@ export default function Sidebar() {
     { id: 'apps', label: 'Apps Marketplace', icon: LayoutGrid, path: '/dashboard/apps' },
   ];
 
-  if (isSuperAdmin(user?.email)) {
+  if (isSuperAdmin(user?.email) || currentUserRole === 'super_admin' || currentUserRole === 'admin') {
     navItems.unshift({ id: 'admin', label: 'Admin Dashboard', icon: Shield, path: '/dashboard/admin' });
+    navItems.splice(1, 0, { id: 'governance', label: 'Governance & RBAC', icon: Crown, path: '/dashboard/admin/governance' });
   }
 
   const moduleItems = [
-    { id: 'workplace', label: 'Work Management', icon: LayoutGrid, path: '/dashboard/workplace', color: '#579BFC' },
-    { id: 'crm', label: 'CRM', icon: Users, path: '/dashboard/crm', color: '#00C875' },
-    { id: 'erp', label: 'ERP', icon: Building2, path: '/dashboard/erp', color: '#16A34A' },
-    { id: 'finance', label: 'Finance', icon: PieChart, path: '/dashboard/finance', color: '#00d745' },
-    { id: 'hr', label: 'HR', icon: Briefcase, path: '/dashboard/hr', color: '#ff5ac4' },
-    { id: 'dev', label: 'Dev', icon: Code2, path: '/dashboard/dev', color: '#FDAB3D' },
-    { id: 'support', label: 'Support', icon: Headphones, path: '/dashboard/support', color: '#E2445C' },
-    { id: 'marketing', label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },
+    { id: 'work' as const, label: 'Work Management', icon: LayoutGrid, path: '/dashboard/workplace', color: '#579BFC' },
+    { id: 'crm' as const, label: 'CRM', icon: Users, path: '/dashboard/crm', color: '#00C875' },
+    { id: 'erp' as const, label: 'ERP', icon: Building2, path: '/dashboard/erp', color: '#16A34A' },
+    { id: 'finance' as const, label: 'Finance', icon: PieChart, path: '/dashboard/finance', color: '#00d745' },
+    { id: 'hr' as const, label: 'HR', icon: Briefcase, path: '/dashboard/hr', color: '#ff5ac4' },
+    { id: 'dev' as const, label: 'Dev', icon: Code2, path: '/dashboard/dev', color: '#FDAB3D' },
+    { id: 'support' as const, label: 'Support', icon: Headphones, path: '/dashboard/support', color: '#E2445C' },
+    { id: 'marketing' as const, label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },
   ];
 
   const handleCreateBoard = () => {
@@ -134,7 +139,7 @@ export default function Sidebar() {
         <div style={{ padding: '24px 16px 8px', fontSize: '11px', fontWeight: 800, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
           Products
         </div>
-        {moduleItems.map((item) => (
+        {moduleItems.filter(item => canAccess(currentUserRole, item.id as ModuleScope, 'view')).map((item) => (
           <div 
             key={item.id} 
             onClick={() => router.push(item.path)}
@@ -195,6 +200,13 @@ export default function Sidebar() {
 
       {/* Bottom Utility Icons */}
       <div style={{ padding: '16px', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div 
+          onClick={() => router.push('/dashboard/erp/unified')}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: pathname === '/dashboard/erp/unified' ? '#fff' : 'rgba(255,255,255,0.6)', cursor: 'pointer', background: pathname === '/dashboard/erp/unified' ? 'rgba(255,255,255,0.1)' : 'transparent', borderRadius: '6px' }}
+        >
+          <Globe size={18} />
+          <span style={{ fontSize: '13px' }}>Unified Command Center</span>
+        </div>
         <div 
           onClick={() => router.push('/dashboard/admin')}
           style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px', color: 'rgba(255,255,255,0.6)', cursor: 'pointer' }}

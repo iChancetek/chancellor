@@ -263,6 +263,7 @@ interface AgentState {
 }
 
 import type { Agent, AgentAction } from './types';
+import type { MemberPermissions, PermissionRule, SystemRole } from './types';
 
 export const useAgentStore = create<AgentState>()(
   persist(
@@ -377,6 +378,59 @@ export const useAgentStore = create<AgentState>()(
     }),
     {
       name: 'chancellor-agents',
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
+
+// ── RBAC Store ───────────────────────────────────────────
+
+interface RBACState {
+  memberPermissions: MemberPermissions[];
+  currentUserRole: SystemRole;
+  setMemberPermissions: (perms: MemberPermissions[]) => void;
+  setCurrentUserRole: (role: SystemRole) => void;
+  updateMemberRole: (uid: string, role: SystemRole, grantedBy: string) => void;
+  updateMemberPermissions: (uid: string, permissions: PermissionRule[]) => void;
+  removeMember: (uid: string) => void;
+  getMemberPermissions: (uid: string) => MemberPermissions | undefined;
+}
+
+export const useRBACStore = create<RBACState>()(
+  persist(
+    (set, get) => ({
+      memberPermissions: [],
+      currentUserRole: 'member' as SystemRole,
+      setMemberPermissions: (perms) => set({ memberPermissions: perms }),
+      setCurrentUserRole: (role) => set({ currentUserRole: role }),
+      updateMemberRole: (uid, role, grantedBy) => set((state) => {
+        const existing = state.memberPermissions.find(m => m.uid === uid);
+        if (existing) {
+          return {
+            memberPermissions: state.memberPermissions.map(m =>
+              m.uid === uid ? { ...m, systemRole: role, grantedBy, updatedAt: Date.now() } : m
+            ),
+          };
+        }
+        return {
+          memberPermissions: [...state.memberPermissions, {
+            uid, email: '', displayName: '', systemRole: role,
+            permissions: [], grantedBy, grantedAt: Date.now(), updatedAt: Date.now(),
+          }],
+        };
+      }),
+      updateMemberPermissions: (uid, permissions) => set((state) => ({
+        memberPermissions: state.memberPermissions.map(m =>
+          m.uid === uid ? { ...m, permissions, updatedAt: Date.now() } : m
+        ),
+      })),
+      removeMember: (uid) => set((state) => ({
+        memberPermissions: state.memberPermissions.filter(m => m.uid !== uid),
+      })),
+      getMemberPermissions: (uid) => get().memberPermissions.find(m => m.uid === uid),
+    }),
+    {
+      name: 'chancellor-rbac',
       storage: createJSONStorage(() => localStorage),
     }
   )

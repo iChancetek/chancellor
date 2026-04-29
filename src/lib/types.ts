@@ -34,8 +34,32 @@ export interface WorkspaceMember {
   email: string;
   displayName: string;
   photoURL: string | null;
-  role: 'owner' | 'admin' | 'member' | 'viewer';
+  role: SystemRole;
   joinedAt: number;
+}
+
+// ── RBAC & Governance ─────────────────────────────────────
+
+export type SystemRole = 'super_admin' | 'admin' | 'manager' | 'team_lead' | 'member' | 'viewer';
+export type ModuleScope = 'crm' | 'erp' | 'finance' | 'hr' | 'dev' | 'support' | 'marketing' | 'work';
+export type PermissionAction = 'view' | 'create' | 'edit' | 'delete' | 'approve' | 'export' | 'admin';
+
+export interface PermissionRule {
+  module: ModuleScope;
+  actions: PermissionAction[];
+  boardIds?: string[];
+  sensitiveData?: boolean;
+}
+
+export interface MemberPermissions {
+  uid: string;
+  email: string;
+  displayName: string;
+  systemRole: SystemRole;
+  permissions: PermissionRule[];
+  grantedBy: string;
+  grantedAt: number;
+  updatedAt: number;
 }
 
 // ── Board ─────────────────────────────────────────────────
@@ -56,8 +80,15 @@ export interface Board {
   views: ViewType[];
   activeView: ViewType;
   settings: BoardSettings;
+  accessControl?: BoardAccessControl;
   createdAt: number;
   updatedAt: number;
+}
+
+export interface BoardAccessControl {
+  restrictedTo?: string[];      // UIDs of members who can access
+  minRole?: SystemRole;         // Minimum role required
+  sensitiveData?: boolean;      // Board contains sensitive data
 }
 
 export interface BoardSettings {

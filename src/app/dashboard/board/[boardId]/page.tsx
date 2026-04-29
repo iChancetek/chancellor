@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useState, useCallback, use } from 'react';
-import { useBoardStore, useUIStore } from '@/lib/store';
+import { useBoardStore, useUIStore, useRBACStore } from '@/lib/store';
+import { canAccessBoard, canEditBoard, canSeeSensitiveData } from '@/lib/rbac';
+import type { ModuleScope } from '@/lib/types';
 import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from '@/lib/firestore';
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
@@ -18,6 +20,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
   const { user } = useAuth();
   const { boards, items, setItems, syncBoardItems, addItem, updateItem, removeItem, activeView, setActiveView, setActiveBoard, activeBoard } = useBoardStore();
   const { itemDetailOpen, selectedItemId, openItemDetail, closeItemDetail } = useUIStore();
+  const { currentUserRole } = useRBACStore();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [collapsedGroups, setCollapsedGroups] = useState<Set<string>>(new Set());
@@ -25,6 +28,11 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
   const [newItemName, setNewItemName] = useState('');
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving'>('saved');
   const [isListening, setIsListening] = useState(false);
+
+  // RBAC permission flags
+  const canEdit = activeBoard ? canEditBoard(currentUserRole, activeBoard) : true;
+  const canSee = activeBoard ? canSeeSensitiveData(currentUserRole, activeBoard.type as ModuleScope) : true;
+  const hasAccess = activeBoard && user ? canAccessBoard(currentUserRole, user.uid, activeBoard) : true;
 
   useEffect(() => {
     const board = boards.find((b) => b.id === boardId);
@@ -160,6 +168,23 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     </div>
   );
 
+  if (!hasAccess) return (
+    <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f6f8' }}>
+      <div style={{ background: '#fff', padding: '48px', borderRadius: '16px', border: '1px solid #e1e4e8', textAlign: 'center', maxWidth: '400px', boxShadow: '0 8px 24px rgba(0,0,0,0.04)' }}>
+        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(226,68,92,0.1)', color: '#E2445C', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+          <Settings2 size={32} />
+        </div>
+        <h2 style={{ fontSize: '24px', fontWeight: 800, color: '#323338', marginBottom: '8px' }}>Access Restricted</h2>
+        <p style={{ color: '#676879', fontSize: '14px', lineHeight: 1.5, marginBottom: '24px' }}>
+          You do not have permission to view the <strong>{activeBoard.name}</strong> board. This board is restricted to authorized roles.
+        </p>
+        <button onClick={() => window.history.back()} style={{ padding: '10px 24px', background: '#6161FF', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+          Go Back
+        </button>
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ height: '100%', display: 'flex', flexDirection: 'column', background: '#fff' }}>
       {/* Board Secondary Header */}
@@ -196,24 +221,28 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
 
         {/* Toolbar */}
         <div style={{ display: 'flex', gap: '12px', paddingBottom: '16px' }}>
-          <button onClick={() => { 
-            if (!activeBoard?.groups[0]) return;
-            if (activeView === 'table') {
-              setAddingItemGroup(activeBoard.groups[0].id);
-            } else {
-              const name = window.prompt("Enter new task name:");
-              if (name && name.trim()) handleAddItem(activeBoard.groups[0].id, name.trim());
-            }
-          }} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
-            <Plus size={14} /> New Item
-          </button>
+          {canEdit && (
+            <button onClick={() => { 
+              if (!activeBoard?.groups[0]) return;
+              if (activeView === 'table') {
+                setAddingItemGroup(activeBoard.groups[0].id);
+              } else {
+                const name = window.prompt("Enter new task name:");
+                if (name && name.trim()) handleAddItem(activeBoard.groups[0].id, name.trim());
+              }
+            }} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#6161FF', color: '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+              <Plus size={14} /> New Item
+            </button>
+          )}
           
-          <button 
-            onClick={() => setIsImportModalOpen(true)}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#fff', color: '#323338', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: '1px solid #d0d4e4', cursor: 'pointer' }}
-          >
-            <Download size={14} /> Import Data
-          </button>
+          {canEdit && (
+            <button 
+              onClick={() => setIsImportModalOpen(true)}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#fff', color: '#323338', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: '1px solid #d0d4e4', cursor: 'pointer' }}
+            >
+              <Download size={14} /> Import Data
+            </button>
+          )}
 
           <button 
             onClick={handleListenToBoard}
