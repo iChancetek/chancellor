@@ -7,7 +7,8 @@ import { useWorkspaceStore, useBoardStore, useUIStore } from '@/lib/store';
 import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones, Shield,
-  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon, Layers, Brain
+  Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon, Layers, Brain,
+  PieChart, Briefcase
 } from 'lucide-react';
 import { isSuperAdmin } from '@/lib/admin';
 
@@ -64,6 +65,8 @@ export default function Sidebar() {
     { id: 'workplace', label: 'Work Management', icon: LayoutGrid, path: '/dashboard/workplace', color: '#579BFC' },
     { id: 'crm', label: 'CRM', icon: Users, path: '/dashboard/crm', color: '#00C875' },
     { id: 'erp', label: 'ERP', icon: Building2, path: '/dashboard/erp', color: '#16A34A' },
+    { id: 'finance', label: 'Finance', icon: PieChart, path: '/dashboard/finance', color: '#00d745' },
+    { id: 'hr', label: 'HR', icon: Briefcase, path: '/dashboard/hr', color: '#ff5ac4' },
     { id: 'dev', label: 'Dev', icon: Code2, path: '/dashboard/dev', color: '#FDAB3D' },
     { id: 'support', label: 'Support', icon: Headphones, path: '/dashboard/support', color: '#E2445C' },
     { id: 'marketing', label: 'Marketing', icon: Megaphone, path: '/dashboard/marketing', color: '#A25DDC' },

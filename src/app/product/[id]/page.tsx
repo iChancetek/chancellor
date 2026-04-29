@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
 import TTSPlayer from '@/components/ai/TTSPlayer';
+import VideoBackground from '@/components/layout/VideoBackground';
 
 import { PRODUCT_DATA } from '@/lib/products';
 
@@ -17,11 +18,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const product = PRODUCT_DATA[id] || PRODUCT_DATA.work;
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
+      <VideoBackground src="/Chancellor_CRM_ERP2.mp4" overlayOpacity={0.8} />
       <PublicNavbar />
       
       {/* Hero Section */}
-      <section style={{ padding: '120px 5% 80px', textAlign: 'center', background: `linear-gradient(180deg, ${product.color}05 0%, #ffffff 100%)` }}>
+      <section style={{ padding: '120px 5% 80px', textAlign: 'center', background: 'transparent' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <div style={{ 
             display: 'inline-flex', alignItems: 'center', gap: '8px', 
@@ -48,36 +50,44 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </section>
 
-      {/* Multimodal Showcase */}
+      {/* AI Capabilities Showcase */}
       <section style={{ padding: '100px 10%', background: '#f5f6f8' }}>
         <div style={{ textAlign: 'center', marginBottom: '64px' }}>
-          <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#323338' }}>The Multimodal Advantage</h2>
-          <p style={{ color: '#676879', fontSize: '18px', marginTop: '12px' }}>Go beyond text with our integrated audio, video, and AI engines.</p>
+          <h2 style={{ fontSize: '36px', fontWeight: 800, color: '#323338' }}>AI-Native Capabilities</h2>
+          <p style={{ color: '#676879', fontSize: '18px', marginTop: '12px' }}>GPT-5.4 powered TTS, STT, NLP, and Autonomous Agents built into every workflow.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '32px' }}>
-          <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+          <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
             <div style={{ background: '#6161FF', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
               <Mic size={24} />
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Diction Mics</h3>
-            <p style={{ color: '#676879', lineHeight: '1.6' }}>Dictate updates, tasks, and comments directly into the platform with state-of-the-art Whisper AI transcription.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Speech-to-Text</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6', fontSize: '14px' }}>Whisper AI transcription. Dictate notes, updates, and commands directly into the platform with real-time NLP entity extraction.</p>
           </div>
 
-          <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+          <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
             <div style={{ background: '#00c875', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
               <Volume2 size={24} />
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Listen to Board</h3>
-            <p style={{ color: '#676879', lineHeight: '1.6' }}>Catch up on progress eyes-free. Chancellor generates AI audio summaries of your entire board in seconds.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Text-to-Speech</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6', fontSize: '14px' }}>HD audio briefings generated on-demand. Listen to pipeline summaries, board status, and AI analysis hands-free.</p>
           </div>
 
-          <div style={{ background: '#fff', padding: '40px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+          <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
             <div style={{ background: '#ffcb00', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
-              <HardDrive size={24} />
+              <Sparkles size={24} />
             </div>
-            <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '16px' }}>Multimedia Center</h3>
-            <p style={{ color: '#676879', lineHeight: '1.6' }}>Centralize all your photos, videos, and slide decks in one task-specific repository with cloud-syncing.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>NLP Intelligence</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6', fontSize: '14px' }}>GPT-5.4 sentiment analysis, entity extraction, deal scoring, and natural language queries across all your data.</p>
+          </div>
+
+          <div style={{ background: '#fff', padding: '32px', borderRadius: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+            <div style={{ background: '#ff3d57', width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '24px' }}>
+              <Bot size={24} />
+            </div>
+            <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '12px' }}>Autonomous Agents</h3>
+            <p style={{ color: '#676879', lineHeight: '1.6', fontSize: '14px' }}>Deploy specialized AI agents that monitor, analyze, and take action autonomously — from pipeline optimization to outreach generation.</p>
           </div>
         </div>
       </section>

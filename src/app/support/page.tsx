@@ -5,16 +5,18 @@ import PublicNavbar from '@/components/layout/PublicNavbar';
 import PublicFooter from '@/components/layout/PublicFooter';
 import LandingAIChat from '@/components/ai/LandingAIChat';
 import TTSPlayer from '@/components/ai/TTSPlayer';
+import VideoBackground from '@/components/layout/VideoBackground';
 
 export default function SupportPage() {
   const pageContent = "Chancellor Support Center. How can we help you today? Explore our comprehensive help center. Getting Started: Learn the basics of ChancellorOS. Documentation: Technical specs for enterprise architects. Community: Connect with other neural platform experts. Contact Us: 24/7 priority support for enterprise tenants.";
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
+      <VideoBackground src="/Chancellor_CRM_ERP2.mp4" overlayOpacity={0.8} />
       <PublicNavbar />
       
       {/* Hero Section */}
-      <section style={{ padding: '120px 5% 100px', textAlign: 'center', background: 'linear-gradient(180deg, #ffcb0008 0%, #ffffff 100%)' }}>
+      <section style={{ padding: '120px 5% 100px', textAlign: 'center', background: 'transparent' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <div style={{ 
             display: 'inline-flex', alignItems: 'center', gap: '8px', 

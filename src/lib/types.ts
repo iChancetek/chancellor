@@ -40,7 +40,7 @@ export interface WorkspaceMember {
 
 // ── Board ─────────────────────────────────────────────────
 
-export type BoardType = 'work' | 'crm' | 'dev' | 'support' | 'marketing' | 'erp';
+export type BoardType = 'work' | 'crm' | 'dev' | 'support' | 'marketing' | 'erp' | 'finance' | 'hr';
 export type ViewType = 'table' | 'kanban' | 'timeline' | 'calendar' | 'chart' | 'dashboard';
 
 export interface Board {

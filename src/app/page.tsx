@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/auth-context';
 import { 
   Sparkles, ArrowRight, CheckCircle2, LayoutGrid, 
   Users, Code2, Headphones, Megaphone, Zap, Bot, Building2,
-  Eye, EyeOff
+  Eye, EyeOff, PieChart, Briefcase
 } from 'lucide-react';
 import PublicNavbar from '@/components/layout/PublicNavbar';
 import PublicFooter from '@/components/layout/PublicFooter';
@@ -29,6 +29,8 @@ export default function LandingPage() {
     { id: 'work', label: 'Work Management', icon: LayoutGrid, color: '#0073ea' },
     { id: 'erp', label: 'ChancellorOS ERP', icon: Building2, color: '#00c875' },
     { id: 'crm', label: 'ChancellorOS CRM', icon: Users, color: '#ffcb00' },
+    { id: 'finance', label: 'Finance', icon: PieChart, color: '#00d745' },
+    { id: 'hr', label: 'HR', icon: Briefcase, color: '#ff5ac4' },
     { id: 'dev', label: 'Dev', icon: Code2, color: '#ff3d57' },
     { id: 'marketing', label: 'Marketing', icon: Megaphone, color: '#a25ddc' },
     { id: 'support', label: 'Support', icon: Headphones, color: '#579bfc' },
@@ -94,7 +96,7 @@ export default function LandingPage() {
           loop 
           muted 
           playsInline 
-          src="/Chancellor_CRM_ERP2.mp4"
+          src="/ChancellorOS.mp4"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
         {/* Even more subtle overlay to allow the video to be seen clearly */}

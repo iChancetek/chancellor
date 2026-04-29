@@ -348,6 +348,15 @@ export const useAgentStore = create<AgentState>()(
           status: 'idle',
           description: 'Executive coordination, KPI tracking, and strategic briefings.',
           actions: []
+        },
+        {
+          id: 'crm-agent-1',
+          name: 'CRM Intelligence',
+          role: 'sales',
+          avatar: '🧲',
+          status: 'idle',
+          description: 'Autonomous lead scoring, pipeline optimization, deal sentiment analysis, and NLP-driven outreach.',
+          actions: []
         }
       ],
       activeAgentId: null,

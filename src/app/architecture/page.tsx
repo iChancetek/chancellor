@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import PublicNavbar from '@/components/layout/PublicNavbar';
+import VideoBackground from '@/components/layout/VideoBackground';
 
 export default function ArchitecturePage() {
   const specs = [
@@ -65,11 +66,12 @@ export default function ArchitecturePage() {
   ];
 
   return (
-    <div style={{ background: '#fff', minHeight: '100vh', overflowX: 'hidden' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', overflowX: 'hidden' }}>
+      <VideoBackground src="/Chancellor_CRM_ERP2.mp4" overlayOpacity={0.8} />
       <PublicNavbar />
       
       {/* Hero */}
-      <section style={{ padding: '120px 5% 80px', textAlign: 'center', background: 'linear-gradient(180deg, #f5f6f8 0%, #ffffff 100%)' }}>
+      <section style={{ padding: '120px 5% 80px', textAlign: 'center', background: 'transparent' }}>
         <div style={{ maxWidth: '900px', margin: '0 auto' }}>
           <h1 className="heading-hero" style={{ marginBottom: '24px' }}>
             Enterprise <span className="gradient-text">Architecture</span>

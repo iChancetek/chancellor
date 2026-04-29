@@ -1,4 +1,4 @@
-import { LayoutGrid, Users, Code2, Megaphone, Headphones, Bot, Building2 } from 'lucide-react';
+import { LayoutGrid, Users, Code2, Megaphone, Headphones, Bot, Building2, PieChart, Briefcase } from 'lucide-react';
 
 export const PRODUCT_DATA: Record<string, any> = {
   work: {
@@ -48,7 +48,11 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Asset Lifecycle Management: Track tangible and intangible assets from acquisition to disposal. Automated depreciation scheduling, maintenance alerts, and valuation tracking integrated directly into the general ledger.',
       'Multicurrency Treasury Management: Real-time FX exposure monitoring with automated hedging suggestions and centralized liquidity management for global operations.',
       'Project-Level Profitability: Granular cost tracking that links every project hour and material expense to real-time P&L statements, allowing for precise margin analysis.',
-      'Intercompany Reconciliation: Automated elimination entries and balance matching for multi-entity corporate structures, drastically reducing month-end closing cycles.'
+      'Intercompany Reconciliation: Automated elimination entries and balance matching for multi-entity corporate structures, drastically reducing month-end closing cycles.',
+      'Dynamic Budget Management: Allocate and track budgets across departments in real-time, with automated alerts for overspending.',
+      'Intelligent Expense Tracking: Automate expense approvals and tracking with AI-driven receipt scanning and policy compliance checks.',
+      'Interdepartmental Cost Allocation: Automatically distribute shared costs across relevant business units based on usage metrics.',
+      'Audit-Ready Compliance: Maintain detailed transaction histories and automated compliance checks for seamless financial audits.'
     ],
     deepOptions: [
       'Multi-Entity Consolidation: Automated currency conversion and elimination entries for global corporate structures.',
@@ -74,24 +78,26 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Predictive Lead Scoring: Focus your energy where it matters. Our AI analyzes hundreds of data points—from email open rates to website visits—to score leads in real-time, highlighting the "hot" opportunities that are most likely to convert into revenue.',
       'Intelligent Outreach Automation: Never let a lead go cold. Create complex multi-channel sequences across email, LinkedIn, and SMS that adapt based on recipient behavior. If a prospect clicks a specific link, the sequence can automatically pivot to a more relevant conversation.',
       'Visual Pipeline Acceleration: Track every deal with a high-fidelity pipeline view. Identify stalled opportunities and get AI-driven recommendations on the "next best action" to move the deal toward closing, including relevant case studies or discount triggers.',
-      'Multimodal Mobile CRM: Access your entire sales suite from the field. Use voice-to-text to record meeting notes that are instantly transcribed and analyzed for action items, and use the camera to scan business cards or documents directly into the system.',
+      'Voice-to-CRM via STT: Dictate deal notes, meeting summaries, and action items directly into the CRM using Whisper AI transcription. Your spoken words are instantly converted into structured deal records with NLP-extracted entities and action items.',
+      'TTS Pipeline Briefings: Listen to your pipeline status hands-free. Chancellor AI generates natural-language audio summaries of your deals, forecasts, and team performance — perfect for commutes or executive briefings.',
+      'NLP Deal Sentiment Analysis: GPT-5.4 analyzes communication patterns, email tone, and engagement velocity across every deal to surface sentiment scores and predict close probability with enterprise-grade accuracy.',
+      'Autonomous CRM Agents: Deploy specialized AI agents that autonomously monitor your pipeline, draft re-engagement sequences for stalled deals, score leads in real-time, and generate competitive intelligence briefings.',
+      'Natural Language CRM Queries: Ask your CRM questions in plain English — "Which deals over $50K are at risk this quarter?" — and receive instant, AI-generated visual reports with actionable recommendations.',
       'Revenue Performance Analytics: Gain deep insight into your sales velocity and win rates. Our advanced reporting allows you to drill down into individual performance, territory health, and product-specific trends to identify growth levers and coaching opportunities.',
-      'Email & Calendar Synchronization: Native integration with Gmail and Outlook. Automatically log emails to contacts, sync meetings, and view prospect history without leaving your inbox.',
-      'Bespoke Sales Playbooks: Define standardized sales motions for different deal types. Provide reps with real-time guidance, talk tracks, and required documents at every stage of the funnel.',
-      'Automated Task Orchestration: The CRM automatically creates tasks for follow-ups, contract renewals, and quarterly business reviews, ensuring no revenue opportunity falls through the cracks.',
+      'Multimodal Mobile CRM: Access your entire sales suite from the field. Use voice-to-text to record meeting notes that are instantly transcribed and analyzed for action items, and use the camera to scan business cards or documents directly into the system.',
       'Account-Based Marketing (ABM) Suite: Target high-value accounts with precision. Coordinate sales and marketing efforts with unified account scoring and personalized content triggers.'
     ],
     deepOptions: [
-      'Dynamic Territory Routing: Automated lead assignment based on complex geographic and account-based logic.',
-      'Email Sentiment Analysis: AI-driven tone detection for incoming prospect communications to guide agent responses.',
-      'CPQ Integration: Integrated Configure, Price, Quote tools with automated discount approval workflows.',
-      'Sales Sequence Branching: Highly complex "If-This-Then-That" logic for automated sales engagement.',
-      'Customer Health Scorecard: Predictive risk modeling for existing accounts integrated into the CRM view.',
-      'Zero-Touch Data Entry: Autonomous CRM updates from calendar invites, email threads, and phone transcripts.',
-      'Duplicate Prevention Engine: Real-time scanning for matching contact and company records to maintain database hygiene.',
-      'Sales Forecasting Models: Advanced probability-based revenue predictions with historical accuracy tracking.',
-      'Custom Activity Mapping: Define unique engagement types (e.g., Demo, Trial, Onboarding) with specific metadata requirements.',
-      'LinkedIn Sales Navigator Sync: Bi-directional data flow for prospect insights and InMail activity tracking.'
+      'Autonomous Pipeline Agent: AI agent that continuously monitors deal health, detects stalled opportunities, and autonomously drafts follow-up sequences.',
+      'NLP Competitive Intelligence: Real-time extraction and synthesis of competitor mentions across deal communications and market signals.',
+      'Voice Command Deal Entry: Full voice-driven CRM operations — create deals, update stages, and log activities entirely through natural speech.',
+      'GPT-5.4 Outreach Generator: AI-generated personalized outreach emails, call scripts, and LinkedIn messages tailored to each prospect\'s profile.',
+      'Sentiment-Driven Routing: Automatic escalation of deals with declining sentiment scores to senior sales leadership.',
+      'TTS Executive Briefings: On-demand audio reports for C-suite — pipeline health, forecast accuracy, and team performance narrated by Chancellor AI.',
+      'Multi-Agent Deal Rooms: Deploy collaborative AI agents for complex enterprise deals — one for pricing, one for legal, one for competitive analysis.',
+      'NLP Meeting Transcription: Automatic transcription and action-item extraction from sales calls with CRM record linking.',
+      'Predictive Revenue Modeling: AI-driven forecasting with confidence intervals, scenario planning, and historical accuracy tracking.',
+      'Zero-Touch Data Enrichment: Autonomous CRM updates from calendar invites, email threads, and call transcripts via NLP extraction.'
     ]
   },
   dev: {
@@ -220,6 +226,68 @@ export const PRODUCT_DATA: Record<string, any> = {
       'Advanced Anomaly Detection: Continuous monitoring of organizational data patterns for security threats or operational failures.',
       'Bespoke AI Skill Library: Build and deploy custom AI "skills" that extend the core capabilities of your autonomous agents.',
       'Neural Data lineage: Transparent tracking of how the AI arrived at specific conclusions or data extractions for auditability.'
+    ]
+  },
+  finance: {
+    title: 'Finance',
+    subtitle: 'Strategic financial planning and real-time capital allocation.',
+    description: 'ChancellorOS Finance provides a single source of truth for all corporate financial data. It integrates dynamic budget management, intelligent expense tracking, interdepartmental cost allocation, and audit-ready compliance into a unified neural dashboard. Leveraging Chancellor AI, it detects anomalies, forecasts cash flow, and ensures your organization is always audit-ready.',
+    color: '#00d745',
+    icon: PieChart,
+    features: [
+      'Dynamic Budget Management: Allocate and track budgets across every department in real-time. Visual progress bars show utilization percentages, and automated alerts fire the instant any department exceeds its allocation — preventing overspend before it impacts the bottom line.',
+      'Intelligent Expense Tracking: A comprehensive expense table with AI-driven receipt scanning, vendor categorization, and policy compliance checks. Every expense is tagged with a status — Approved, Pending, or Flagged — and filterable for instant visibility into organizational spend.',
+      'Interdepartmental Cost Allocation: Automatically distribute shared costs like cloud infrastructure, office facilities, and SaaS licenses across relevant business units based on configurable usage metrics. Visualize each department\'s share with real-time allocation charts.',
+      'Audit-Ready Compliance: Maintain detailed transaction histories with a live audit trail. Automated compliance checks for SOX Section 404, GDPR Data Audit, IFRS 15 Revenue Recognition, and Internal Controls ensure your organization is always audit-ready.',
+      'Automated Financial Reporting: Generate real-time P&L statements, balance sheets, and cash flow reports with a single click. Executive dashboards aggregate KPIs across all departments for strategic decision-making.',
+      'AI-Powered Cash Flow Forecasting: Chancellor AI analyzes historical trends and current market data to generate high-probability cash flow models, helping you plan investments and manage liquidity with confidence.',
+      'Real-Time Overspend Alerts: Departmental budget monitoring with intelligent threshold detection. When any business unit approaches or exceeds its allocation, stakeholders are notified instantly via in-app alerts and email.',
+      'Vendor Expense Intelligence: Track spending by vendor, category, and department. AI-driven anomaly detection flags unusual patterns like duplicate invoices, policy violations, or unexpected cost spikes.',
+      'Shared Cost Center Management: Define cost centers for cross-departmental resources and configure automatic distribution rules. Cloud infrastructure, facilities, and software licenses are split fairly based on actual usage data.',
+      'Financial Board Templates: Pre-built board templates for Budget Tracking, Expense Management, Cost Allocation, Audit Dashboards, and Financial Reporting — ready to deploy in seconds with full customization.'
+    ],
+    deepOptions: [
+      'Multi-Currency Consolidation: Seamlessly consolidate financials across multiple entities and currencies with real-time FX conversion.',
+      'Advanced Variance Analysis: Automatically identify and explain variances between budget and actuals with AI-generated root cause reports.',
+      'Custom Financial Dashboards: Build bespoke dashboards tailored to specific executive or departmental needs with drag-and-drop widgets.',
+      'Predictive Risk Modeling: Identify potential financial risks before they impact the bottom line using historical pattern analysis.',
+      'Automated Vendor Payments: Streamline accounts payable with intelligent invoice processing and payment scheduling.',
+      'Budget Reallocation Engine: AI-recommended budget transfers between departments based on utilization patterns and surplus detection.',
+      'Expense Policy Automation: Codify expense policies into automated rules that approve, flag, or reject expenses in real-time.',
+      'Compliance Scheduling: Automated scheduling of recurring compliance checks with stakeholder notifications and deadline tracking.',
+      'Departmental P&L Views: Drill-down profitability analysis at the department, team, and project level.',
+      'Neural Spend Optimization: Chancellor AI continuously analyzes organizational spend to recommend cost-saving opportunities and vendor consolidation.'
+    ]
+  },
+  hr: {
+    title: 'HR',
+    subtitle: 'Intelligent human capital management and talent optimization.',
+    description: 'ChancellorOS HR centralizes employee data, performance management, and recruitment into a seamless experience. It features a comprehensive employee directory, automated onboarding workflows, continuous performance tracking, and policy compliance management — all powered by Chancellor AI to uncover retention risks and optimize talent strategy.',
+    color: '#ff5ac4',
+    icon: Briefcase,
+    features: [
+      'Centralized Employee Directory: A comprehensive, filterable database of every employee with avatar profiles, role details, department assignments, tenure tracking, and real-time performance scores — all in one view.',
+      'Automated Onboarding Workflows: Streamline new hire onboarding with automated task pipelines. From IT equipment setup and security badge provisioning to HR policy acknowledgment, benefits enrollment, and 30-day check-ins — every step is tracked with completion status.',
+      'Continuous Performance Management: Visual performance dashboards with scored progress bars, star indicators for top performers, and department-level rankings. Facilitate regular feedback loops, goal tracking, and performance reviews with intuitive tools.',
+      'AI-Driven Talent Acquisition: Source, screen, and engage top talent faster with intelligent candidate matching and automated outreach. AI scores candidates based on role fit, experience alignment, and cultural compatibility.',
+      'Policy & Compliance Tracker: Track completion rates for Anti-Harassment Training, Data Privacy Certification, Code of Conduct Reviews, and Safety Protocols. Visual progress bars show organizational compliance with due date tracking.',
+      'Automated Payroll Integration: Seamlessly sync employee data, time-tracking records, and benefits data with external payroll providers for error-free processing across multiple jurisdictions.',
+      'Employee Status Intelligence: Real-time tracking of employee lifecycle states — Active, Onboarding, Under Review, On Leave — with automated workflows triggered by status transitions.',
+      'Department Analytics: Filter and analyze workforce data by department with instant visibility into headcount, performance averages, and retention metrics.',
+      'Onboarding Progress Tracking: Visual progress bars showing the percentage completion of each new hire\'s onboarding journey, with task-level granularity and automated reminders for pending items.',
+      'HR Board Templates: Pre-built templates for Employee Directory, Onboarding Pipeline, Performance Reviews, Talent Acquisition, and Compliance Tracking — ready to deploy instantly.'
+    ],
+    deepOptions: [
+      'Predictive Retention Analytics: Identify flight risks and proactively address employee concerns with AI-driven insights based on engagement patterns and sentiment analysis.',
+      'Customizable Benefits Portals: Provide employees with self-service access to personalized benefits information, enrollment, and plan comparison tools.',
+      'Advanced Workforce Planning: Align talent strategies with business goals through scenario modeling, headcount forecasting, and skills gap analysis.',
+      'Sentiment Analysis Integration: Gauge employee morale through regular pulse surveys and text analysis with trend detection and department-level heatmaps.',
+      'Automated Offboarding Processes: Ensure smooth transitions with automated access revocation, exit interviews, knowledge transfer tasks, and equipment return tracking.',
+      'Skills Matrix Engine: Map employee competencies against role requirements to identify training needs and internal mobility opportunities.',
+      'Compensation Benchmarking: AI-driven salary analysis against market data to ensure competitive compensation and equitable pay practices.',
+      'Employee Self-Service Hub: A personalized portal for employees to manage their profiles, view pay stubs, request time off, and access company resources.',
+      'Diversity & Inclusion Analytics: Track workforce demographics and inclusion metrics with actionable insights for building a more equitable organization.',
+      'AI Interview Scheduler: Automated scheduling that coordinates between candidates, hiring managers, and panel members with timezone intelligence.'
     ]
   }
 };

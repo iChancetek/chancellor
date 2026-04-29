@@ -5,7 +5,7 @@ import { Sparkles, ArrowRight, Zap, Bot, MessageSquare, Loader2 } from 'lucide-r
 import { useUIStore } from '@/lib/store';
 
 interface ModuleCopilotProps {
-  module: 'crm' | 'erp' | 'dev' | 'support' | 'marketing' | 'work';
+  module: 'crm' | 'erp' | 'dev' | 'support' | 'marketing' | 'work' | 'finance' | 'hr';
 }
 
 export default function ModuleCopilot({ module }: ModuleCopilotProps) {
@@ -13,34 +13,40 @@ export default function ModuleCopilot({ module }: ModuleCopilotProps) {
   const [insight, setInsight] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const moduleNames = {
+  const moduleNames: Record<string, string> = {
     crm: 'Sales Copilot',
-    erp: 'Finance Copilot',
+    erp: 'ERP Copilot',
     dev: 'Dev Copilot',
     support: 'Support Copilot',
     marketing: 'Marketing Copilot',
-    work: 'Work Copilot'
+    work: 'Work Copilot',
+    finance: 'Finance Copilot',
+    hr: 'HR Copilot'
   };
 
-  const suggestions = {
-    crm: ['Analyze pipeline health', 'Draft follow-up emails', 'Identify high-value leads'],
+  const suggestions: Record<string, string[]> = {
+    crm: ['Score pipeline leads', 'Predict quarterly close', 'Draft outreach sequence', 'Analyze deal sentiment', 'Voice deal summary', 'Deploy CRM agent'],
     erp: ['Analyze spend trends', 'Generate ledger summary', 'Forecast cash flow'],
     dev: ['Review sprint velocity', 'Predict bug risks', 'Draft release notes'],
     support: ['Analyze ticket sentiment', 'Optimize SLA response', 'Suggest macro updates'],
     marketing: ['Review campaign ROAS', 'Generate content ideas', 'Analyze audience reach'],
-    work: ['Optimize project timeline', 'Identify resource gaps', 'Summarize board status']
+    work: ['Optimize project timeline', 'Identify resource gaps', 'Summarize board status'],
+    finance: ['Analyze budget utilization', 'Detect expense anomalies', 'Forecast quarterly spend'],
+    hr: ['Review onboarding pipeline', 'Analyze retention risk', 'Audit policy compliance']
   };
 
   useEffect(() => {
     // Simulate neural reasoning for a proactive insight
     const timer = setTimeout(() => {
-      const moduleInsights = {
-        crm: "Neural analysis suggests 2 deals in 'Qualified' stage are at risk due to inactivity. I can draft a re-engagement sequence.",
+      const moduleInsights: Record<string, string> = {
+        crm: "GPT-5.4 NLP analysis detected 2 deals at risk due to declining engagement velocity. I can deploy an autonomous agent to draft re-engagement sequences and schedule follow-ups via voice command.",
         erp: "Cash flow analysis detects a $4.2k variance in 'Liabilities'. I recommend a reconciliation review.",
         dev: "Sprint velocity is up 12%. I can generate a performance summary for the retro.",
         support: "Sentiment analysis shows an uptick in 'Login' issues. I've prepared a draft for a knowledge base article.",
         marketing: "Your 'Email Outreach' campaign has a 4.2% click-through rate, exceeding benchmark. I suggest scaling budget by 15%.",
-        work: "Resource allocation is currently 92% optimized. I identified 2 tasks that could be parallelized to save 3 days."
+        work: "Resource allocation is currently 92% optimized. I identified 2 tasks that could be parallelized to save 3 days.",
+        finance: "Marketing is currently 5.4% over budget. I recommend reallocating $15k from Operations' surplus to cover the overspend before month-end close.",
+        hr: "Onboarding for James Wilson is 33% complete. 2 tasks are pending — I can auto-send reminders to the assigned stakeholders."
       };
       setInsight(moduleInsights[module]);
       setLoading(false);

@@ -25,7 +25,7 @@ export default function LandingAIChat() {
   // Initial greeting
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      const greeting = "Hello! I'm Chancellor AI, your platform guide. I can tell you all about our ChancellorOS ERP, CRM, and Work Management solutions. How can I help you today?";
+      const greeting = "Hello! I'm Chancellor AI, your platform guide. I can tell you all about our ChancellorOS ERP, CRM, Finance, HR, and Work Management solutions. How can I help you today?";
       setMessages([{
         id: generateId(),
         role: 'assistant',

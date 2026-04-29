@@ -152,5 +152,41 @@ export const MOCK_TEMPLATES: Template[] = [
     creator: 'iSynera',
     category: 'vc',
     type: 'crm'
+  },
+  {
+    id: 't13',
+    name: 'AI Lead Scoring',
+    description: 'GPT-5.4 predictive lead qualification with NLP sentiment analysis and engagement velocity scoring.',
+    creator: 'Chancellor AI',
+    category: 'sales',
+    isAI: true,
+    type: 'crm'
+  },
+  {
+    id: 't14',
+    name: 'Account Intelligence 360°',
+    description: 'Full account views with AI-driven stakeholder mapping, voice notes via STT, and autonomous follow-up agents.',
+    creator: 'Chancellor AI',
+    category: 'sales',
+    isAI: true,
+    type: 'crm'
+  },
+  {
+    id: 't15',
+    name: 'Revenue Forecasting',
+    description: 'AI-driven pipeline projections with NLP deal analysis and TTS executive briefings.',
+    creator: 'Chancellor AI',
+    category: 'sales',
+    isAI: true,
+    type: 'crm'
+  },
+  {
+    id: 't16',
+    name: 'Customer Success Board',
+    description: 'Churn prevention with AI health scores, sentiment monitoring, and autonomous retention agent deployment.',
+    creator: 'Chancellor AI',
+    category: 'sales',
+    isAI: true,
+    type: 'crm'
   }
 ];
