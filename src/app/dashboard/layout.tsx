@@ -7,6 +7,8 @@ import Sidebar from '@/components/layout/Sidebar';
 import TopBar from '@/components/layout/TopBar';
 import AIChat from '@/components/ai/AIChat';
 import OnboardingWizard from '@/components/onboarding/OnboardingWizard';
+import AICreateBoardModal from '@/components/board/AICreateBoardModal';
+import { useUIStore } from '@/lib/store';
 
 import { useState } from 'react';
 
@@ -14,6 +16,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
   const { user, loading } = useAuth();
   const [isVerifying, setIsVerifying] = useState(true);
   const router = useRouter();
+  const { aiCreateModalOpen, setAiCreateModalOpen } = useUIStore();
 
   useEffect(() => {
     const checkVerification = async () => {
@@ -83,6 +86,7 @@ function DashboardShell({ children }: { children: ReactNode }) {
       </div>
       <AIChat />
       <OnboardingWizard />
+      {aiCreateModalOpen && <AICreateBoardModal onClose={() => setAiCreateModalOpen(false)} />}
     </div>
   );
 }

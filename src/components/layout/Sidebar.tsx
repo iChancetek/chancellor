@@ -8,7 +8,7 @@ import { createDefaultWorkspace, createDefaultBoard } from '@/lib/utils';
 import {
   Home, LayoutGrid, Users, Code2, Headphones, Shield,
   Megaphone, Plus, Zap, Settings, Inbox, Calendar, ChevronDown, Building2, Bot, Link as LinkIcon, Layers, Brain,
-  PieChart, Briefcase, Crown, Globe
+  PieChart, Briefcase, Crown, Globe, Sparkles
 } from 'lucide-react';
 import { isSuperAdmin } from '@/lib/admin';
 import { useRBACStore } from '@/lib/store';
@@ -21,7 +21,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { workspaces, activeWorkspace, setWorkspaces, setActiveWorkspace, addWorkspace } = useWorkspaceStore();
   const { boards, addBoard } = useBoardStore();
-  const { sidebarCollapsed, toggleSidebar } = useUIStore();
+  const { sidebarCollapsed, toggleSidebar, setAiCreateModalOpen } = useUIStore();
   const { currentUserRole } = useRBACStore();
 
   // Initialize workspace on first login (local-first)
@@ -195,6 +195,13 @@ export default function Sidebar() {
         >
           <Plus size={18} />
           Add Board
+        </div>
+        <div 
+          onClick={() => setAiCreateModalOpen(true)}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 16px', fontSize: '14px', color: '#FDAB3D', cursor: 'pointer', fontWeight: 600 }}
+        >
+          <Sparkles size={18} />
+          Create with AI
         </div>
       </div>
 

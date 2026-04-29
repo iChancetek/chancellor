@@ -9,11 +9,12 @@ import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from 
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import {
-  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download, ArrowLeft, CheckCircle, GripVertical
+  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download, ArrowLeft, CheckCircle, GripVertical, Sparkles
 } from 'lucide-react';
 import type { Board, Item, Column, ViewType } from '@/lib/types';
 import ItemDetailPanel from '@/components/board/ItemDetailPanel';
 import BoardAIInsights from '@/components/ai/insights/BoardAIInsights';
+import IntelligenceView from '@/components/board/IntelligenceView';
 import {
   DndContext, 
   closestCenter,
@@ -268,6 +269,31 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     }
   };
 
+  const [isPresenting, setIsPresenting] = useState(false);
+  const handlePresentIntelligence = async () => {
+    if (!activeBoard?.aiPayload?.narration_script || isPresenting) return;
+    setIsPresenting(true);
+    
+    try {
+      const response = await fetch('/api/ai/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: activeBoard.aiPayload.narration_script }),
+      });
+
+      if (!response.ok) throw new Error('TTS failed');
+      
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.onended = () => setIsPresenting(false);
+      audio.play();
+    } catch (err) {
+      console.error('Failed to play narration script:', err);
+      setIsPresenting(false);
+    }
+  };
+
   const flashSave = () => {
     setSaveStatus('saving');
     setTimeout(() => setSaveStatus('saved'), 600);
@@ -323,8 +349,8 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
       <div style={{ padding: '12px 24px 0', borderBottom: '1px solid #e1e4e8' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
           <div style={{ display: 'flex', gap: '40px' }}>
-            {['Main Table', 'Kanban', 'Calendar', 'Gantt', 'Chart'].map((view) => {
-              const viewKey = view === 'Main Table' ? 'table' : view === 'Gantt' ? 'timeline' : view.toLowerCase();
+            {(activeBoard?.aiPayload ? ['Intelligence', 'Main Table', 'Kanban', 'Calendar', 'Gantt', 'Chart'] : ['Main Table', 'Kanban', 'Calendar', 'Gantt', 'Chart']).map((view) => {
+              const viewKey = view === 'Main Table' ? 'table' : view === 'Gantt' ? 'timeline' : view === 'Intelligence' ? 'dashboard' : view.toLowerCase();
               const isActive = activeView === viewKey;
               return (
                 <div 
@@ -337,7 +363,7 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
                     borderBottom: isActive ? '2px solid #6161FF' : 'none'
                   }}
                 >
-                  {view}
+                  {view === 'Intelligence' ? <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Sparkles size={14} /> {view}</span> : view}
                 </div>
               );
             })}
@@ -383,6 +409,17 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
               style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: '#fff', color: '#323338', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: '1px solid #d0d4e4', cursor: 'pointer' }}
             >
               <Download size={14} /> Import Data
+            </button>
+          )}
+
+          {activeBoard?.aiPayload?.narration_script && (
+            <button 
+              onClick={handlePresentIntelligence}
+              disabled={isPresenting}
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 12px', background: isPresenting ? '#fde7cc' : '#FDAB3D', color: isPresenting ? '#FDAB3D' : '#fff', borderRadius: '4px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: isPresenting ? 'default' : 'pointer' }}
+            >
+              {isPresenting ? <Loader2 size={14} className="animate-spin" /> : <Volume2 size={14} />} 
+              {isPresenting ? 'Presenting...' : 'Present'}
             </button>
           )}
 
@@ -448,6 +485,8 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
           <TimelineView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} />
         ) : activeView === 'chart' ? (
           <ChartView board={activeBoard} items={boardItems} />
+        ) : activeView === 'dashboard' ? (
+          <IntelligenceView board={activeBoard} />
         ) : null}
       </div>
 

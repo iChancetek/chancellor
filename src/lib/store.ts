@@ -232,6 +232,7 @@ interface UIState {
   itemDetailOpen: boolean;
   selectedItemId: string | null;
   aiChatOpen: boolean;
+  aiCreateModalOpen: boolean;
   searchOpen: boolean;
   notifications: Notification[];
   aiMessages: AIMessage[];
@@ -240,6 +241,7 @@ interface UIState {
   openItemDetail: (itemId: string) => void;
   closeItemDetail: () => void;
   toggleAIChat: () => void;
+  setAiCreateModalOpen: (open: boolean) => void;
   setSearchOpen: (open: boolean) => void;
   setNotifications: (notifications: Notification[]) => void;
   addAIMessage: (message: AIMessage) => void;
@@ -252,6 +254,7 @@ export const useUIStore = create<UIState>((set) => ({
   itemDetailOpen: false,
   selectedItemId: null,
   aiChatOpen: false,
+  aiCreateModalOpen: false,
   searchOpen: false,
   notifications: [],
   aiMessages: [],
@@ -260,6 +263,7 @@ export const useUIStore = create<UIState>((set) => ({
   openItemDetail: (itemId) => set({ itemDetailOpen: true, selectedItemId: itemId }),
   closeItemDetail: () => set({ itemDetailOpen: false, selectedItemId: null }),
   toggleAIChat: () => set((state) => ({ aiChatOpen: !state.aiChatOpen })),
+  setAiCreateModalOpen: (open) => set({ aiCreateModalOpen: open }),
   setSearchOpen: (open) => set({ searchOpen: open }),
   setNotifications: (notifications) => set({ notifications }),
   addAIMessage: (message) => set((state) => ({ aiMessages: [...state.aiMessages, message] })),

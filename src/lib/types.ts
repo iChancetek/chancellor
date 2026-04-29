@@ -81,8 +81,41 @@ export interface Board {
   activeView: ViewType;
   settings: BoardSettings;
   accessControl?: BoardAccessControl;
+  aiPayload?: AIBoardPayload; // Store generated AI intelligence payload
   createdAt: number;
   updatedAt: number;
+}
+
+// ── AI Intelligence Payload ───────────────────────────────
+
+export interface AIBoardPayload {
+  board_name: string;
+  dashboards: {
+    title: string;
+    type: string;
+    description: string;
+  }[];
+  widgets: {
+    title: string;
+    type: 'line' | 'bar' | 'heatmap' | 'table' | 'forecast';
+    data_metric: string;
+    insight: string;
+  }[];
+  insights: {
+    title: string;
+    description: string;
+    impact: 'high' | 'medium' | 'low';
+  }[];
+  risks: {
+    title: string;
+    exposure: string;
+    mitigation: string;
+  }[];
+  recommendations: {
+    action: string;
+    expected_outcome: string;
+  }[];
+  narration_script: string;
 }
 
 export interface BoardAccessControl {
