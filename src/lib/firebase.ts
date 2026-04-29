@@ -24,7 +24,7 @@ const app = (getApps().length > 0)
   : (isConfigured ? initializeApp(firebaseConfig) : null);
 
 export const auth = app ? getAuth(app) : ({} as any);
-export const db = app ? getFirestore(app, 'ichancellor') : ({} as any);
+export const db = app ? getFirestore(app) : ({} as any);
 export const storage = app ? getStorage(app) : ({} as any);
 export const googleProvider = new GoogleAuthProvider();
 
