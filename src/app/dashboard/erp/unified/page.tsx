@@ -9,9 +9,25 @@ import {
   ArrowRight, DollarSign, TrendingUp, Users, Package,
   Zap, Shield, Building2, PieChart, Briefcase, BarChart3,
   RefreshCw, Brain, Sparkles, Target, Activity, GitMerge,
-  ArrowUpRight, ArrowDownRight, Layers, Globe, Search
+  ArrowUpRight, ArrowDownRight, Layers, Globe, Search, GripVertical
 } from 'lucide-react';
 import { useState } from 'react';
+import {
+  DndContext, 
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+} from '@dnd-kit/sortable';
+import { SortableItem } from '@/components/layout/SortableItem';
 
 export default function UnifiedHubPage() {
   const router = useRouter();
@@ -52,6 +68,81 @@ export default function UnifiedHubPage() {
     hr: { bg: 'rgba(255,90,196,0.1)', color: '#ff5ac4', icon: <Briefcase size={18} /> },
   };
 
+  const [widgets, setWidgets] = useState(['pipeline', 'health', 'ops', 'hr']);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      setWidgets((items) => {
+        const oldIndex = items.indexOf(active.id as string);
+        const newIndex = items.indexOf(over.id as string);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
+  const renderWidget = (id: string) => {
+    switch (id) {
+      case 'pipeline':
+        return (
+          <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(0,200,117,0.1), rgba(0,200,117,0.02))', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '10px', right: '10px', color: 'rgba(0,0,0,0.1)' }}><GripVertical size={14} /></div>
+            <div className="dashboard-card-icon" style={{ background: 'rgba(0,200,117,0.15)' }}><DollarSign size={22} style={{ color: '#00C875' }} /></div>
+            <div className="dashboard-card-title">CRM Pipeline</div>
+            <div className="dashboard-card-stats"><div className="dashboard-card-stat">
+              <span className="dashboard-card-stat-value" style={{ color: '#00C875' }}>{fmt(pipelineValue)}</span>
+              <span className="dashboard-card-stat-label">{crmItems.length} active deals</span>
+            </div></div>
+          </div>
+        );
+      case 'health':
+        return (
+          <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(0,215,69,0.1), rgba(0,215,69,0.02))', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '10px', right: '10px', color: 'rgba(0,0,0,0.1)' }}><GripVertical size={14} /></div>
+            <div className="dashboard-card-icon" style={{ background: 'rgba(0,215,69,0.15)' }}><PieChart size={22} style={{ color: '#00d745' }} /></div>
+            <div className="dashboard-card-title">Finance Health</div>
+            <div className="dashboard-card-stats"><div className="dashboard-card-stat">
+              <span className="dashboard-card-stat-value" style={{ color: '#00d745' }}>$2.84M</span>
+              <span className="dashboard-card-stat-label">Revenue · 98% compliant</span>
+            </div></div>
+          </div>
+        );
+      case 'ops':
+        return (
+          <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(87,155,252,0.1), rgba(87,155,252,0.02))', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '10px', right: '10px', color: 'rgba(0,0,0,0.1)' }}><GripVertical size={14} /></div>
+            <div className="dashboard-card-icon" style={{ background: 'rgba(87,155,252,0.15)' }}><Package size={22} style={{ color: '#579BFC' }} /></div>
+            <div className="dashboard-card-title">ERP Operations</div>
+            <div className="dashboard-card-stats"><div className="dashboard-card-stat">
+              <span className="dashboard-card-stat-value" style={{ color: '#579BFC' }}>99.9%</span>
+              <span className="dashboard-card-stat-label">Uptime · {erpBoards.length} modules</span>
+            </div></div>
+          </div>
+        );
+      case 'hr':
+        return (
+          <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(255,90,196,0.1), rgba(255,90,196,0.02))', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '10px', right: '10px', color: 'rgba(0,0,0,0.1)' }}><GripVertical size={14} /></div>
+            <div className="dashboard-card-icon" style={{ background: 'rgba(255,90,196,0.15)' }}><Users size={22} style={{ color: '#ff5ac4' }} /></div>
+            <div className="dashboard-card-title">HR & Workforce</div>
+            <div className="dashboard-card-stats"><div className="dashboard-card-stat">
+              <span className="dashboard-card-stat-value" style={{ color: '#ff5ac4' }}>{hrBoards.length}</span>
+              <span className="dashboard-card-stat-label">Active HR boards</span>
+            </div></div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   const CROSS_FLOWS = [
     { from: 'CRM', to: 'Finance', flow: 'Deal Won → AR Invoice', icon: <ArrowUpRight size={14} />, color: '#00C875' },
     { from: 'ERP', to: 'Finance', flow: 'Purchase Order → AP Entry', icon: <ArrowDownRight size={14} />, color: '#579BFC' },
@@ -76,44 +167,25 @@ export default function UnifiedHubPage() {
 
       <ModuleCopilot module="erp" />
 
-      {/* Cross-Module KPI Strip */}
-      <div className="dashboard-grid" style={{ marginBottom: '24px' }}>
-        <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(0,200,117,0.1), rgba(0,200,117,0.02))' }}>
-          <div className="dashboard-card-icon" style={{ background: 'rgba(0,200,117,0.15)' }}><DollarSign size={22} style={{ color: '#00C875' }} /></div>
-          <div className="dashboard-card-title">CRM Pipeline</div>
-          <div className="dashboard-card-stats"><div className="dashboard-card-stat">
-            <span className="dashboard-card-stat-value" style={{ color: '#00C875' }}>{fmt(pipelineValue)}</span>
-            <span className="dashboard-card-stat-label">{crmItems.length} active deals</span>
-          </div></div>
-        </div>
-
-        <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(0,215,69,0.1), rgba(0,215,69,0.02))' }}>
-          <div className="dashboard-card-icon" style={{ background: 'rgba(0,215,69,0.15)' }}><PieChart size={22} style={{ color: '#00d745' }} /></div>
-          <div className="dashboard-card-title">Finance Health</div>
-          <div className="dashboard-card-stats"><div className="dashboard-card-stat">
-            <span className="dashboard-card-stat-value" style={{ color: '#00d745' }}>$2.84M</span>
-            <span className="dashboard-card-stat-label">Revenue · 98% compliant</span>
-          </div></div>
-        </div>
-
-        <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(87,155,252,0.1), rgba(87,155,252,0.02))' }}>
-          <div className="dashboard-card-icon" style={{ background: 'rgba(87,155,252,0.15)' }}><Package size={22} style={{ color: '#579BFC' }} /></div>
-          <div className="dashboard-card-title">ERP Operations</div>
-          <div className="dashboard-card-stats"><div className="dashboard-card-stat">
-            <span className="dashboard-card-stat-value" style={{ color: '#579BFC' }}>99.9%</span>
-            <span className="dashboard-card-stat-label">Uptime · {erpBoards.length} modules</span>
-          </div></div>
-        </div>
-
-        <div className="dashboard-card" style={{ background: 'linear-gradient(135deg, rgba(255,90,196,0.1), rgba(255,90,196,0.02))' }}>
-          <div className="dashboard-card-icon" style={{ background: 'rgba(255,90,196,0.15)' }}><Users size={22} style={{ color: '#ff5ac4' }} /></div>
-          <div className="dashboard-card-title">HR & Workforce</div>
-          <div className="dashboard-card-stats"><div className="dashboard-card-stat">
-            <span className="dashboard-card-stat-value" style={{ color: '#ff5ac4' }}>{hrBoards.length}</span>
-            <span className="dashboard-card-stat-label">Active HR boards</span>
-          </div></div>
-        </div>
-      </div>
+      {/* Cross-Module KPI Strip - Draggable */}
+      <DndContext 
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext 
+          items={widgets}
+          strategy={rectSortingStrategy}
+        >
+          <div className="dashboard-grid" style={{ marginBottom: '24px' }}>
+            {widgets.map(id => (
+              <SortableItem key={id} id={id}>
+                {renderWidget(id)}
+              </SortableItem>
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {/* AI Copilot Bar */}
       <div style={{

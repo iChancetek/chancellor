@@ -109,6 +109,11 @@ export const useBoardStore = create<BoardState>()(
         set((state) => ({
           items: state.items.map((item) => (item.id === id ? { ...item, ...updates, updatedAt: Date.now() } : item)),
         })),
+      reorderItems: (reorderedItems: any[]) => set((state) => {
+        const reorderedIds = new Set(reorderedItems.map(i => i.id));
+        const otherItems = state.items.filter(i => !reorderedIds.has(i.id));
+        return { items: [...otherItems, ...reorderedItems] };
+      }),
       removeItem: (id) => set((state) => ({ items: state.items.filter((item) => item.id !== id) })),
       setSelectedItems: (ids) => set({ selectedItems: ids }),
       toggleItemSelection: (id) =>

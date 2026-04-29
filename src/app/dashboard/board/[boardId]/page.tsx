@@ -9,11 +9,30 @@ import { subscribeToItems, createItem, updateItem as firestoreUpdateItem } from 
 import { generateId, formatDate, getInitials } from '@/lib/utils';
 import { useAuth } from '@/lib/auth-context';
 import {
-  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download, ArrowLeft, CheckCircle
+  Plus, ChevronDown, ExternalLink, Search, Settings2, Save, Volume2, Loader2, Download, ArrowLeft, CheckCircle, GripVertical
 } from 'lucide-react';
 import type { Board, Item, Column, ViewType } from '@/lib/types';
 import ItemDetailPanel from '@/components/board/ItemDetailPanel';
 import BoardAIInsights from '@/components/ai/insights/BoardAIInsights';
+import {
+  DndContext, 
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
+  defaultDropAnimationSideEffects,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { SortableItem } from '@/components/layout/SortableItem';
 import ImportModal from '@/components/dashboard/ImportModal';
 
 export default function BoardPage({ params }: { params: Promise<{ boardId: string }> }) {
@@ -164,6 +183,60 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
     // Background Cloud Sync
     firestoreUpdateItem(itemId, { name }).catch(err => console.error('Failed to sync name update:', err));
   };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      // Reorder within group or move between groups logic
+      const activeItem = items.find(i => i.id === active.id);
+      const overItem = items.find(i => i.id === over.id);
+      
+      if (!activeItem) return;
+
+      let newItems = [...items];
+      
+      // If over an item, move it to that position and inherit group/status
+      if (overItem) {
+        const oldIndex = items.findIndex(i => i.id === active.id);
+        const newIndex = items.findIndex(i => i.id === over.id);
+        
+        // Handle Kanban move between columns
+        const activeItem = items[oldIndex];
+        const overItem = items[newIndex];
+        
+        const updatedItem = { 
+          ...activeItem, 
+          groupId: overItem.groupId, 
+          values: { ...activeItem.values, status: overItem.values?.status || activeItem.values?.status },
+          updatedAt: Date.now() 
+        };
+        
+        newItems[oldIndex] = updatedItem;
+        newItems = arrayMove(newItems, oldIndex, newIndex);
+        
+        // Sync position within the new group/column
+        const targetGroup = updatedItem.groupId;
+        const targetStatus = updatedItem.values?.status;
+        
+        const peers = newItems.filter(i => i.groupId === targetGroup && i.values?.status === targetStatus);
+        peers.forEach((p, idx) => { p.position = idx; });
+
+        setItems(newItems);
+        firestoreUpdateItem(active.id as string, { 
+          groupId: updatedItem.groupId, 
+          values: updatedItem.values, 
+          position: updatedItem.position 
+        });
+      }
+    }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   const handleListenToBoard = async () => {
     if (!activeBoard || items.length === 0 || isListening) return;
@@ -338,31 +411,38 @@ export default function BoardPage({ params }: { params: Promise<{ boardId: strin
       <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
         <BoardAIInsights board={activeBoard} items={boardItems} />
         
-        {activeView === 'table' ? (
-          <TableView 
-            board={activeBoard} 
-            items={boardItems} 
-            searchQuery={searchQuery}
-            collapsedGroups={collapsedGroups}
-            setCollapsedGroups={setCollapsedGroups}
-            addingItemGroup={addingItemGroup}
-            setAddingItemGroup={setAddingItemGroup}
-            newItemName={newItemName}
-            setNewItemName={setNewItemName}
-            handleAddItem={handleAddItem}
-            handleUpdateValue={handleUpdateValue}
-            handleUpdateName={handleUpdateName}
-            openItemDetail={openItemDetail}
-          />
-        ) : activeView === 'kanban' ? (
-          <KanbanView 
-            board={activeBoard} 
-            items={boardItems} 
-            searchQuery={searchQuery}
-            onUpdateValue={handleUpdateValue}
-            openItemDetail={openItemDetail}
-          />
-        ) : activeView === 'calendar' ? (
+        <div className="main-scroll" style={{ padding: '24px' }}>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            {activeView === 'table' && (
+              <TableView 
+                board={activeBoard} 
+                items={boardItems} 
+                searchQuery={searchQuery}
+                collapsedGroups={collapsedGroups}
+                setCollapsedGroups={setCollapsedGroups}
+                addingItemGroup={addingItemGroup}
+                setAddingItemGroup={setAddingItemGroup}
+                newItemName={newItemName}
+                setNewItemName={setNewItemName}
+                handleAddItem={handleAddItem}
+                handleUpdateValue={handleUpdateValue}
+                handleUpdateName={handleUpdateName}
+                openItemDetail={openItemDetail}
+              />
+            )}
+            {activeView === 'kanban' && (
+              <KanbanView 
+                board={activeBoard} 
+                items={boardItems} 
+                searchQuery={searchQuery}
+                onUpdateValue={handleUpdateValue}
+                openItemDetail={openItemDetail}
+              />
+            )}
+          </DndContext>
+        </div>
+
+        {activeView === 'calendar' ? (
           <CalendarView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} onAddEvent={handleCalendarAdd} />
         ) : activeView === 'timeline' ? (
           <TimelineView board={activeBoard} items={boardItems} openItemDetail={openItemDetail} />
@@ -445,34 +525,38 @@ function TableView({ board, items, searchQuery, collapsedGroups, setCollapsedGro
                     ))}
                   </tr>
                 </thead>
-                <tbody>
-                  {groupItems.map((item: any) => (
-                    <tr key={item.id} style={{ background: '#fff' }}>
-                      <td style={{ borderLeft: `6px solid ${group.color}`, borderBottom: '1px solid #e1e4e8', padding: '0 8px' }}>
-                        <input type="checkbox" style={{ cursor: 'pointer' }} />
-                      </td>
-                      <td style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '36px' }}>
-                          <input 
-                            style={{ border: 'none', background: 'transparent', fontSize: '14px', width: '100%', outline: 'none' }} 
-                            defaultValue={item.name}
-                            onBlur={(e) => handleUpdateName(item.id, e.target.value)}
-                          />
-                          <button onClick={() => openItemDetail(item.id)} style={{ padding: '4px', color: '#676879', background: 'none', border: 'none', cursor: 'pointer' }}><ExternalLink size={14} /></button>
-                        </div>
-                      </td>
-                      {board.columns.map((col: any) => (
-                        <td key={col.id} style={{ border: '1px solid #e1e4e8', padding: '0', height: '36px' }}>
-                          <ExactCellRenderer 
-                            column={col} 
-                            value={item.values[col.id]} 
-                            onSave={(val: any) => handleUpdateValue(item.id, col.id, val)} 
-                          />
+                <SortableContext items={groupItems.map((i: any) => i.id)} strategy={verticalListSortingStrategy}>
+                  <tbody>
+                    {groupItems.map((item: any) => (
+                      <SortableItem key={item.id} id={item.id} as="tr">
+                        <td style={{ borderLeft: `6px solid ${group.color}`, borderBottom: '1px solid #e1e4e8', padding: '0 8px', width: '40px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                             <GripVertical size={14} color="#c4c4c4" />
+                             <input type="checkbox" style={{ cursor: 'pointer' }} />
+                          </div>
                         </td>
-                      ))}
-                    </tr>
-                  ))}
-                  {/* Add Item Row */}
+                        <td style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '36px' }}>
+                              <input 
+                                style={{ border: 'none', background: 'transparent', fontSize: '14px', width: '100%', outline: 'none' }} 
+                                defaultValue={item.name}
+                                onBlur={(e) => handleUpdateName(item.id, e.target.value)}
+                              />
+                              <button onClick={() => openItemDetail(item.id)} style={{ padding: '4px', color: '#676879', background: 'none', border: 'none', cursor: 'pointer' }}><ExternalLink size={14} /></button>
+                            </div>
+                          </td>
+                          {board.columns.map((col: any) => (
+                            <td key={col.id} style={{ border: '1px solid #e1e4e8', padding: '0', height: '36px' }}>
+                              <ExactCellRenderer 
+                                column={col} 
+                                value={item.values[col.id]} 
+                                onSave={(val: any) => handleUpdateValue(item.id, col.id, val)} 
+                              />
+                            </td>
+                          ))}
+                      </SortableItem>
+                    ))}
+                    {/* Add Item Row */}
                   <tr>
                     <td style={{ borderLeft: `6px solid ${group.color}` }}></td>
                     <td colSpan={board.columns.length + 1} style={{ border: '1px solid #e1e4e8', padding: '0 16px' }}>
@@ -489,7 +573,8 @@ function TableView({ board, items, searchQuery, collapsedGroups, setCollapsedGro
                       </div>
                     </td>
                   </tr>
-                </tbody>
+                  </tbody>
+                </SortableContext>
               </table>
             )}
           </div>
@@ -529,48 +614,54 @@ function KanbanView({ board, items, searchQuery, onUpdateValue, openItemDetail }
             </div>
 
             {/* Cards */}
-            <div style={{ 
-              background: '#f5f6f8', borderRadius: '0 0 8px 8px', padding: '8px', minHeight: '400px',
-              display: 'flex', flexDirection: 'column', gap: '8px'
-            }}>
-              {columnItems.map((item: Item) => (
-                <div 
-                  key={item.id} 
-                  onClick={() => openItemDetail(item.id)}
-                  style={{ 
-                    background: '#fff', borderRadius: '8px', padding: '16px', cursor: 'pointer',
-                    border: '1px solid #e1e4e8', boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                    transition: 'box-shadow 0.2s, transform 0.1s',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'none'; }}
-                >
-                  <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '8px', color: '#323338' }}>{item.name}</div>
-                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                    {item.values?.priority ? (
-                      <span style={{ 
-                        fontSize: '11px', padding: '2px 8px', borderRadius: '4px', fontWeight: 600,
-                        background: board.columns.find((c: Column) => c.id === 'priority')?.settings?.labels?.find((l: any) => l.id === item.values.priority)?.color || '#c4c4c4',
-                        color: '#fff'
-                      }}>
-                        {String(board.columns.find((c: Column) => c.id === 'priority')?.settings?.labels?.find((l: any) => l.id === item.values.priority)?.text || '')}
-                      </span>
-                    ) : null}
-                    {item.values?.date ? (
-                      <span style={{ fontSize: '11px', color: '#676879' }}>📅 {formatDate(Number(item.values.date))}</span>
-                    ) : null}
-                  </div>
-                  {item.values?.person ? (
-                    <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#6161FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>
-                        {getInitials(String(item.values.person))}
+            <SortableContext items={columnItems.map((i: any) => i.id)} strategy={verticalListSortingStrategy}>
+              <div style={{ 
+                background: '#f5f6f8', borderRadius: '0 0 8px 8px', padding: '8px', minHeight: '400px',
+                display: 'flex', flexDirection: 'column', gap: '8px'
+              }}>
+                {columnItems.map((item: Item) => (
+                  <SortableItem key={item.id} id={item.id}>
+                    <div 
+                      onClick={() => openItemDetail(item.id)}
+                      style={{ 
+                        background: '#fff', borderRadius: '8px', padding: '16px', cursor: 'pointer',
+                        border: '1px solid #e1e4e8', boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                        transition: 'box-shadow 0.2s, transform 0.1s',
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)'; e.currentTarget.style.transform = 'none'; }}
+                    >
+                      <div style={{ fontWeight: 600, fontSize: '14px', marginBottom: '8px', color: '#323338', display: 'flex', justifyContent: 'space-between' }}>
+                        {item.name}
+                        <GripVertical size={14} color="#c4c4c4" />
                       </div>
-                      <span style={{ fontSize: '12px', color: '#676879' }}>{String(item.values.person)}</span>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                        {item.values?.priority ? (
+                          <span style={{ 
+                            fontSize: '11px', padding: '2px 8px', borderRadius: '4px', fontWeight: 600,
+                            background: board.columns.find((c: Column) => c.id === 'priority')?.settings?.labels?.find((l: any) => l.id === item.values.priority)?.color || '#c4c4c4',
+                            color: '#fff'
+                          }}>
+                            {String(board.columns.find((c: Column) => c.id === 'priority')?.settings?.labels?.find((l: any) => l.id === item.values.priority)?.text || '')}
+                          </span>
+                        ) : null}
+                        {item.values?.date ? (
+                          <span style={{ fontSize: '11px', color: '#676879' }}>📅 {formatDate(Number(item.values.date))}</span>
+                        ) : null}
+                      </div>
+                      {item.values?.person ? (
+                        <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#6161FF', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 700 }}>
+                            {getInitials(String(item.values.person))}
+                          </div>
+                          <span style={{ fontSize: '12px', color: '#676879' }}>{String(item.values.person)}</span>
+                        </div>
+                      ) : null}
                     </div>
-                  ) : null}
-                </div>
-              ))}
-            </div>
+                  </SortableItem>
+                ))}
+              </div>
+            </SortableContext>
           </div>
         );
       })}
