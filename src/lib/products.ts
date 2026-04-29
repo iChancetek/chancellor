@@ -8,6 +8,8 @@ export const PRODUCT_DATA: Record<string, any> = {
     color: '#0073ea',
     icon: LayoutGrid,
     features: [
+      'Intelligent Board Generation: Transform natural language or voice intent into a fully structured enterprise workspace, complete with specialized dashboards, metrics, and risk analysis.',
+      'Tactile Drag-and-Drop Workspace: Reorganize your Unified Command Center and board items with seamless, zero-latency drag-and-drop mechanics for total operational agility.',
       'Visual Project Orchestration: Leverage multi-dimensional views including interactive Gantt charts, high-density Timelines, and dynamic Kanban boards to visualize project lifecycles from inception to delivery. Every view is real-time, ensuring that as one task moves, the entire project schedule adjusts intelligently.',
       'Neural Status Automation: Stop chasing updates. Our AI-driven engine monitors progress signals across the platform and automatically updates task statuses, triggers dependencies, and sends proactive reminders to stakeholders. It ensures that the momentum of your work is never stalled by manual data entry.',
       'Bespoke Workflow Architecture: Build the exact workflow your industry demands. From complex construction sequences to high-frequency content production, our drag-and-drop builder allows you to define custom logic, transition rules, and required data fields for every stage of your process.',
@@ -201,6 +203,8 @@ export const PRODUCT_DATA: Record<string, any> = {
     icon: Bot,
     features: [
       'Predictive Workflow Intelligence: Go beyond reporting to forecasting. Our AI models analyze millions of data points across your organization to predict project delays, budget overruns, and resource gaps weeks before they manifest.',
+      'Intelligent Board Generation: Express your operational intent and let Chancellor AI instantly construct a tailored board, populated with relevant insights, risks, and performance dashboards.',
+      'Executive Presentation Mode: Instantly generate and narrate C-suite audio briefings. The AI synthesizes your board’s insights, risks, and recommendations into a natural, hands-free speech presentation.',
       'Multimodal Data Extraction: Transform unstructured data into actionable items. Upload a photo of a whiteboard, a PDF contract, or a voice recording, and Chancellor AI will instantly extract tasks, deadlines, and key terms into your project boards.',
       'Natural language board querying: Talk to your workspace. Use simple conversational language to ask complex questions like "Which projects are at risk because of current engineering bottlenecks?" and receive instant, visualized answers.',
       'Autonomous Process Optimization: Eliminate waste automatically. The AI observes your repetitive manual tasks and suggests (or builds) automations to handle them, allowing your team to focus entirely on high-value creative work.',
