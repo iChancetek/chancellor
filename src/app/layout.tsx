@@ -7,10 +7,28 @@ export const metadata: Metadata = {
   title: "Chancellor — AI-Native Work Execution Platform",
   description: "A modular AI-native work operating system. Manage work, CRM, dev, support, and marketing — all unified through real-time collaboration and intelligent automation.",
   keywords: ["work management", "AI", "project management", "CRM", "automation", "collaboration"],
+  icons: {
+    icon: '/icon.svg',
+    apple: '/icon.svg',
+  },
   openGraph: {
     title: "Chancellor — AI-Native Work Execution Platform",
     description: "The operating system for modern work. Powered by AI.",
     type: "website",
+    images: [
+      {
+        url: '/icon.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Chancellor Logo',
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Chancellor — AI-Native Work Execution Platform",
+    description: "The operating system for modern work. Powered by AI.",
+    images: ['/icon.svg'],
   },
 };
 
