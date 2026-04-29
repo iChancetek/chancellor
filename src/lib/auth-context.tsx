@@ -96,15 +96,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const credential = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(credential.user, { displayName: name });
       
-      // Send Firebase Native Verification Link
+      // Send Firebase Native Verification Email
       try {
         await sendEmailVerification(credential.user, {
-          url: window.location.origin + '/dashboard',
-          handleCodeInApp: true,
+          url: window.location.origin + '/verify',
         });
       } catch (emailErr) {
         console.error("Critical: Verification email failed to dispatch:", emailErr);
-        // We don't block the UI here, but we log it for the Dev Log telemetry
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to create account';

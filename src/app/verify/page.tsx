@@ -97,16 +97,39 @@ export default function VerifyPage() {
   const handleSendLink = async () => {
     if (!auth.currentUser) return;
     setSubmitting(true);
+    setError('');
     try {
-      await sendEmailVerification(auth.currentUser);
+      await sendEmailVerification(auth.currentUser, {
+        url: window.location.origin + '/verify',
+      });
       setVerificationSent(true);
-      setError('');
-    } catch (err) {
-      setError('Too many requests. Please wait a moment before trying again.');
+    } catch (err: any) {
+      if (err?.code === 'auth/too-many-requests') {
+        setError('Too many requests. Please wait a few minutes before trying again.');
+      } else {
+        setError(`Verification email failed: ${err?.message || 'Unknown error'}. Try again shortly.`);
+      }
     } finally {
       setSubmitting(false);
     }
   };
+
+  // Auto-send verification email on page load
+  useEffect(() => {
+    if (!user || user.emailVerified || verificationSent || initializing) return;
+    const autoSend = async () => {
+      try {
+        await sendEmailVerification(auth.currentUser!, {
+          url: window.location.origin + '/verify',
+        });
+        setVerificationSent(true);
+      } catch (err) {
+        // Silently fail — user can manually resend
+        console.warn('Auto-send verification failed:', err);
+      }
+    };
+    autoSend();
+  }, [user, initializing]);
 
   const handleChangeEmail = async () => {
     if (!newEmail || newEmail === user?.email) {
