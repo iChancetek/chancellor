@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { adminAuth, adminDb } from '@/lib/firebase-admin';
 
 export async function POST(req: NextRequest) {
+  if (!adminDb) {
+    return NextResponse.json({ error: 'Firebase Admin not initialized.' }, { status: 500 });
+  }
+
   try {
     const { email, password, displayName, role, department, team } = await req.json();
 
@@ -49,6 +53,10 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  if (!adminDb) {
+    return NextResponse.json({ error: 'Firebase Admin not initialized.' }, { status: 500 });
+  }
+
   try {
     const { uid, action, payload } = await req.json();
 
