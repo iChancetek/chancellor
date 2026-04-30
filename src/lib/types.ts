@@ -10,7 +10,10 @@ export interface User {
   email: string;
   displayName: string;
   photoURL: string | null;
-  role: 'admin' | 'manager' | 'contributor'; // Added RBAC role
+  role: SystemRole;
+  department?: 'HR' | 'Dev' | 'Support' | 'Marketing' | string;
+  team?: string;
+  isDisabled?: boolean;
   createdAt: number;
   updatedAt: number;
 }

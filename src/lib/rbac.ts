@@ -2,7 +2,7 @@
  *  Chancellor — RBAC Permission Engine
  *  Central authority for all access control decisions.
  * ─────────────────────────────────────────────────────────── */
-import type { SystemRole, ModuleScope, PermissionAction, PermissionRule, MemberPermissions, Board } from './types';
+import type { SystemRole, ModuleScope, PermissionAction, PermissionRule, MemberPermissions, Board, User } from './types';
 
 // ── Role Hierarchy (higher index = more power) ───────────
 
@@ -113,6 +113,52 @@ export function canEditBoard(
   customPermissions?: PermissionRule[]
 ): boolean {
   return canAccess(userRole, board.type as ModuleScope, 'edit', customPermissions);
+}
+
+// ── User Management Scoping ──────────────────────────────
+
+export type UserManagementAction = 'disable' | 'enable' | 'change_password' | 'change_role' | 'grant_board';
+
+export function canManageUser(actor: User, targetUser: User, action: UserManagementAction): boolean {
+  // Super Admins and Admins can do anything to anyone (except demote another Super Admin)
+  if (actor.role === 'super_admin') return true;
+  if (actor.role === 'admin') {
+    return targetUser.role !== 'super_admin';
+  }
+
+  // Managers
+  if (actor.role === 'manager') {
+    // Managers cannot change roles of users, only passwords, enable/disable, and grant boards
+    if (action === 'change_role') return false;
+    // Target must be in the same department
+    if (!actor.department || actor.department !== targetUser.department) return false;
+    // Target cannot be an admin or super admin
+    if (targetUser.role === 'admin' || targetUser.role === 'super_admin') return false;
+    return true;
+  }
+
+  // Team Leads
+  if (actor.role === 'team_lead') {
+    // Team Leads cannot change roles
+    if (action === 'change_role') return false;
+    // Target must be in the same team AND department
+    if (!actor.team || actor.team !== targetUser.team) return false;
+    if (!actor.department || actor.department !== targetUser.department) return false;
+    // Target cannot be a manager, admin, or super admin
+    if (targetUser.role === 'manager' || targetUser.role === 'admin' || targetUser.role === 'super_admin') return false;
+    return true;
+  }
+
+  return false;
+}
+
+export function canCreateUser(actorRole: SystemRole): boolean {
+  return actorRole === 'super_admin' || actorRole === 'admin';
+}
+
+export function canAccessAdminDashboard(actorRole: SystemRole): boolean {
+  // All management roles can access the dashboard, but the UI will filter what they see
+  return isRoleAtLeast(actorRole, 'team_lead');
 }
 
 // ── UI Helpers ───────────────────────────────────────────
