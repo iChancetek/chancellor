@@ -7,8 +7,11 @@ export const metadata: Metadata = {
   title: "Chancellor — AI-Native Work Execution Platform",
   description: "A modular AI-native work operating system. Manage work, CRM, dev, support, and marketing — all unified through real-time collaboration and intelligent automation.",
   keywords: ["work management", "AI", "project management", "CRM", "automation", "collaboration"],
+  manifest: '/manifest.json',
+  themeColor: '#6161FF',
   icons: {
     icon: '/icon.svg',
+    shortcut: '/icon.svg',
     apple: '/icon.svg',
   },
   openGraph: {
